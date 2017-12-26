@@ -20,6 +20,24 @@ function recargarTabla(tabla){
     $('#' + tabla).dataTable()._fnAjaxUpdate();
 };
 
+/*-- Función para pasar el id de jQuery  a vue para eliminarlo --*/
+function eliminar(id,logical){
+    var data =
+    {
+        id:id,
+        logical:logical
+    };
+    objVue.delete(data);    
+}
+/*-- Función para pasar el id de jQuery  a vue para deshacer el eliminado --*/
+function deshacerEliminar(id){
+    var data =
+    {
+        id:id
+    };
+    objVue.deshacerDelete(data);    
+}
+
 /* initialize the calendar
  -----------------------------------------------------------------*/
 var date = new Date();

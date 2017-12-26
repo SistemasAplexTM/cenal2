@@ -15,8 +15,6 @@ mix.scripts([
 	'resources/assets/js/plugins/fullcalendar/moment.min.js',
 	'resources/assets/js/jquery-3.1.1.min.js',
 	'resources/assets/js/plugins/jquery-ui.min.js',
-	'resources/assets/js/vue.js',
-	'resources/assets/js/axios.js',
 	'resources/assets/js/bootstrap.min.js',
 	/*-- Plugins --*/
 	'resources/assets/js/plugins/metisMenu/jquery.metisMenu.js',

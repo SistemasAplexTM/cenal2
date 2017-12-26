@@ -16,6 +16,9 @@ Route::group(['middleware' => 'auth'],function(){
 	Route::get('/modulo', 'ModuloController@index')->name('modulo');
 	Route::get('/modulo/all', 'ModuloController@getAll');
 	Route::post('/modulo/store', 'ModuloController@store');
+	Route::put('/modulo/{id}', 'ModuloController@update');
+	Route::get('modulo/restaurar/{id}' , 'ModuloController@restaurar');
+	Route::get('modulo/delete/{id}/{logical?}', 'ModuloController@delete');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora']], function(){
