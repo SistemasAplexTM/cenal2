@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ModuloRequest;
 use App\Modulos;
 
 class ModuloController extends Controller
@@ -26,11 +27,11 @@ class ModuloController extends Controller
     	return Datatables::of($data)->make(true);
     }
 
-    public function store(Request $request){
+    public function store(ModuloRequest $request){
     	try{
             if (Modulos::insert($request->all())) {
                 $answer=array(
-                    "datos" => '',
+                    "datos" => $request->all(),
                     "code" => 200
                 );
             }
@@ -40,7 +41,7 @@ class ModuloController extends Controller
         }
     }
 
-    public function update(Request $request, $id){
+    public function update(ModuloRequest $request, $id){
     	try {
             $data = Modulos::findOrFail($id);
             $data->update($request->all());
@@ -79,6 +80,7 @@ class ModuloController extends Controller
             $this->destroy($id);
         }
     }
+    
     public function destroy($id){
         $data = Modulos::findOrFail($id);
         $data->delete();

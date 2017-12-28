@@ -68,7 +68,13 @@ var objVue = new Vue({
                 this.nombre = '';
             })
             .catch(function(error){
-                alert('error al registrar: ' + error);
+                if (error.response.status === 422) {
+                    me.formErrors = error.response.data.errors;
+                }
+                $.each(me.formErrors, function (key, value) {
+                    $('.result-' + key).html(value);
+                });
+                toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
         },
         delete: function(data){

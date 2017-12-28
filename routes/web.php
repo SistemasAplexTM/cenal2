@@ -13,12 +13,23 @@ Route::group(['middleware' => 'auth'],function(){
 	Route::get('/home', 'ModuloController@index')->name('home');
 	Route::get('/clients', 'Api\ClientsController@index')->name('clients');
 	Route::get('/clients/getAll', 'Api\ClientsController@getAll');
+
 	Route::get('/modulo', 'ModuloController@index')->name('modulo');
 	Route::get('/modulo/all', 'ModuloController@getAll');
 	Route::post('/modulo/store', 'ModuloController@store');
 	Route::put('/modulo/{id}', 'ModuloController@update');
 	Route::get('modulo/restaurar/{id}' , 'ModuloController@restaurar');
 	Route::get('modulo/delete/{id}/{logical?}', 'ModuloController@delete');
+
+	Route::get('profesor/all', 'Profesor\ProfesorController@getAll');
+	Route::get('profesor/restaurar/{id}' , 'Profesor\ProfesorController@restaurar');
+	Route::get('profesor/delete/{id}/{logical?}', 'Profesor\ProfesorController@delete');
+	Route::resource('profesor', 'Profesor\ProfesorController');
+
+	Route::get('salon/all', 'SalonController@getAll');
+	Route::get('salon/restaurar/{id}' , 'SalonController@restaurar');
+	Route::get('salon/delete/{id}/{logical?}', 'SalonController@delete');
+	Route::resource('salon', 'SalonController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora']], function(){
