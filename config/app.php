@@ -180,7 +180,6 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-
         Spatie\Permission\PermissionServiceProvider::class,
 
     ],

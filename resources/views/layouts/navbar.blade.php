@@ -27,7 +27,16 @@
                 @if(Auth::user()->rol == 2)
                 <li>
                     <a href="{{ url('/admin/clases') }}"><i class="fa fa-gears"></i> <span class="nav-label">Configuración académica</span> </a>
+                </li>
                 @endif
+                <li>
+                    <a href="{{ url('salon') }}"><i class="fa fa-gears"></i> <span class="nav-label">Salones</span> </a>
+                </li>
+                <li>
+                    <a href="{{ url('profesor') }}"><i class="fa fa-gears"></i> <span class="nav-label">Profesor</span> </a>
+                </li>
+                <li>
+                    <a href="{{ url('modulo') }}"><i class="fa fa-gears"></i> <span class="nav-label">Módulo</span> </a>
                 </li>
             </ul>
             <ul class="nav navbar-top-links navbar-right">

@@ -1,17 +1,27 @@
 $(document).ready(function () {
-    $('#tbl-modulos').DataTable({
+    $('#tbl-profesor').DataTable({
         processing: true,
         serverSide: true,
-        ajax: 'modulo/all',
+        ajax: 'profesor/all',
         columns: [
-            { data: "id", name: 'id' },
             { data: "nombre", name: 'nombre'},
+            { data: "apellidos", name: 'apellidos'},
+            // { data: "direccion", name: 'direccion'},
+            // { data: "telefono", name: 'telefono'},
+            // { data: "celular", name: 'celular'},
+            // { data: "correo", name: 'correo'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     var params = [
                         full.id, 
-                        "'" + full.nombre + "'"
+                        "'" + full.nombre + "'",
+                        "'" + full.apellidos + "'",
+                        "'" + full.direccion + "'",
+                        "'" + full.telefono + "'",
+                        "'" + full.celular + "'",
+                        "'" + full.correo + "'",
+                        full.user_id, 
                     ];
                     var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
                     var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
@@ -22,29 +32,45 @@ $(document).ready(function () {
     });
 });
 
-function edit(id,nombre){
+function edit(id, nombre, apellidos, direccion, telefono, celular, correo, user_id){
     var data ={
         id:id,
-        nombre: nombre
+        nombre: nombre,
+        apellidos: apellidos,
+        direccion: direccion,
+        telefono: telefono,
+        celular: celular,
+        correo: correo,
+        user_id: user_id
     };
     objVue.edit(data);
 }
 
 
 var objVue = new Vue({
-    el: '#crud_modulo',
+    el: '#crud_profesor',
     data:{
         nombre:'',
+        apellidos: '',
+        direccion: '',
+        telefono: '',
+        celular: '',
+        correo: '',
+        user_id: '',
         editar: 0,
         formErrors: {}
     },
     methods:{
-        updateTable: function(){
-            recargarTabla('tbl-modulos');
-        },
         resetForm: function(){
             this.nombre = '';
+            this.apellidos = '',
+            this.direccion = '',
+            this.telefono = '',
+            this.celular = '',
+            this.correo = '',
+            this.user_id = '',
             this.editar = 0;
+            this.formErrors = {};
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -57,18 +83,24 @@ var objVue = new Vue({
                }
             });
         },
-        store: function(){
+        create: function(){
             let me = this;
-            axios.post('modulo/store',{
-                'nombre': me.nombre
+            axios.post('profesor',{
+                'nombre': me.nombre,
+                'apellidos': me.apellidos,
+                'direccion': me.direccion,
+                'telefono': me.telefono,
+                'celular': me.celular,
+                'correo': me.correo,
+                'user_id': me.user_id
             })
             .then(function (response){
                 toastr.success('Registrado con éxito');
-                recargarTabla('tbl-modulos');
-                this.nombre = '';
+                recargarTabla('tbl-profesor');
+                this.resetForm();
             })
             .catch(function(error){
-                if (error.response.status === 422) {
+                if (error.response.status && error.response.status === 422) {
                     me.formErrors = error.response.data.errors;
                 }
                 $.each(me.formErrors, function (key, value) {
@@ -78,49 +110,50 @@ var objVue = new Vue({
             });
         },
         delete: function(data){
-            this.formErrors = {};
             if(data.logical === true){
-                axios.get('modulo/delete/' + data.id + '/' + data.logical).then(response => {
-                    this.updateTable();
+                axios.get('profesor/delete/' + data.id + '/' + data.logical).then(response => {
                     toastr.success("<div><p>Registro eliminado exitosamente.</p><button type='button' onclick='deshacerEliminar(" + data.id + ")' id='okBtn' class='btn btn-xs btn-danger pull-right'><i class='fa fa-reply'></i> Restaurar</button></div>");
                     toastr.options.closeButton = true;
                 });
             }else{
-                axios.delete('modulo/' + data.id).then(response => {
-                    this.updateTable();
+                axios.delete('profesor/' + data.id).then(response => {
                     toastr.success('Registro eliminado correctamente.');
                     toastr.options.closeButton = true;
                 });
             }
+            recargarTabla('tbl-profesor');
         },
         deshacerDelete: function(data){
-            var urlRestaurar = 'modulo/restaurar/' + data.id;
-            axios.get(urlRestaurar).then(response => {
+            axios.get('profesor/restaurar/' + data.id).then(response => {
                 toastr.success('Registro restaurado.');
-                this.updateTable();
+                recargarTabla('tbl-profesor');
             });
         },
         update: function update() {
-            var urlUpdate = 'modulo/' + this.id;
+            var urlUpdate = 'profesor/' + this.id;
             var me = this;
             axios.put(urlUpdate, {
-                'nombre' : this.nombre
+                'nombre': me.nombre,
+                'apellidos': me.apellidos,
+                'direccion': me.direccion,
+                'telefono': me.telefono,
+                'celular': me.celular,
+                'correo': me.correo,
+                'user_id': me.user_id
             }).then(function (response) {
+                me.resetForm();
+                recargarTabla('tbl-profesor');
                 if (response.data['code'] == 200) {
                     toastr.success('Registro actualizado correctamente');
                     toastr.options.closeButton = true;
-                    me.editar = 0;
                 } else {
                     toastr.warning(response.data['error']);
                     toastr.options.closeButton = true;
-                    console.log(response.data);
                 }
-                me.resetForm();
-                me.updateTable();
             }).catch(function (error) {
                 me.listErrors = '';
                 if (error.response.status === 422) {
-                    me.formErrors = error.response.data;
+                    me.formErrors = error.response.data.errors;
                 }
                 toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
@@ -128,14 +161,17 @@ var objVue = new Vue({
         edit: function(data){
             this.id = data['id'];
             this.nombre = data['nombre'];
+            this.apellidos = data['apellidos'],
+            this.direccion = data['direccion'],
+            this.telefono = data['telefono'],
+            this.celular = data['celular'],
+            this.correo = data['correo'],
+            this.user_id = data['user_id'],
             this.editar = 1;
             this.formErrors = {};
         },
         cancel: function(){
-            this.id = '';
-            this.nombre = '' ;
-            this.editar = 0;
-            this.formErrors = {};
+            this.resetForm();
         },
     }
     

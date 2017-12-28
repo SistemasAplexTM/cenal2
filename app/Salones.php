@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Salones extends Model
 {
-    //
+    protected $fillable = [
+    	'nombre',
+    	'codigo',
+    	'capacidad'
+    ];
 }
