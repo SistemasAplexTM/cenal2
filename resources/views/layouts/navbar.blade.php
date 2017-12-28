@@ -38,6 +38,9 @@
                 <li>
                     <a href="{{ url('modulo') }}"><i class="fa fa-gears"></i> <span class="nav-label">Módulo</span> </a>
                 </li>
+                <li>
+                    <a href="{{ url('ubicacion') }}"><i class="fa fa-gears"></i> <span class="nav-label">Ubicación</span> </a>
+                </li>
             </ul>
             <ul class="nav navbar-top-links navbar-right">
                 <li><a href="{{ route('clients') }}"><i class="fa fa-code"></i> Soy desarrollador</a></li>

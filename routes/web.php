@@ -30,6 +30,11 @@ Route::group(['middleware' => 'auth'],function(){
 	Route::get('salon/restaurar/{id}' , 'SalonController@restaurar');
 	Route::get('salon/delete/{id}/{logical?}', 'SalonController@delete');
 	Route::resource('salon', 'SalonController');
+
+	Route::get('ubicacion/all', 'UbicacionController@getAll');
+	Route::get('ubicacion/restaurar/{id}' , 'UbicacionController@restaurar');
+	Route::get('ubicacion/delete/{id}/{logical?}', 'UbicacionController@delete');
+	Route::resource('ubicacion', 'UbicacionController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora']], function(){
