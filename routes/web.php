@@ -10,7 +10,7 @@ Route::get('/error/{code}','ErrorController@index');
 Route::group(['middleware' => 'auth'],function(){
 	Route::get('/mora','MoraController@index')->name('mora');
 	Route::get('/baloto', 'MoraController@baloto')->name('baloto');
-	Route::get('/home', 'ModuloController@index')->name('home');
+	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/clients', 'Api\ClientsController@index')->name('clients');
 	Route::get('/clients/getAll', 'Api\ClientsController@getAll');
 
@@ -35,6 +35,11 @@ Route::group(['middleware' => 'auth'],function(){
 	Route::get('ubicacion/restaurar/{id}' , 'UbicacionController@restaurar');
 	Route::get('ubicacion/delete/{id}/{logical?}', 'UbicacionController@delete');
 	Route::resource('ubicacion', 'UbicacionController');
+
+	Route::get('festivos/all', 'FestivosController@getAll');
+	Route::get('festivos/restaurar/{id}' , 'FestivosController@restaurar');
+	Route::get('festivos/delete/{id}/{logical?}', 'FestivosController@delete');
+	Route::resource('festivos', 'FestivosController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora']], function(){
