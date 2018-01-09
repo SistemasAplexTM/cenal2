@@ -9,6 +9,7 @@ mix.styles([
 	'resources/assets/css/plugins/dataTables/datatables.min.css',
 	'resources/assets/css/plugins/iCheck/custom.css',
 	'resources/assets/css/plugins/fullcalendar/fullcalendar.css',
+	'resources/assets/css/plugins/steps/jquery.steps.css',
 	'resources/assets/css/main.css'
 	], 'public/css/plantilla.css');
 mix.scripts([
@@ -24,6 +25,8 @@ mix.scripts([
 	'resources/assets/js/plugins/dataTables/datatables.min.js',
 	'resources/assets/js/plugins/iCheck/icheck.min.js',
 	'resources/assets/js/plugins/fullcalendar/fullcalendar.min.js',
+	'resources/assets/js/plugins/steps/jquery.steps.min.js',
+	'resources/assets/js/plugins/validate/jquery.validate.min.js',
 	/*-- Plantilla --*/
 	'resources/assets/js/inspinia.js',
 	'resources/assets/js/main.js',

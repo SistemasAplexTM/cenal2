@@ -164,6 +164,21 @@ var objVue = new Vue({
                 toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
         },
+        getDataUser: function(){
+            var user = this.user_id;
+            if (user == '') {
+                user = null
+            }
+            axios.get('profesor/getDataUser/' + user).then(response => {
+                if (response.data.data == false) {
+                    this.nombre = '';    
+                    this.correo = '';    
+                }else{
+                    this.nombre = response.data.data[0].name;
+                    this.correo = response.data.data[0].email;
+                }
+            });
+        },
         edit: function(data){
             this.id = data['id'];
             this.nombre = data['nombre'];

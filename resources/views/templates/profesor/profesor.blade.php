@@ -14,20 +14,27 @@
                     <div class="ibox-content" id="crudTercero">
                         <!--***** contenido ******-->
                         <div class="row">
-                            {{-- <div class="col-lg-12">
+                            <div class="col-lg-12">
                                 <div class="col-lg-12">
-                                    <div class="form-group" :class="{'has-error': formErrors.nit}">
+                                    <div class="form-group" :class="{'has-error': formErrors.user_id}">
                                         <div class="col-sm-4">
-                                            <label for="" class="control-label gcore-label-top">Nomr:</label>
+                                            <label for="" class="control-label gcore-label-top">Usuario:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input value="" placeholder="" class="form-control validarInputs" type="text" v-model="nitTercero" @click="deleteError('nit')"/>
-                                            <small id="msn1" class="help-block result-nit" v-show="formErrors.nit"></small>
+                                            <select name="user_id" id="user_id" class="form-control" v-model="user_id" @change="getDataUser" @click="deleteError('user_id')">
+                                                <option value="">Ninguno</option>
+                                                @foreach($user as $value)
+                                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small id="msn1" class="help-block result-user_id" v-show="formErrors.user_id"></small>
                                         </div>
 
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-12">
                                 <div class="col-lg-12">
                                     <div class="form-group" :class="{'has-error': formErrors.nombre}">
@@ -117,27 +124,6 @@
                                         <div class="col-sm-8">
                                             <input value="" placeholder="" class="form-control validarInputs" type="text" v-model="celular" @click="deleteError('celular')">
                                             <small id="msn1" class="help-block result-celular" v-show="formErrors.celular"></small>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="col-lg-12">
-                                    <div class="form-group" :class="{'has-error': formErrors.user_id}">
-                                        <div class="col-sm-4">
-                                            <label for="" class="control-label gcore-label-top">Usuario:</label>
-                                        </div>
-                                        <div class="col-sm-8">
-                                        	<select name="user_id" id="user_id" class="form-control" v-model="user_id" @click="deleteError('user_id')">
-                                        		<option value="">Ninguno</option>
-                                        		@foreach($user as $value)
-                                        			<option value="{{ $value->id }}">{{ $value->name }}</option>
-                                        		@endforeach
-                                        	</select>
-                                            <small id="msn1" class="help-block result-user_id" v-show="formErrors.user_id"></small>
                                         </div>
 
                                     </div>

@@ -128,4 +128,25 @@ class ProfesorController extends Controller
         $data->deleted_at = NULL;
         $data->save();
     }
+
+    public function getDataUser($user){
+        if ($user == null) {
+            $answer=array(
+                "data" => false,
+                "code" => 404
+            );    
+        }
+        $data = DB::table('users As a')
+        ->select(
+            'a.name',
+            'a.email'
+        )
+        ->where('a.id', '=', $user)
+        ->get();
+        $answer=array(
+            "data" => $data,
+            "code" => 200
+        );
+        return $answer;
+    }
 }

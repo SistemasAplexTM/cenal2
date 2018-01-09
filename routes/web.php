@@ -2,6 +2,8 @@
 
 Route::get('/', 'Auth\LoginController@index');
 
+Route::post('validar', 'Auth\ValidarController@validar')->name('validar');
+Route::post('validar/register', 'Auth\ValidarController@register2');
 
 Auth::routes();
 
@@ -22,6 +24,7 @@ Route::group(['middleware' => 'auth'],function(){
 	Route::get('modulo/delete/{id}/{logical?}', 'ModuloController@delete');
 
 	Route::get('profesor/all', 'Profesor\ProfesorController@getAll');
+	Route::get('profesor/getDataUser/{user}', 'Profesor\ProfesorController@getDataUser');
 	Route::get('profesor/restaurar/{id}' , 'Profesor\ProfesorController@restaurar');
 	Route::get('profesor/delete/{id}/{logical?}', 'Profesor\ProfesorController@delete');
 	Route::resource('profesor', 'Profesor\ProfesorController');

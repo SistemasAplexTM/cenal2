@@ -44,6 +44,11 @@
                 <li>
                     <a href="{{ url('festivos') }}"><i class="fa fa-gears"></i> <span class="nav-label">Festivos</span> </a>
                 </li>
+                <li>
+                    <a class="right-sidebar-toggle">
+                        <i class="fa fa-tasks"></i>
+                    </a>
+                </li>
             </ul>
             <ul class="nav navbar-top-links navbar-right">
                 <li><a href="{{ route('clients') }}"><i class="fa fa-code"></i> Soy desarrollador</a></li>

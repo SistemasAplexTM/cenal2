@@ -1,77 +1,51 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    <meta name="mobile-web-app-capable" content=yes>
+    <link rel="icon" sizes="192x192" href="{{ asset('img/logo_cenal.png') }}">
 
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('register') }}">
-                        {{ csrf_field() }}
+    <title>CENAL</title>
 
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label for="name" class="col-md-4 control-label">Name</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
-
-                                @if ($errors->has('name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Register
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+    <!-- Styles -->
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plantilla.css') }}" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <h5 class="logo-name">
+                    <img src="{{ asset('img/logo_cenal.png') }}" alt="">
+                </h5>
             </div>
+            <h3>Bienvenido a CENAL</h3>
+            <p><small>CENTRO NACIONAL DE CAPACITACIÓN LABORAL</small></p>
+            <h4>Validar cuenta</h4>
+            <p>Verifica si tienes una cuenta en el sistema.</p>
+            @if(Session::has('no_cuenta'))
+                <div class="alert alert-warning">
+                    <h4>{{ Session::get('no_cuenta') }}</h4>
+                    <p>Acercate a la sede más cercana para realizar el proceso de inscripción.</p>
+                </div>
+            @endif
+            <form id="form-login" class="m-t" role="form" method="POST" action="{{ route('validar') }}">
+                {{ csrf_field() }}
+                <div class="form-group {{ $errors->has('documneto') ? 'has-error' : '' }}">
+                    <input name="documento" type="text" class="form-control" placeholder="Documento" required="">
+                    {!! $errors->first('documento', '<span class="help-block">:message</span>') !!}
+                </div>
+                <button type="submit" class="btn btn-success block full-width m-b">Validar</button>
+                <a class="btn btn-sm btn-white btn-block" href="{{ route('login') }}">Volver</a>
+            </form>
         </div>
     </div>
 </div>
-@endsection
+  <script src="{{ asset('js/plantilla.js') }}"></script>
+</body>
+</html>
