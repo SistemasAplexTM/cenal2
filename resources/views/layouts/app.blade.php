@@ -50,7 +50,7 @@
                     <div id="tab-1" class="tab-pane active">
 
                         <div class="sidebar-title">
-                            <h3> <i class="fa fa-comments-o"></i> Administración</h3>
+                            <h3> <i class="fa fa-gear"></i> Administración</h3>
                             {{-- <small><i class="fa fa-tim"></i> Administra la.</small> --}}
                         </div>
 
