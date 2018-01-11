@@ -32,16 +32,26 @@
                     
                 </div>
             @endif
+            @if (session('notification'))
+                <div class="alert alert-success">
+                    {{ session('notification') }}
+                </div>
+            @endif
+            @if (session('VerifyifActive'))
+                <div class="alert alert-warning">
+                    {{ session('VerifyifActive') }}
+                </div>
+            @endif
             <form id="form-login" class="m-t" role="form" method="POST" action="{{ route('login') }}">
                 {{ csrf_field() }}
                 <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
-                    <input 
+                   <input 
                     name="email"
                     type="email"
                     class="form-control"
                     placeholder="Correo"
                     required=""
-                    value="{{ old('email') }}" 
+                    value="{{ session('notification') ? session('email'): old('email') }}" 
                     >
                     {!! $errors->first('email', '<span class="help-block">:message</span>') !!}
                 </div>

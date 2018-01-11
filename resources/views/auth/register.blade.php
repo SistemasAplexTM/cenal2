@@ -27,7 +27,7 @@
             <h3>Bienvenido a CENAL</h3>
             <p><small>CENTRO NACIONAL DE CAPACITACIÓN LABORAL</small></p>
             <h4>Validar cuenta</h4>
-            <p>Verifica si tienes una cuenta en el sistema.</p>
+            <p>Verifica si tienes una cuenta en el sistema con tu código de estudiante.</p>
             @if(Session::has('no_cuenta'))
                 <div class="alert alert-warning">
                     <h4>{{ Session::get('no_cuenta') }}</h4>
@@ -37,8 +37,8 @@
             <form id="form-login" class="m-t" role="form" method="POST" action="{{ route('validar') }}">
                 {{ csrf_field() }}
                 <div class="form-group {{ $errors->has('documneto') ? 'has-error' : '' }}">
-                    <input name="documento" type="text" class="form-control" placeholder="Documento" required="">
-                    {!! $errors->first('documento', '<span class="help-block">:message</span>') !!}
+                    <input name="code" type="text" class="form-control" placeholder="Código" required="">
+                    {!! $errors->first('code', '<span class="help-block">:message</span>') !!}
                 </div>
                 <button type="submit" class="btn btn-success block full-width m-b">Validar</button>
                 <a class="btn btn-sm btn-white btn-block" href="{{ route('login') }}">Volver</a>

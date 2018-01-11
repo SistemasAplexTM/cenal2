@@ -32,6 +32,9 @@
                             <p>
                                 Completa los campos para realizar el registro.
                             </p>
+                            <p>
+                                Código de estudiante <strong>2175023</strong>.
+                            </p>
 
                             <form id="form" action="{{ url('validar/register') }}" method="POST" class="wizard-big">
                                 {{ csrf_field() }}
@@ -102,8 +105,9 @@
 
                                 <h1>Fin</h1>
                                 <fieldset>
-                                    <h2 class="text-center">Bienvenido</h2>
-                                    <p class="text-center">Ha completado satisfactoriamente su proceso de inscripción.</p>
+                                    <h2 class="text-center">Enhorabuena!</h2>
+                                    <p class="text-center">Casi terminamos tu registro.</p>
+                                    <p class="text-center">Al finalizar enviaremos un correo con el link de confirmación de tu cuenta.</p>
                                 </fieldset>
                             </form>
                         </div>

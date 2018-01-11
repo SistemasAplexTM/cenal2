@@ -4,15 +4,15 @@ Route::get('/', 'Auth\LoginController@index');
 
 Route::post('validar', 'Auth\ValidarController@validar')->name('validar');
 Route::post('validar/register', 'Auth\ValidarController@register2');
-
+Route::get('/register/verify/{code}', 'Auth\ValidarController@verify');
 Auth::routes();
 
 Route::get('/error/{code}','ErrorController@index');
 
-Route::group(['middleware' => 'auth'],function(){
+Route::group(['middleware' => ['auth', 'VerifyifActive']],function(){
+	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/mora','MoraController@index')->name('mora');
 	Route::get('/baloto', 'MoraController@baloto')->name('baloto');
-	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/clients', 'Api\ClientsController@index')->name('clients');
 	Route::get('/clients/getAll', 'Api\ClientsController@getAll');
 
@@ -45,14 +45,14 @@ Route::group(['middleware' => 'auth'],function(){
 	Route::resource('festivos', 'FestivosController');
 });
 /*-- Rutas para el estudiante --*/
-Route::group(['middleware' => ['auth', 'mora']], function(){
+Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
 	Route::get('/estudiante/perfil/pagado', 'Estudiante\PerfilController@pagado');
 	Route::get('/estudiante/perfil/pendiente', 'Estudiante\PerfilController@pendiente');
 	Route::get('/estudiante/perfil', 'Estudiante\PerfilController@index');
 	Route::post('/estudiante/perfil/update/{id}', 'Estudiante\PerfilController@update');
 });
 /*-- Rutas para el profesor --*/
-Route::group(['middleware' => ['auth', 'teacher']], function(){
+Route::group(['middleware' => ['auth', 'teacher', 'VerifyifActive']], function(){
 	Route::get('/profesor/perfil', 'Profesor\PerfilController@index');
 	Route::get('/profesor/clases', 'Profesor\ClasesController@index');
 });

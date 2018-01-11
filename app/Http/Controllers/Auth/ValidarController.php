@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Mail;
+use App\Mail\VerifyEmail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class ValidarController extends Controller
 {
     public function validar(Request $request){
     	$email = $request->email;
-    	$documento = $request->documento;
+    	$code = $request->code;
     	$data = DB::table('estudiante As a')
         ->select(
             'a.id',
@@ -26,7 +29,7 @@ class ValidarController extends Controller
             'a.tel_movil'
         )
         ->where([
-        	['a.num_documento', '=', $documento]
+        	['a.consecutivo', '=', $code]
         ])
         ->get();
         $dataUsers = DB::table('users As a')
@@ -34,7 +37,7 @@ class ValidarController extends Controller
             'a.id'
         )
         ->where([
-            ['a.document', '=', $documento]
+            ['a.code', '=', $code]
         ])
         ->get();
         if (count($dataUsers) > 0) {
@@ -45,9 +48,7 @@ class ValidarController extends Controller
                return view('Auth/register2', compact('data'));
             }else{
                 \Session::flash('no_cuenta', "No tienes una cuenta");
-                return \Redirect::back();    
-                // return redirect('register')
-                //         ->withErrors(['No existe la cuenta.']);
+                return \Redirect::back();
             }
         }
     }
@@ -63,11 +64,35 @@ class ValidarController extends Controller
                 'tel_fijo' => $request->tel_fijo,
                 'tel_movil' => $request->tel_movil,
             ]);
+            $confirmation = str_random(25);
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'confirmation_code' => $confirmation
         ]);
+        $data = array(
+            'code' => $confirmation,
+            'name' => $request->name
+        );
+        Mail::to($request->email)->send(new VerifyEmail($data));
         return redirect('login');
+    }
+
+    public function verify($code)
+    {
+        $user = User::where('confirmation_code', $code)->first();
+
+        if (!$user){
+            return redirect('/');
+        }
+
+        $user->confirmed = 1;
+        $user->confirmation_code = null;
+        $user->save();
+        
+        return redirect('/login')
+        ->with('notification', 'Has confirmado correctamente tu correo!')
+        ->with('email', $user->email); 
     }
 }
