@@ -6,10 +6,12 @@ Route::post('validar', 'Auth\ValidarController@validar')->name('validar');
 Route::post('validar/register', 'Auth\ValidarController@register2');
 Route::get('/register/verify/{code}', 'Auth\ValidarController@verify');
 Auth::routes();
+Route::get('/change_password', 'Auth\ValidarController@change_password');
+Route::post('/change_password', 'Auth\ValidarController@update_password');
 
 Route::get('/error/{code}','ErrorController@index');
 
-Route::group(['middleware' => ['auth', 'VerifyifActive']],function(){
+Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],function(){
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/mora','MoraController@index')->name('mora');
 	Route::get('/baloto', 'MoraController@baloto')->name('baloto');

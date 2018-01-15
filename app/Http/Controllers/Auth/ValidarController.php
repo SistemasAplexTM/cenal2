@@ -54,6 +54,16 @@ class ValidarController extends Controller
     }
 
     public function register2(Request $request){
+        $this->validate($request, [
+            'email' => 'required|string|email|max:191|unique:users',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/validar');
+                        // ->withErrors($validator)
+                        // ->withInput();
+        }
+
         DB::table('estudiante')
             ->where('id', $request->id)
             ->update([
@@ -94,5 +104,29 @@ class ValidarController extends Controller
         return redirect('/login')
         ->with('notification', 'Has confirmado correctamente tu correo!')
         ->with('email', $user->email); 
+    }
+
+    public function change_password(){
+        
+        return view('auth/change_password');
+    }
+
+    public function update_password(Request $request){
+
+        $this->validate($request, [
+            'password' => 'required|max:191|confirmed',
+        ]);
+        
+        $user = User::where('id', Auth::user()->id)->first();
+
+        if (!$user){
+            return redirect('/');
+        }
+
+        $user->change_password = 1;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        
+        return redirect('/home');
     }
 }

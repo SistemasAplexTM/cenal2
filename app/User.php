@@ -6,6 +6,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\ResetPasswordCENAL;
 
 
 class User extends Authenticatable
@@ -30,4 +31,9 @@ class User extends Authenticatable
     protected $hidden = [
         'remember_token',
     ];
+
+    // public function sendPasswordResetNotification($token)
+    // {
+    //     $this->notify(new ResetPasswordCENAL($token));
+    // }
 }

@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'mora' => \App\Http\Middleware\MoraMiddleware::class,
         'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
         'VerifyifActive' => \App\Http\Middleware\VerifyifActive::class,
+        'ChangePassword' => \App\Http\Middleware\ChangePassword::class,
     ];
 }
 

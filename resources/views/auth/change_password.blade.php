@@ -25,39 +25,46 @@
                 </h5>
             </div>
             <h3>Bienvenido a CENAL</h3>
-            <p><small>CENTRO NACIONAL DE CAPACITACIÓN LABORAL</small></p>
-            @if(Session::has('notification'))
+            <!-- <p><small>CENTRO NACIONAL DE CAPACITACIÓN LABORAL</small></p> -->
+            @if (session('change_password'))
                 <div class="alert alert-warning">
-                    <h4>{{ Session::get('notification') }}</h4>
+                    <h4>{{ session('change_password') }}</h4>
+                    <p>Debes cambiar tu contraseña para poder usar la plataforma.</p>
                 </div>
             @endif
-            @if(Session::has('si_cuenta'))
-                <div class="alert alert-warning">
-                    <h4>{{ Session::get('si_cuenta') }}</h4>
-                </div>
-            @endif
-            <form id="form-login" class="m-t" role="form" method="POST" action="{{ route('login') }}">
+            <form id="form-login" class="m-t" role="form" method="POST" action="{{ url('change_password') }}">
                 {{ csrf_field() }}
-                <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
+                <div class="form-group">
                    <input 
-                    name="email"
-                    type="email"
+                    name="password"
+                    type="password"
                     class="form-control"
-                    placeholder="Correo"
+                    placeholder="Contraseña nueva"
                     required=""
-                    value="{{ session('notification') ? session('email'): old('email') }}" 
+                    value="{{ old('password') }}" 
                     >
-                    {!! $errors->first('email', '<span class="help-block">:message</span>') !!}
                 </div>
                 <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
-                    <input name="password" type="password" class="form-control" placeholder="Contraseña" required="">
+                    <input name="password_confirmation" type="password" class="form-control" placeholder="Confirmar contraseña" required="">
                     {!! $errors->first('password', '<span class="help-block">:message</span>') !!}
                 </div>
-                <button type="submit" class="btn btn-success block full-width m-b">Entrar</button>
-                <a href="{{ route('password.request') }}"><small>Olvidaste tu contraseña?</small></a>
+                <button type="submit" class="btn btn-success block full-width m-b">Cambiar</button>
+                {{-- <a href="#"><small>Olvidaste tu contraseña?</small></a> --}}
                 {{-- <p class="text-muted text-center"><small>Do not have an account?</small></p> --}}
-                <a class="btn btn-sm btn-white btn-block" href="{{ route('register') }}">Crear una cuenta</a>
+                
             </form>
+                @if(Auth::guest())
+                <a class="btn btn-sm btn-white btn-block" href="{{ route('home') }}">
+                    <i class="fa fa-home"></i> Inicio
+                </a>
+                @else
+                <a class="btn btn-sm btn-white btn-block" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    <i class="fa fa-sign-out"></i> Salir
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
+                @endif
         </div>
     </div>
 </div>
