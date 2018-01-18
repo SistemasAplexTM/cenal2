@@ -57,7 +57,7 @@
                       </button> --}}
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <li>
-                            <a href="{{ url('salon') }}"><i class="fa fa-briefcase"></i> <span class="nav-label">Programas</span> </a>
+                            <a href="{{ url('programas') }}"><i class="fa fa-briefcase"></i> <span class="nav-label">Programas</span> </a>
                         </li>
                         <li>
                             <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>

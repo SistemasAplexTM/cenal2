@@ -8,6 +8,7 @@ mix.styles([
 	'resources/assets/css/plugins/datepicker/datepicker3.css',
 	'resources/assets/css/plugins/dataTables/datatables.min.css',
 	'resources/assets/css/plugins/iCheck/custom.css',
+	'resources/assets/css/plugins/select2/select2.min.css',
 	'resources/assets/css/plugins/fullcalendar/fullcalendar.css',
 	'resources/assets/css/plugins/steps/jquery.steps.css',
 	'resources/assets/css/main.css'
@@ -24,6 +25,7 @@ mix.scripts([
 	'resources/assets/js/plugins/datepicker/bootstrap-datepicker.js',
 	'resources/assets/js/plugins/dataTables/datatables.min.js',
 	'resources/assets/js/plugins/iCheck/icheck.min.js',
+	'resources/assets/js/plugins/select2/select2.full.min.js',
 	'resources/assets/js/plugins/fullcalendar/fullcalendar.min.js',
 	'resources/assets/js/plugins/steps/jquery.steps.min.js',
 	'resources/assets/js/plugins/validate/jquery.validate.min.js',

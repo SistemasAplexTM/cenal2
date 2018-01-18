@@ -45,6 +45,11 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('festivos/restaurar/{id}' , 'FestivosController@restaurar');
 	Route::get('festivos/delete/{id}/{logical?}', 'FestivosController@delete');
 	Route::resource('festivos', 'FestivosController');
+
+	Route::get('programas/all', 'ProgramasController@getAll');
+	Route::get('programas/restaurar/{id}' , 'ProgramasController@restaurar');
+	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
+	Route::resource('programas', 'ProgramasController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
