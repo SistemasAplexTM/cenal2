@@ -11,7 +11,7 @@ use App\Modulos;
 class ModuloController extends Controller
 {
     public function index(){
-    	return view('templates\modulo');
+    	return view('templates.modulo');
     }
 
     public function getAll(){

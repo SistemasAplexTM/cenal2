@@ -20,7 +20,7 @@ class ProfesorController extends Controller
     public function index()
     {
         $user = User::all();
-        return view('templates\profesor\profesor', compact('user'));
+        return view('templates.profesor.profesor', compact('user'));
     }
 
     /**

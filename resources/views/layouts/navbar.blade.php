@@ -14,6 +14,93 @@
                 <li>
                     <a href="{{ url('/profesor/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Clases</span> </a>
                 </li>
+                @if(Auth::user()->rol == 2)
+                <li>
+                    <a href="{{ url('/admin/clases') }}"><i class="fa fa-gears"></i> <span class="nav-label">Configuración académica</span> </a>
+                </li>
+                @endif
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-gears"></i> <span class="nav-label">Coordinación académica</span> </a>
+                    {{-- <div class=""> --}}
+                      {{-- <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Dropdown
+                        <span class="caret"></span>
+                      </button> --}}
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li>
+                            <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('profesor') }}"><i class="fa fa-user"></i> <span class="nav-label">Profesor</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('modulo') }}"><i class="fa fa-list"></i> <span class="nav-label">Módulo</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('ubicacion') }}"><i class="fa fa-gears"></i> <span class="nav-label">Ubicación</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('festivos') }}"><i class="fa fa-gears"></i> <span class="nav-label">Festivos</span> </a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                      </ul>
+                    {{-- </div> --}}
+                </li>
+                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-gears"></i> <span class="nav-label">Administración</span> </a>
+                    {{-- <div class=""> --}}
+                      {{-- <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Dropdown
+                        <span class="caret"></span>
+                      </button> --}}
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li>
+                            <a href="{{ url('salon') }}"><i class="fa fa-briefcase"></i> <span class="nav-label">Programas</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('profesor') }}"><i class="fa fa-user"></i> <span class="nav-label">Profesor</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('modulo') }}"><i class="fa fa-list"></i> <span class="nav-label">Módulo</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('ubicacion') }}"><i class="fa fa-map-marker"></i> <span class="nav-label">Ubicación</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('festivos') }}"><i class="fa fa-calendar-check-o"></i> <span class="nav-label">Festivos</span> </a>
+                        </li>
+                      </ul>
+                    {{-- </div> --}}
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-gears"></i> <span class="nav-label">Profesor</span> </a>
+                    {{-- <div class=""> --}}
+                      {{-- <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Dropdown
+                        <span class="caret"></span>
+                      </button> --}}
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li>
+                            <a href="{{ url('salon') }}"><i class="fa fa-list-ul"></i> <span class="nav-label">Asistencia</span> </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('profesor') }}"><i class="fa fa-check-square-o"></i> <span class="nav-label">Calificaciones</span> </a>
+                        </li>
+                      </ul>
+                    {{-- </div> --}}
+                </li>
+                {{-- <li>
+                    <a class="right-sidebar-toggle">
+                        <i class="fa fa-tasks"></i>
+                    </a>
+                </li> --}}
+            </ul>
+            <ul class="nav navbar-top-links navbar-right">
                 @if(Auth::user()->rol == 0)
                 <li>
                     <a href="{{ url('/estudiante/perfil') }}"><i class="fa fa-user-circle"></i> <span class="nav-label">Perfil</span> </a>
@@ -24,33 +111,6 @@
                     <a href="{{ url('/profesor/perfil') }}"><i class="fa fa-user-circle"></i> <span class="nav-label">Perfil</span> </a>
                 </li>
                 @endif
-                @if(Auth::user()->rol == 2)
-                <li>
-                    <a href="{{ url('/admin/clases') }}"><i class="fa fa-gears"></i> <span class="nav-label">Configuración académica</span> </a>
-                </li>
-                @endif
-                <li>
-                    <a href="{{ url('salon') }}"><i class="fa fa-gears"></i> <span class="nav-label">Salones</span> </a>
-                </li>
-                <li>
-                    <a href="{{ url('profesor') }}"><i class="fa fa-gears"></i> <span class="nav-label">Profesor</span> </a>
-                </li>
-                <li>
-                    <a href="{{ url('modulo') }}"><i class="fa fa-gears"></i> <span class="nav-label">Módulo</span> </a>
-                </li>
-                <li>
-                    <a href="{{ url('ubicacion') }}"><i class="fa fa-gears"></i> <span class="nav-label">Ubicación</span> </a>
-                </li>
-                <li>
-                    <a href="{{ url('festivos') }}"><i class="fa fa-gears"></i> <span class="nav-label">Festivos</span> </a>
-                </li>
-                <li>
-                    <a class="right-sidebar-toggle">
-                        <i class="fa fa-tasks"></i>
-                    </a>
-                </li>
-            </ul>
-            <ul class="nav navbar-top-links navbar-right">
                 <li><a href="{{ route('clients') }}"><i class="fa fa-code"></i> Soy desarrollador</a></li>
                 @if(Auth::guest())
                 <li>

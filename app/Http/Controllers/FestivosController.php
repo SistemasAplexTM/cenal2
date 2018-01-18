@@ -11,7 +11,7 @@ use App\Festivos;
 class FestivosController extends Controller
 {
     public function index(){
-        return view('templates\festivos');
+        return view('templates.festivos');
     }
 
     public function getAll(){

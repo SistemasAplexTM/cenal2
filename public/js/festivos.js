@@ -21,6 +21,12 @@ $(document).ready(function () {
             }
         ]
     });
+    $('#dia_festivo').datepicker({
+        language: 'es',
+        todayBtn: "linked",
+        calendarWeeks: true,
+        autoclose: true,
+    });
 });
 
 function edit(id,año, dia_festivo){

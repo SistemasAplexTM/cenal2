@@ -8,6 +8,6 @@ use App\Http\Controllers\Controller;
 class PerfilController extends Controller
 {
     public function index(){
-    	return view('templates/profesor/perfil');
+    	return view('templates.profesor.perfil');
     }
 }

@@ -11,7 +11,7 @@ class MoraController extends Controller
 {
     public function index(){
     	$mora = $this->mora();  
-        return view('templates/estudiante/mora', compact('mora')); 
+        return view('templates.estudiante.mora', compact('mora')); 
     }
     public function mora(){
     	$email = Auth::user()->email;

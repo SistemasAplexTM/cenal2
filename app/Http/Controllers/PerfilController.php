@@ -55,7 +55,7 @@ class PerfilController extends Controller
         $estado_civil = EstadoCivil::select(['id','descripcion'])->where('deleted_at', '=' ,NULL)->get();
         $finanzas = $this->finanzas();
         
-        return view('templates/perfil', compact('data', 'nivel_academico', 'estado_civil', 'finanzas'));   
+        return view('templates.perfil', compact('data', 'nivel_academico', 'estado_civil', 'finanzas'));   
     }
 
     public function update(Request $request, $id){
