@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Programas_unicos;
 
 class programasController extends Controller
 {
@@ -23,16 +24,6 @@ class programasController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -40,7 +31,32 @@ class programasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            // $programas_unicos = new Programas_unicos;
+            // $programas_unicos->nombre = $request->nombre;
+            // $programas_unicos->nombre->save();
+
+            $sedes = $request->sedes;
+            return $sedes;
+            foreach ($sedes as $key => $value) {
+                DB::table('programas')
+                ->insert(
+                    ['sede_id' => $value] 
+                )
+            }
+
+
+            if (Programas_unicos::insert($request->all())) {
+                $answer=array(
+                    "datos" => $request->all(),
+                    "code" => 200
+                );
+            }
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }
+        return $request->all();
     }
 
     /**
