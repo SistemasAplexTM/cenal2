@@ -42,7 +42,7 @@ class programasController extends Controller
                 DB::table('programas')
                 ->insert(
                     ['sede_id' => $value] 
-                )
+                );
             }
 
 
