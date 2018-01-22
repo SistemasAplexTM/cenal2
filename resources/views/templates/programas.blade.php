@@ -38,7 +38,6 @@
                                         </div>
                                         <div class="col-sm-8">
                                         	<select name="sedes[]" id="sedes" v-model="sedes" multiple="" class="form-control chosen-select" @click="deleteError('sedes')">
-                                        		<option value="">Seleccione</option>
                                         		@foreach($sede as $sede)
                                         			<option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                                         		@endforeach
@@ -76,13 +75,11 @@
                 <div class="ibox-content">
                     <!--***** contenido ******-->
                     <div class="table-responsive">
-                        <table id="tbl-salon" class="table table-striped table-hover table-bordered">
+                        <table id="tbl-programas" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    {{-- <th>Identificación</th> --}}
-                                    <th>Nombre</th>
-                                    <th>Código</th>
-                                    <th>Capacidad</th>
+                                    <th>Sede</th>
+                                    <th>Programa</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -91,10 +88,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    {{-- <th>Identificación</th> --}}
-                                    <th>Nombre</th>
-                                    <th>Código</th>
-                                    <th>Capacidad</th>
+                                    <th>Sede</th>
+                                    <th>Programa</th>
                                     <th>Acciones</th>
                                 </tr>
                             </tfoot>

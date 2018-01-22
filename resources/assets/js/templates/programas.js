@@ -5,15 +5,15 @@ $(document).ready(function () {
         serverSide: true,
         ajax: 'programas/all',
         columns: [
+            { data: "programa", name: 'programa'},
             { data: "nombre", name: 'nombre'},
-            { data: "sedes", name: 'sedes'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     var params = [
                         full.id,
-                        "'" + full.nombre + "'",
-                        "'" + full.codigo + "'",
+                        "'" + full.programa + "'",
+                        "'" + full.sede_id + "'",
                         full.capacidad
                     ];
                     var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
@@ -47,6 +47,7 @@ var objVue = new Vue({
         resetForm: function(){
             this.nombre = '';
             this.sedes = [];
+            $("#sedes").select2("val", "");
             this.editar = 0;
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
