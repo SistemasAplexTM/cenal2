@@ -1,33 +1,52 @@
 $(document).ready(function () {
-    $('#sedes').select2();
+    $('#sedes').select2({
+      tags: true
+    });
     $('#tbl-programas').DataTable({
         processing: true,
         serverSide: true,
         ajax: 'programas/all',
         columns: [
+            { data: "nombre", name: 'nombre', visible: false},
             { data: "programa", name: 'programa'},
-            { data: "nombre", name: 'nombre'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     var params = [
-                        full.id,
+                        full.id_prog_unicos,
                         "'" + full.programa + "'",
                         "'" + full.sede_id + "'",
                         full.capacidad
                     ];
-                    var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
-                    return btn_edit + btn_delete;
+                    var btn_delete = " <a onclick=\"eliminar(" + full.id_prog_unicos + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
+                    // var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
+                    // return btn_edit + btn_delete;
+                    return btn_delete;
                 }
             }
-        ]
+        ],
+        "drawCallback": function (settings) {
+            var api = this.api();
+            var rows = api.rows({page: 'current'}).nodes();
+            var last = null;
+
+            api.column(0, {page: 'current'}).data().each(function (group, i) {
+                if (last !== group) {
+                    $(rows).eq(i).before(
+                            '<tr class="group success"><td colspan="3">' + group + '</td></tr>'
+                            );
+
+                    last = group;
+                }
+            });
+        },
     });
 });
 
 function edit(id,nombre, sedes){
+    objVue.setDataSelect2(id);
     var data ={
-        id:id,
+        id: id,
         nombre: nombre,
         sedes: sedes
     };
@@ -47,7 +66,7 @@ var objVue = new Vue({
         resetForm: function(){
             this.nombre = '';
             this.sedes = [];
-            $("#sedes").select2("val", "");
+            $('#sedes').val(null).trigger('change');
             this.editar = 0;
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
@@ -90,11 +109,38 @@ var objVue = new Vue({
         },
         delete: function(data){
             if(data.logical === true){
-                axios.get('programas/delete/' + data.id + '/' + data.logical).then(response => {
-                    recargarTabla('tbl-programas');
-                    toastr.success("<div><p>Registro eliminado exitosamente.</p><button type='button' onclick='deshacerEliminar(" + data.id + ")' id='okBtn' class='btn btn-xs btn-danger pull-right'><i class='fa fa-reply'></i> Restaurar</button></div>");
-                    toastr.options.closeButton = true;
-                });
+                // swal({
+                //   title: 'Advertencia!',
+                //   text: 'Al ser programas únicos, se eliminará de todas las sedes a la que pertenece.',
+                //   type: 'error',
+                //   confirmButtonText: 'Eliminar',
+                //   confirmButtonColor: '#c94242',
+                //   showCancelButton: true
+                // },
+                // function(isConfirm){
+                //     if (isConfirm) {
+                //        console.log('eliminado');
+                //       } else {
+                //        console.log('No eliminado');
+                //       }
+                // });
+                swal({
+                    title: 'Advertencia!',
+                    text: 'Al ser programas únicos, se eliminará de todas las sedes a las que pertenece.',
+                    confirmButtonText: 'Eliminar',
+                    confirmButtonColor: '#c94242',
+                    showCancelButton: true
+                }).then(result => {
+                  if (result.value) {
+                    axios.get('programas/delete/' + data.id + '/' + data.logical).then(response => {
+                        recargarTabla('tbl-programas');
+                        toastr.success('Registro eliminado correctamente.');
+                    });
+                  } else {
+                    
+                  }
+                })
+                
             }else{
                 axios.delete('programas/' + data.id).then(response => {
                     recargarTabla('tbl-programas');
@@ -146,6 +192,16 @@ var objVue = new Vue({
         cancel: function(){
             this.resetForm();
         },
+        setDataSelect2: function(id_programa){
+            var url = 'programas/getDataSedesByPrograma/' + id_programa;
+            axios.get(url).then(response => {
+                // $('#sedes').children().reove();
+                $(response.data).each(function(index,value){
+                    $("#sedes option[value="+ value.sede_id +"]").attr("selected", true);
+                });
+                $("#sedes").trigger("change");
+            });
+        }
     }
     
 });

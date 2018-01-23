@@ -37,7 +37,7 @@
                                             <label for="" class="control-label gcore-label-top">Sedes:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                        	<select name="sedes[]" id="sedes" v-model="sedes" multiple="" class="form-control chosen-select" @click="deleteError('sedes')">
+                                        	<select name="sedes[]" id="sedes" data-placeholder="Seleccione..." multiple="multiple" class="form-control chosen-select" @click="deleteError('sedes')">
                                         		@foreach($sede as $sede)
                                         			<option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                                         		@endforeach

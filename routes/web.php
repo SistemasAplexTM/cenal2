@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('festivos/delete/{id}/{logical?}', 'FestivosController@delete');
 	Route::resource('festivos', 'FestivosController');
 
+	Route::get('programas/getDataSedesByPrograma/{id_programa}', 'ProgramasController@getDataSedesByPrograma');
 	Route::get('programas/all', 'ProgramasController@getAll');
 	Route::get('programas/restaurar/{id}' , 'ProgramasController@restaurar');
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');

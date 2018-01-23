@@ -12,6 +12,10 @@ window.Vue = require('vue');
 window.swal = require('sweetalert2');
 
 window.toastr = require('toastr');
+// window.SweetModal = require('sweet-modal');
+
+// import SweetModal from 'sweet-modal-vue/plugin.js'
+// Vue.use(SweetModal)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
