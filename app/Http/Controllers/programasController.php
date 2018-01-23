@@ -146,13 +146,11 @@ class programasController extends Controller
         if(isset($logical) and $logical == 'true'){
             $programas = $this->getDataSedesByPrograma($id);
             foreach ($programas as $key => $value) {
-                // echo $value->id_prog_tbl . '<br>';
                 DB::table('programas')->where('id', '=', $value->id_prog_tbl)->delete();
+                DB::table('pivot_programas_unicos_programas')->where('id_programa', '=', $value->id_prog_tbl)->delete();
             }
             $data = Programas_unicos::findOrFail($id);
-            $now = new \DateTime();
-            $data->deleted_at =$now->format('Y-m-d H:i:s');
-            if($data->save()){
+            if($data->delete()){
                     $answer=array(
                         "datos" => 'Eliminación exitosa.',
                         "code" => 200
