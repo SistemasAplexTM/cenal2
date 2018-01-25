@@ -8,6 +8,7 @@ use App\Http\Requests\SalonRequest;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Salones;
+use App\Ubicacion;
 
 class SalonController extends Controller
 {
@@ -18,7 +19,8 @@ class SalonController extends Controller
      */
     public function index()
     {
-        return view('templates.salon');
+        $ubicacion = Ubicacion::where('deleted_at', NULL)->get();
+        return view('templates.salon', compact('ubicacion'));
     }
 
     /**

@@ -21,7 +21,7 @@
                                             <label for="" class="control-label gcore-label-top">Nombre:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input value="" placeholder="" class="form-control" type="text" v-model="nombre" @click="deleteError('nombre')"/>
+                                            <input value="" placeholder="" id="nombre" class="form-control" type="text" v-model="nombre" @click="deleteError('nombre')"/>
                                             <small id="msn1" class="help-block result-nombre" v-show="formErrors.nombre"></small>
                                         </div>
 
@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="editar==0">
                             <div class="col-lg-12">
                                 <div class="col-lg-12">
                                     <div class="form-group" :class="{'has-error': formErrors.sedes}">
@@ -37,25 +37,46 @@
                                             <label for="" class="control-label gcore-label-top">Sedes:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                        	<select name="sedes[]" id="sedes" data-placeholder="Seleccione..." multiple="multiple" class="form-control chosen-select" @click="deleteError('sedes')">
-                                        		@foreach($sede as $sede)
-                                        			<option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                                        		@endforeach
-                                        	</select>
+                                            <select name="sedes[]" id="sedes" data-placeholder="Seleccione..." multiple="multiple" class="form-control chosen-select" @click="deleteError('sedes')">
+                                                @foreach($sede as $sede)
+                                                    <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                                @endforeach
+                                            </select>
                                             <small id="msn1" class="help-block result-sedes" v-show="formErrors.sedes"></small>
                                         </div>
-
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" v-if="editar==2">
+                            <div class="col-lg-12">
+                                <div class="col-lg-12">
+                                    <div class="form-group" :class="{'has-error': formErrors.modulos}">
+                                        <div class="col-sm-4">
+                                            <label for="" class="control-label gcore-label-top">Módulos:</label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <select name="modulos[]" id="modulos" data-placeholder="Seleccione..." multiple="multiple" class="form-control chosen-select" @click="deleteError('modulos')">
+                                                @foreach($modulo as $modulo)
+                                                    <option value="{{ $modulo->id }}">{{ $modulo->nombre }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small id="msn1" class="help-block result-modulos" v-show="formErrors.modulos"></small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="form-group">
-                                    <div class="col-sm-12 col-sm-offset-0 guardar">
-                                        <button id="guardar" class="ladda-button btn btn-primary hvr-float-shadow" data-style="expand-right" @click.prevent="create()" v-if="editar==0"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
-                                        <button type="button" id="editar" class="ladda-button btn btn-info hvr-float-shadow" data-style="expand-right" @click.prevent="update()" v-if="editar==1"><i class="fa fa-edit" aria-hidden="true"></i> Editar</button>
-                                        <a type="button" id="cancelar" class="btn btn-white hvr-float-shadow" @click.prevent="cancel()"  v-if="editar==1"><i class="fa fa-times fa-fw"></i> Cancelar</a>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <div class="col-sm-12 col-sm-offset-0 guardar">
+                                            <button id="guardar" class="ladda-button btn btn-primary hvr-float-shadow" data-style="expand-right" @click.prevent="create()" v-if="editar==0"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+                                            <button type="button" id="editar" class="ladda-button btn btn-info hvr-float-shadow" data-style="expand-right" @click.prevent="update()" v-if="editar==1"><i class="fa fa-edit" aria-hidden="true"></i> Editar</button>
+                                            <button type="button" id="editar" class="ladda-button btn btn-primary hvr-float-shadow" data-style="expand-right" @click.prevent="store_module()" v-if="editar==2"><i class="fa fa-plus" aria-hidden="true"></i> Agregar</button>
+                                            <a type="button" id="cancelar" class="btn btn-white hvr-float-shadow" @click.prevent="cancel()"  v-if="editar==1||editar==2"><i class="fa fa-times fa-fw"></i> Cancelar</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

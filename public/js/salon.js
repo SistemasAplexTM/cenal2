@@ -42,6 +42,7 @@ var objVue = new Vue({
         nombre:'',
         codigo:'',
         capacidad:'',
+        ubicacion: [],
         editar: 0,
         formErrors: {}
     },

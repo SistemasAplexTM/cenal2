@@ -2424,6 +2424,7 @@ function WinMove() {
     weekStart: 0
 };
 
+$('.chosen-select').select2();
  /*-- Función para recargar datatables --*/
 function recargarTabla(tabla){
     $('#' + tabla).dataTable()._fnAjaxUpdate();

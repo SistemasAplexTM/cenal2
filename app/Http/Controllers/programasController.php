@@ -21,7 +21,12 @@ class programasController extends Controller
             'a.id',
             'a.nombre'
         )->get();
-        return view('templates.programas', compact('sede'));
+        $modulo = DB::table('modulos AS a')
+        ->select(
+            'a.id',
+            'a.nombre'
+        )->get();
+        return view('templates.programas', compact('sede', 'modulo'));
     }
 
     /**
@@ -65,29 +70,126 @@ class programasController extends Controller
             return $e;
         }
     }
-
     /**
-     * Update the specified resource in storage.
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SalonRequest $request, $id)
+    public function addModules(Request $request, $id)
     {
-        // try {
-        //     $data = Salones::findOrFail($id);
-        //     $data->update($request->all());
-        //     $answer=array(
-        //         "datos" => $request->all(),
-        //         "code" => 200
-        //     );
-        //     return $answer;
+        try{
+            $modulos_programas = $this->getDataModulosByPrograma($id);
+            $resultado = array();
+            foreach ($modulos_programas as $key => $value) {
+                $resultado[$key] = $value->id_modulo;
+            }
+            $modulos_request = $request->modulos;
+            if (count($resultado) > 0) {
+                if (count($resultado) > count($modulos_request)) {
+                    $result = array_diff($resultado, $modulos_request);
+                    $result2 = array_diff($modulos_request, $resultado);
+                    foreach ($result as $valueDelete) {
+                        DB::table('pivot_programas_unicos_modulos')->where('id_modulo', '=', $valueDelete)->delete();
+                    }
+                    foreach ($result2 as $key => $valueInsert) {
+                        DB::table('pivot_programas_unicos_modulos')->insertGetId(
+                            ['id_prog_unicos' => $id, 'id_modulo' => $valueInsert]
+                        );
+                    }
+                    // echo '<pre>';
+                    // echo 'La bd es mayor que el request';
+                    // echo 'BD = ' . count($resultado) . ' Request = ' . count($modulos_request);
+                    // echo 'Request';
+                    // print_r($modulos_request);
+                    // echo '<br>';
+                    // echo 'BD';
+                    // print_r($resultado);
+                    // echo 'Diferencia';
+                    // print_r($result);
+                    // echo 'Result 2';
+                    // print_r($result2);
+                    // echo 'Eliminar';
+                }else{
+                    $result = array_diff($modulos_request, $resultado);
+                    $result2 = array_diff($resultado, $modulos_request);
+                    foreach ($result2 as $valueDelete) {
+                        DB::table('pivot_programas_unicos_modulos')->where('id_modulo', '=', $valueDelete)->delete();
+                    }
+                    foreach ($result as $key => $valueInsert) {
+                        DB::table('pivot_programas_unicos_modulos')->insertGetId(
+                            ['id_prog_unicos' => $id, 'id_modulo' => $valueInsert]
+                        );
+                    }
+                    // echo '<pre>';
+                    // echo 'El request es mayor que la bd';
+                    // echo 'BD = ' . count($resultado) . ' Request = ' . count($modulos_request);
+                    // echo 'Request';
+                    // print_r($modulos_request);
+                    // echo '<br>';
+                    // echo 'BD';
+                    // print_r($resultado);
+                    // echo 'Diferencia';
+                    // print_r($result);
+                    // echo 'Result 2';
+                    // print_r($result2);
+                    // echo '</pre>';
+                    // echo 'Agregar';
+                }
+                // exit();
+                // return $result;
+            }
             
-        // } catch (Exception $e) {
-        //     return $e;
-        // }
+             $validatedData = $request->validate([
+                'nombre' => 'required'
+            ]);
+            $programas_unicos = Programas_unicos::findOrFail($id);
+            $programas_unicos->nombre = $request->nombre;
+            $programas_unicos->save();
+            // $idPrograma = $programas_unicos->id;
+            // $modulos = $request->modulos;
+            
+            // if (count($modulos) > 0) {
+            //     foreach ($modulos as $key => $value) {
+            //         DB::table('pivot_programas_unicos_modulos')
+            //         ->insertGetId(
+            //             ['id_prog_unicos' => $idPrograma, 'id_modulo' => $value]
+            //         );
+            //     }
+            // }
+            $answer=array(
+                "datos" => $request->all(),
+                "code" => 200
+            );
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }
     }
+
+    // /**
+    //  * Update the specified resource in storage.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function updateModules(Request $request, $id)
+    // {
+    //     try {
+            
+    //         $data = Programas_unicos::findOrFail($id);
+    //         $data->update($request->all());
+    //         $answer=array(
+    //             "datos" => $request->all(),
+    //             "code" => 200
+    //         );
+    //         return $answer;
+            
+    //     } catch (Exception $e) {
+    //         return $e;
+    //     }
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -102,26 +204,31 @@ class programasController extends Controller
     }
 
     public function getAll(){
-        // $data = DB::table('programas As a')
-        // ->join('sede AS b', 'a.sede_id', 'b.id')
-        // ->select(
-        //     'a.id',
-        //     'a.programa',
-        //     'a.sede_id',
-        //     'b.nombre'
-        // )
         $data = DB::table('pivot_programas_unicos_programas As a')
         ->join('programas AS b', 'a.id_programa', 'b.id')
+        ->join('programas_unicos AS d', 'a.id_prog_unicos', 'd.id')
         ->join('sede AS c', 'b.sede_id', 'c.id')
         ->select(
             'a.id_prog_unicos',
-            'b.programa',
+            'd.nombre AS programa',
             'b.sede_id',
             'c.nombre'
         )
         ->where([['a.deleted_at', '=', NULL],['b.deleted_at', '=', NULL]])
         ->get();
         return Datatables::of($data)->make(true);
+    }
+
+    public function getDataModulosByPrograma($id_programa){
+        $data = DB::table('pivot_programas_unicos_modulos As a')
+        ->select(
+            'a.id_modulo'
+        )
+        ->where([['a.deleted_at', '=', NULL],
+                ['a.id_prog_unicos', '=', $id_programa]
+                ])
+        ->get();
+        return $data;
     }
 
     public function getDataSedesByPrograma($id_programa){

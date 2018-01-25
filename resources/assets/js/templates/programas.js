@@ -1,7 +1,4 @@
 $(document).ready(function () {
-    $('#sedes').select2({
-      tags: true
-    });
     $('#tbl-programas').DataTable({
         processing: true,
         serverSide: true,
@@ -19,9 +16,8 @@ $(document).ready(function () {
                         full.capacidad
                     ];
                     var btn_delete = " <a onclick=\"eliminar(" + full.id_prog_unicos + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    // var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
-                    // return btn_edit + btn_delete;
-                    return btn_delete;
+                    var btn_add_module =  "<a onclick=\"add_module(" + params + ")\" class='btn btn-outline btn-primary btn-xs' data-toggle='tooltip' data-placement='top' title='Agregar módulo'><i class='fa fa-plus'></i></a>";
+                    return btn_add_module + btn_delete;
                 }
             }
         ],
@@ -44,7 +40,8 @@ $(document).ready(function () {
 });
 
 function edit(id,nombre, sedes){
-    objVue.setDataSelect2(id);
+    $('.chosen-select').select2('destroy');
+    $('.chosen-select').select2();
     var data ={
         id: id,
         nombre: nombre,
@@ -53,12 +50,25 @@ function edit(id,nombre, sedes){
     objVue.edit(data);
 }
 
+function add_module(id,nombre, sedes){
+    $('.chosen-select').select2('destroy');
+    $('.chosen-select').select2();
+    objVue.setDataSelect2(id);
+    var data ={
+        id: id,
+        nombre: nombre,
+        sedes: sedes
+    };
+    objVue.add_module(data);
+}
+
 
 var objVue = new Vue({
     el: '#crud_programas',
     data:{
         nombre:'',
         sedes: [],
+        modulos: [],
         editar: 0,
         formErrors: {}
     },
@@ -66,8 +76,14 @@ var objVue = new Vue({
         resetForm: function(){
             this.nombre = '';
             this.sedes = [];
-            $('#sedes').val(null).trigger('change');
+            this.modulos = [];
             this.editar = 0;
+            $(".chosen-select").select2("val", "");
+            $('.chosen-select').select2('destroy');
+            $('.chosen-select').select2();
+            $('.chosen-select').val('').change();
+            // $(".chosen-select").trigger("change");
+            // $("#nombre").removeAttr("readonly");
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -107,23 +123,37 @@ var objVue = new Vue({
                 toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
         },
+        store_module: function(){
+            var url = 'programas/add_modules/' +  this.id;
+            let me = this;
+            axios.post(url,{
+                'nombre': me.nombre,
+                'modulos': $('#modulos').val()
+            })
+            .then(function (response){
+                if (response.data['code'] == 200) {
+                    toastr.success('Registrado con éxito');
+                    toastr.options.closeButton = true;
+                } else {
+                    toastr.warning(response.data['error']);
+                    toastr.options.closeButton = true;
+                }
+                me.resetForm();
+                recargarTabla('tbl-programas');
+                location.reload(true);
+            })
+            .catch(function(error){
+                if (error.response.status === 422) {
+                    me.formErrors = error.response.data.errors;
+                }
+                $.each(me.formErrors, function (key, value) {
+                    $('.result-' + key).html(value);
+                });
+                toastr.error("Error al registrar.", {timeOut: 50000});
+            });
+        },
         delete: function(data){
             if(data.logical === true){
-                // swal({
-                //   title: 'Advertencia!',
-                //   text: 'Al ser programas únicos, se eliminará de todas las sedes a la que pertenece.',
-                //   type: 'error',
-                //   confirmButtonText: 'Eliminar',
-                //   confirmButtonColor: '#c94242',
-                //   showCancelButton: true
-                // },
-                // function(isConfirm){
-                //     if (isConfirm) {
-                //        console.log('eliminado');
-                //       } else {
-                //        console.log('No eliminado');
-                //       }
-                // });
                 swal({
                     title: 'Advertencia!',
                     text: 'Al ser programas únicos, se eliminará de todas las sedes a las que pertenece.',
@@ -136,8 +166,6 @@ var objVue = new Vue({
                         recargarTabla('tbl-programas');
                         toastr.success('Registro eliminado correctamente.');
                     });
-                  } else {
-                    
                   }
                 })
                 
@@ -157,11 +185,11 @@ var objVue = new Vue({
             });
         },
         update: function update() {
-            var urlUpdate = 'programas/' + this.id;
+            var urlUpdate = 'programas/update_modules/' + this.id;
             var me = this;
             axios.put(urlUpdate, {
                 'nombre': me.nombre,
-                'sedes': me.sedes
+                'modulos': me.modulos
             }).then(function (response) {
                 if (response.data['code'] == 200) {
                     toastr.success('Registro actualizado correctamente');
@@ -189,17 +217,23 @@ var objVue = new Vue({
             this.editar = 1;
             this.formErrors = {};
         },
+        add_module: function(data){
+            this.id = data['id'];
+            this.nombre = data['nombre'];
+            this.editar = 2;
+            $(".chosen-select").trigger("change");
+            this.formErrors = {};
+        },
         cancel: function(){
             this.resetForm();
         },
         setDataSelect2: function(id_programa){
-            var url = 'programas/getDataSedesByPrograma/' + id_programa;
+            var url = 'programas/getDataModulosByPrograma/' + id_programa;
             axios.get(url).then(response => {
-                // $('#sedes').children().reove();
                 $(response.data).each(function(index,value){
-                    $("#sedes option[value="+ value.sede_id +"]").attr("selected", true);
+                    $("#modulos option[value="+ value.id_modulo +"]").attr("selected", true);
                 });
-                $("#sedes").trigger("change");
+                $(".chosen-select").trigger("change");
             });
         }
     }

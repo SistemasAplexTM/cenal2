@@ -68,7 +68,7 @@ var objVue = new Vue({
                     toastr.warning(response.data['error']);
                     toastr.options.closeButton = true;
                 }
-                mer.resetForm();
+                me.resetForm();
                 recargarTabla('tbl-ubicacion');
             })
             .catch(function(error){
@@ -86,14 +86,15 @@ var objVue = new Vue({
                 axios.get('ubicacion/delete/' + data.id + '/' + data.logical).then(response => {
                     toastr.success("<div><p>Registro eliminado exitosamente.</p><button type='button' onclick='deshacerEliminar(" + data.id + ")' id='okBtn' class='btn btn-xs btn-danger pull-right'><i class='fa fa-reply'></i> Restaurar</button></div>");
                     toastr.options.closeButton = true;
+                    recargarTabla('tbl-ubicacion');
                 });
             }else{
                 axios.delete('ubicacion/' + data.id).then(response => {
                     toastr.success('Registro eliminado correctamente.');
                     toastr.options.closeButton = true;
+                    recargarTabla('tbl-ubicacion');
                 });
             }
-            recargarTabla('tbl-ubicacion');
         },
         deshacerDelete: function(data){
             var urlRestaurar = 'ubicacion/restaurar/' + data.id;
