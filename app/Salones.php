@@ -9,6 +9,10 @@ class Salones extends Model
     protected $fillable = [
     	'nombre',
     	'codigo',
-    	'capacidad'
+    	'capacidad',
+    	'ubicacion'
     ];
+    protected $casts = [
+		'ubicacion' => 'array'
+  	];
 }

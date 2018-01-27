@@ -31,11 +31,13 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('profesor/delete/{id}/{logical?}', 'Profesor\ProfesorController@delete');
 	Route::resource('profesor', 'Profesor\ProfesorController');
 
+	Route::get('salon/getUbicacion/{id}', 'SalonController@getUbicacion');
 	Route::get('salon/all', 'SalonController@getAll');
 	Route::get('salon/restaurar/{id}' , 'SalonController@restaurar');
 	Route::get('salon/delete/{id}/{logical?}', 'SalonController@delete');
 	Route::resource('salon', 'SalonController');
 
+	Route::get('ubicacion/getForSelect2', 'UbicacionController@getForSelect2');
 	Route::get('ubicacion/all', 'UbicacionController@getAll');
 	Route::get('ubicacion/restaurar/{id}' , 'UbicacionController@restaurar');
 	Route::get('ubicacion/delete/{id}/{logical?}', 'UbicacionController@delete');
@@ -53,6 +55,11 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/restaurar/{id}' , 'ProgramasController@restaurar');
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
+
+	Route::get('clases/all', 'ClasesController@getAll');
+	Route::get('clases/restaurar/{id}' , 'ClasesController@restaurar');
+	Route::get('clases/delete/{id}/{logical?}', 'ClasesController@delete');
+	Route::resource('clases', 'ClasesController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){

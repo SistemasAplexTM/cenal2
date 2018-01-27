@@ -32,7 +32,11 @@ class SalonController extends Controller
     public function store(SalonRequest $request)
     {
         try{
-            if (Salones::insert($request->all())) {
+            $salon = new Salones;
+            $salon->fill($request->all());
+            $save_ubicacion = json_encode( $request->ubicacion  );
+            $salon->ubicacion = $save_ubicacion;
+            if ($salon->save()) {
                 $answer=array(
                     "datos" => $request->all(),
                     "code" => 200
@@ -86,6 +90,7 @@ class SalonController extends Controller
             'a.nombre',
             'a.codigo',
             'a.capacidad',
+            'a.ubicacion',
             'a.created_at',
             'a.updated_at'
         )
@@ -124,5 +129,10 @@ class SalonController extends Controller
         $data = Salones::findOrFail($id);
         $data->deleted_at = NULL;
         $data->save();
+    }
+
+    public function getUbicacion($id){
+        $data = Salones::findOrFail($id);
+        return json_decode($data->ubicacion);
     }
 }

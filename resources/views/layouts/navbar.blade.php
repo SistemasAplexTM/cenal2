@@ -11,8 +11,20 @@
                 <li class="">
                     <a href="{{ route('home') }}"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
                 </li>
-                <li>
-                    <a href="{{ url('/profesor/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Clases</span> </a>
+                {{-- <li>
+                    <a href="{{ url('/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Clases</span> </a>
+                </li> --}}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-calendar"></i> <span class="nav-label">Clases</span> </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <a href="{{ url('/clases') }}"><i class="fa fa-calendar-plus-o"></i> <span class="nav-label">Crear clase</span> </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('profesor') }}"><i class="fa fa-list"></i> <span class="nav-label">Ver clases</span> </a>
+                            </li>
+                        </ul>
+                    {{-- </div> --}}
                 </li>
                 @if(Auth::user()->rol == 2)
                 <li>
@@ -48,7 +60,7 @@
                       </ul>
                     {{-- </div> --}}
                 </li>
-                 <li class="dropdown">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-gears"></i> <span class="nav-label">Administración</span> </a>
                     {{-- <div class=""> --}}
                       {{-- <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

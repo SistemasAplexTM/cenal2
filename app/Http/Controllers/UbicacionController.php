@@ -119,4 +119,16 @@ class UbicacionController extends Controller
         $data->deleted_at = NULL;
         $data->save();
     }
+
+    public function getForSelect2(Request  $request){
+        $term = $request->term ?: '';
+        $tags = Ubicacion::where([['nombre', 'like', $term.'%'],['deleted_at', NULL]])->pluck('nombre', 'id');
+        $valid_tags = [];
+        foreach ($tags as $id => $tag) {
+            $valid_tags[] = ['id' => $id, 'text' => $tag];
+        }
+        return \Response::json($valid_tags);
+        
+    }
+
 }

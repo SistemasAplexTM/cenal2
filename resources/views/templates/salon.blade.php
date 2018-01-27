@@ -61,18 +61,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" v-if="editar==0">
+                        <div class="row">
                             <div class="col-lg-12">
                                 <div class="col-lg-12">
                                     <div class="form-group" :class="{'has-error': formErrors.ubicacion}">
                                         <div class="col-sm-4">
-                                            <label for="" class="control-label gcore-label-top">Ubicación:</label>
+                                            <label for="ubicacion" class="control-label gcore-label-top">Ubicación:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <select name="ubicacion[]" id="ubicacion" data-placeholder="Seleccione..." multiple="multiple" class="form-control chosen-select" @click="deleteError('ubicacion')">
-                                                @foreach($ubicacion as $ubicacion)
-                                                    <option value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
-                                                @endforeach
+                                            <select name="ubicacion[]" id="ubicacion" data-placeholder="Seleccione..." multiple="multiple" class="form-control" @click="deleteError('ubicacion')">
+                                                
                                             </select>
                                             <small id="msn1" class="help-block result-ubicacion" v-show="formErrors.ubicacion"></small>
                                         </div>

@@ -14,7 +14,8 @@ $(document).ready(function () {
                         full.id,
                         "'" + full.nombre + "'",
                         "'" + full.codigo + "'",
-                        full.capacidad
+                        full.capacidad,
+                        "'" + full.ubicacion + "'",
                     ];
                     var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
                     var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
@@ -23,14 +24,39 @@ $(document).ready(function () {
             }
         ]
     });
+
+    initSelect2();
 });
 
-function edit(id,nombre, codigo, capacidad){
+function initSelect2(){
+    $('#ubicacion').select2({
+        tags: true,
+        tokenSeparators: [','],
+        ajax: {
+            url: 'ubicacion/getForSelect2',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    term: params.term
+                }
+            },
+            processResults: function (data, page) {
+                return {
+                    results: data
+                };
+            }
+        }
+    });
+}
+
+function edit(id,nombre, codigo, capacidad, ubicacion){
     var data ={
         id:id,
         nombre: nombre,
         codigo: codigo,
-        capacidad: capacidad
+        capacidad: capacidad,
+        ubicacion: ubicacion
     };
     objVue.edit(data);
 }
@@ -52,6 +78,8 @@ var objVue = new Vue({
             this.codigo = '';
             this.capacidad = '';
             this.editar = 0;
+            $('#ubicacion').val(null).trigger('change');
+            initSelect2();
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -69,7 +97,8 @@ var objVue = new Vue({
             axios.post('salon',{
                 'nombre': me.nombre,
                 'codigo': me.codigo,
-                'capacidad': me.capacidad
+                'capacidad': me.capacidad,
+                'ubicacion': $("#ubicacion").val()
             })
             .then(function (response){
                 if (response.data['code'] == 200) {
@@ -120,7 +149,8 @@ var objVue = new Vue({
             axios.put(urlUpdate, {
                 'nombre': me.nombre,
                 'codigo': me.codigo,
-                'capacidad': me.capacidad
+                'capacidad': me.capacidad,
+                'ubicacion': $("#ubicacion").val()
             }).then(function (response) {
                 if (response.data['code'] == 200) {
                     toastr.success('Registro actualizado correctamente');
@@ -146,6 +176,23 @@ var objVue = new Vue({
             this.nombre = data['nombre'];
             this.codigo = data['codigo'];
             this.capacidad = data['capacidad'];
+            
+
+            $('#ubicacion').children().remove();
+            axios.get('ubicacion/getForSelect2').then(response => {
+                $(response.data).each(function (index, value){
+                    $("#ubicacion").append('<option value="'+value.id+'">'+value.text+'<option>');
+                });
+            });
+            axios.get('salon/getUbicacion/'+data['id']).then(response => {
+                $(response.data).each(function (index, value){
+                    $('#ubicacion').val(value);
+                   $("#ubicacion option[value=" + value + "]").attr("selected", true);
+                });
+            });
+            $('#ubicacion').trigger('chosen:updated');
+            $('#ubicacion').trigger('change');
+
             this.editar = 1;
             this.formErrors = {};
         },
