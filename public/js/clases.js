@@ -22,4 +22,40 @@ $(document).ready(function () {
     //         }
     //     ]
     // });
+
+});
+
+var objVue = new Vue({
+    el: '#clases',
+    data:{
+        salon:'',
+        capacidad:'',
+        ubicacion:'',
+        duracion:'',
+        jornada:'',
+        formErrors: {}
+    },
+    methods:{
+        resetForm: function(){
+            this.capacidad = '';
+        },
+        /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
+        deleteError: function(element){
+            let me = this;
+            $.each(me.formErrors, function (key, value) {
+                if(key !== element){
+                   me.formErrors[key] = value; 
+               }else{
+                me.formErrors[key] = false; 
+               }
+            });
+        },
+        setCapacidad: function(){
+            this.capacidad = $("#salon").find(':selected').data("capacidad")
+        },
+        setDuracion: function(){
+            this.duracion = $("#modulo").find(':selected').data("capacidad")
+        }
+    }
+    
 });

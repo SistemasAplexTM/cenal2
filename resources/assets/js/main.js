@@ -1,4 +1,10 @@
- $.extend( true, $.fn.dataTable.defaults, {
+$(document).ready(function () {
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    });
+});
+$.extend( true, $.fn.dataTable.defaults, {
 "language": {
     "paginate": {
         "previous": "Anterior",

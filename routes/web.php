@@ -56,10 +56,10 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
 
-	Route::get('clases/all', 'ClasesController@getAll');
-	Route::get('clases/restaurar/{id}' , 'ClasesController@restaurar');
-	Route::get('clases/delete/{id}/{logical?}', 'ClasesController@delete');
-	Route::resource('clases', 'ClasesController');
+	Route::get('clases/all', 'Clases\ClasesController@getAll');
+	Route::get('clases/restaurar/{id}' , 'Clases\ClasesController@restaurar');
+	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
+	Route::resource('clases', 'Clases\ClasesController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
