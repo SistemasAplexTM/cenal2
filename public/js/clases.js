@@ -1,4 +1,11 @@
 $(document).ready(function () {
+    $('#data_1 .input-group.date').datepicker({
+        language: 'es',
+        todayBtn: "linked",
+        calendarWeeks: true,
+        autoclose: true,
+    });
+
     $('#tbl-clases').DataTable();
     // $('#tbl-festivos').DataTable({
     //     processing: true,

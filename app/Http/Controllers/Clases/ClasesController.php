@@ -63,21 +63,22 @@ class ClasesController extends Controller
     public function store(Request $request)
     {
         // Guardar en tabla pivot modulo_jornada
-        DB::table('modulos_jornada')
-        ->insert(
-            ['modulo_id' -> $request->modulo, 'jornada_id' => $request->jornada, 'duracion' => $request->duracion]
-        );
+        // DB::table('modulos_jornada')
+        // ->insert(
+        //     ['modulo_id' -> $request->modulo, 'jornada_id' => $request->jornada, 'duracion' => $request->duracion]
+        // );
         // Guardar en tabla Calendario Modulos
         $clase = new Clases;
-        $clase->modulo = $request->modulo; 
-        $clase->fecha = $request->fecha_inicio; 
-        $clase->inicio = false; 
-        $clase->salon = $request->salon; 
-        $clase->padre = '????'; 
-        $clase->sede_id = $request->sede;
-        $clase->save(); 
+        $clase->modulo_id = $request->modulo_id; 
+        $clase->fecha_inicio = $request->fecha_inicio; 
+        $clase->salon_id = $request->salon_id; 
+        $clase->sede_id = $request->sede_id;
+        $clase->jornada_id = $request->jornada_id;
+        $clase->observacion  = $request->observacion;
+        $clase->estado_id = 1;
+        $clase->save();
 
-        return $request->all();
+        return redirect('clases');
     }
 
     /**
