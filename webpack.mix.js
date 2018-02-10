@@ -27,6 +27,7 @@ mix.scripts([
 	'resources/assets/js/plugins/iCheck/icheck.min.js',
 	'resources/assets/js/plugins/select2/select2.full.min.js',
 	'resources/assets/js/plugins/fullcalendar/fullcalendar.min.js',
+	'resources/assets/js/locale/lang-all.js',
 	'resources/assets/js/plugins/steps/jquery.steps.min.js',
 	'resources/assets/js/plugins/validate/jquery.validate.min.js',
 	/*-- Plantilla --*/

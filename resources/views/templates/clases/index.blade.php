@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Clases')
 @section('content')
-<div class="container" id="">
+<div class="container" id="clases">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
@@ -26,7 +26,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {{-- <tr>
                                     <td class="project-status">
                                         <span class="label label-primary">En curso</span>
                                     </td>
@@ -115,7 +115,7 @@
                                         <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Detalles </a>
                                         <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Editar </a>
                                     </td>
-                                </tr>
+                                </tr> --}}
                             </tbody>
                         </table>
                     </div>

@@ -17,8 +17,10 @@ class CreatePivotProgUnicosModulos extends Migration
             $table->increments('id');
             $table->integer('id_prog_unicos');
             $table->integer('id_modulo')->unsigned();
-            $table->foreign('id_modulo')->references('id')->on('modulos');
             $table->timestamps();
+        });
+        Schema::table('pivot_programas_unicos_modulos', function (Blueprint $table) {
+            $table->foreign('id_modulo')->references('id')->on('modulos');
         });
     }
 

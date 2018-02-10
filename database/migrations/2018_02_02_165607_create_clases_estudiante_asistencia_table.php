@@ -15,7 +15,15 @@ class CreateClasesEstudianteAsistenciaTable extends Migration
     {
         Schema::create('clases_estudiante_asistencia', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('clases_detalle_id')->nullable();
+            $table->integer('estudiante_id');
+            $table->boolean('asistencia')->default(false);
             $table->timestamps();
+        });
+
+        Schema::table('clases_estudiante_asistencia', function (Blueprint $table) {
+            $table->foreign('clases_detalle_id')->references('id')->on('clases_detalle');
+            $table->foreign('estudiante_id')->references('id')->on('estudiante');
         });
     }
 

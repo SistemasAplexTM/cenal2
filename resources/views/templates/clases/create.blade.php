@@ -139,7 +139,95 @@
                         </div>
                         <div class="col-lg-3">
                             <p class="text-center">
-                                <i class="fa fa-calendar big-icon"></i>
+                                {{-- <i class="fa fa-calendar big-icon"></i> --}}
+                                <div class="form-group text-center">
+                                    
+                                    <div class="custom-radios">
+                                    <div>
+                                      <input type="radio" id="color-1" name="color" value="#2f8d99" checked>
+                                      <label for="color-1">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    
+                                    <div>
+                                      <input type="radio" id="color-2" name="color" value="#42a5f5">
+                                      <label for="color-2">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    
+                                    <div>
+                                      <input type="radio" id="color-3" name="color" value="#00c5dc">
+                                      <label for="color-3">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+
+                                    <div>
+                                      <input type="radio" id="color-4" name="color" value="#feb38d">
+                                      <label for="color-4">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input  type="radio" id="color-5" name="color" value="#EE6E73">
+                                      <label for="color-5">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input type="radio" id="color-6" name="color" value="#6B79C4">
+                                      <label for="color-6">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input type="radio" id="color-7" name="color" value="#6B79C4">
+                                      <label for="color-7">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input type="radio" id="color-8" name="color" value="#6B79C4">
+                                      <label for="color-8">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input type="radio" id="color-9" name="color" value="#6B79C4">
+                                      <label for="color-9">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input type="radio" id="color-10" name="color" value="#6B79C4">
+                                      <label for="color-10">
+                                        <span>
+                                          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
+                                        </span>
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
                             </p>
                             <div class="form-group">
                                 <div class="col-sm-12">

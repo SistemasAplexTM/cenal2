@@ -8,3 +8,6 @@
 	</div>
 </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('js/clases_profesor.js') }}"></script>
+@endpush
