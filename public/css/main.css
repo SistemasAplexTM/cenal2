@@ -266,3 +266,84 @@ button.toast-close-button {
   }
 }
 
+.custom-radios div {
+  display: inline-block;
+}
+
+.custom-radios input[type="radio"] {
+  display: none;
+}
+
+.custom-radios input[type="radio"] + label {
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.custom-radios input[type="radio"] + label span {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: -1px 4px 0 0;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  line-height: 35px;
+}
+
+.custom-radios input[type="radio"] + label span img {
+  opacity: 0;
+  -webkit-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+.custom-radios input[type="radio"]#color-1 + label span {
+  background-color: #2f8d99;
+}
+
+.custom-radios input[type="radio"]#color-2 + label span {
+  background-color: #42a5f5;
+}
+
+.custom-radios input[type="radio"]#color-3 + label span {
+  background-color: #00c5dc;
+}
+
+.custom-radios input[type="radio"]#color-4 + label span {
+  background-color: #feb38d;
+}
+
+.custom-radios input[type="radio"]#color-5 + label span {
+  background-color: #6be5ac;
+}
+
+.custom-radios input[type="radio"]#color-6 + label span {
+  background-color: #6B79C4;
+}
+
+.custom-radios input[type="radio"]#color-7 + label span {
+  background-color: #b27f67;
+}
+
+.custom-radios input[type="radio"]#color-8 + label span {
+  background-color: #143651;
+}
+
+.custom-radios input[type="radio"]#color-9 + label span {
+  background-color: #7a396d;
+}
+
+.custom-radios input[type="radio"]#color-10 + label span {
+  background-color: #afae59;
+}
+
+.custom-radios input[type="radio"]:checked + label span img {
+  opacity: 1;
+}
+

@@ -1,1 +1,89 @@
 @import "~toastr/build/toastr";
+
+// Colors
+$color-1: #2f8d99;
+$color-2: #42a5f5;
+$color-3: #00c5dc;
+$color-4: #feb38d;
+$color-5: #6be5ac;
+$color-6: #6B79C4;
+$color-7: #b27f67;
+$color-8: #143651;
+$color-9: #7a396d;
+$color-10: #afae59;
+
+.custom-radios {
+  
+  div {
+    display: inline-block;
+  }
+
+  input[type="radio"] {
+    display: none;
+
+    + label {
+      color: #333;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+
+      span {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: -1px 4px 0 0;
+        vertical-align: middle;
+        cursor: pointer;
+        border-radius: 50%;
+        border: 2px solid #FFFFFF;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+        background-repeat: no-repeat;
+        background-position: center;
+        text-align: center;
+        line-height: 35px;
+    
+        img {
+          opacity: 0;
+          transition: all .3s ease;
+        }
+      }
+    }
+
+    &#color-1 + label span {
+      background-color: $color-1;
+    }
+
+    &#color-2 + label span {
+      background-color: $color-2;
+    }
+
+    &#color-3 + label span {
+      background-color: $color-3;
+    }
+
+    &#color-4 + label span {
+      background-color: $color-4;
+    }
+    &#color-5 + label span {
+      background-color: $color-5;
+    }
+    &#color-6 + label span {
+      background-color: $color-6;
+    }
+    &#color-7 + label span {
+      background-color: $color-7;
+    }
+    &#color-8 + label span {
+      background-color: $color-8;
+    }
+    &#color-9 + label span {
+      background-color: $color-9;
+    }
+    &#color-10 + label span {
+      background-color: $color-10;
+    }
+
+    &:checked + label span img {
+      opacity: 1;
+    }
+  }
+}

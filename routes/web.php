@@ -11,6 +11,7 @@ Route::post('/change_password', 'Auth\ValidarController@update_password');
 
 Route::get('/error/{code}','ErrorController@index');
 
+
 Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],function(){
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/mora','MoraController@index')->name('mora');
@@ -25,11 +26,16 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('modulo/restaurar/{id}' , 'ModuloController@restaurar');
 	Route::get('modulo/delete/{id}/{logical?}', 'ModuloController@delete');
 
+	
+	// Route::get('profesor/clases/all', 'Profesor\ClasesController@getAll');
+	Route::resource('profesor/clases', 'Profesor\ClasesController');
+
 	Route::get('profesor/all', 'Profesor\ProfesorController@getAll');
 	Route::get('profesor/getDataUser/{user}', 'Profesor\ProfesorController@getDataUser');
 	Route::get('profesor/restaurar/{id}' , 'Profesor\ProfesorController@restaurar');
 	Route::get('profesor/delete/{id}/{logical?}', 'Profesor\ProfesorController@delete');
 	Route::resource('profesor', 'Profesor\ProfesorController');
+
 
 	Route::get('salon/getUbicacion/{id}', 'SalonController@getUbicacion');
 	Route::get('salon/all', 'SalonController@getAll');
@@ -56,10 +62,14 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
 
-	Route::get('clases/all', 'ClasesController@getAll');
-	Route::get('clases/restaurar/{id}' , 'ClasesController@restaurar');
-	Route::get('clases/delete/{id}/{logical?}', 'ClasesController@delete');
-	Route::resource('clases', 'ClasesController');
+	Route::get('clases/buscar_estudiante/{dato}', 'Clases\ClasesController@buscar_estudiante');
+	Route::get('clases/getFin/{id_clase}', 'Clases\ClasesController@getFin');
+	Route::get('clases/day', 'Clases\ClasesController@programarClases');
+	// Route::get('clases/{clase_id}', 'Clases\ClasesController@getAll');
+	Route::get('clases/all', 'Clases\ClasesController@getAll');
+	Route::get('clases/restaurar/{id}' , 'Clases\ClasesController@restaurar');
+	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
+	Route::resource('clases', 'Clases\ClasesController');
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){

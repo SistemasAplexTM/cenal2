@@ -18,15 +18,17 @@ class CreateModulosTable extends Migration
             $table->string('nombre',50);
             $table->timestamps();
         });
-        Schema::create('modulo_jornada', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('duracion');
-            $table->integer('modulo_id')->unsigned();
-            $table->foreign('modulo_id')->references('id')->on('modulos');
-            $table->integer('jornada_id')->unsigned();
-            $table->foreign('jornada_id')->references('id')->on('jornadas');
-            $table->timestamps();
-        });
+        // Schema::create('modulo_jornada', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('duracion');
+        //     $table->integer('modulo_id')->unsigned();
+        //     $table->integer('jornada_id')->unsigned();
+        //     $table->timestamps();
+        // });
+        // Schema::table('modulo_jornada', function (Blueprint $table) {
+        //     $table->foreign('modulo_id')->references('id')->on('modulos');
+        //     $table->foreign('jornada_id')->references('id')->on('jornadas');
+        // });
     }
 
     /**

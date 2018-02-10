@@ -18,6 +18,7 @@ class CreateSalonesTable extends Migration
             $table->string('nombre', 40);
             $table->string('codigo', 10);
             $table->integer('capacidad');
+            $table->text('ubicacion');
             $table->timestamps();
         });
     }

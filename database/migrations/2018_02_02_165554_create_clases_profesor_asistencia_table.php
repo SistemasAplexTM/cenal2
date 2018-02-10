@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEstudianteCalendarioModuloAsistenciasTable extends Migration
+class CreateClasesProfesorAsistenciaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateEstudianteCalendarioModuloAsistenciasTable extends Migration
      */
     public function up()
     {
-        Schema::create('estudiante_calendario_modulo_asistencias', function (Blueprint $table) {
+        Schema::create('clases_profesor_asistencia', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('estudiante_id');
-            $table->integer('id_padre_calendario_modulo');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ class CreateEstudianteCalendarioModuloAsistenciasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('estudiante_calendario_modulo_asistencias');
+        Schema::dropIfExists('clases_profesor_asistencia');
     }
 }
