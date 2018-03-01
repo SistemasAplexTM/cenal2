@@ -11,6 +11,8 @@ mix.styles([
 	'resources/assets/css/plugins/select2/select2.min.css',
 	'resources/assets/css/plugins/fullcalendar/fullcalendar.css',
 	'resources/assets/css/plugins/steps/jquery.steps.css',
+	// 'resources/assets/css/plugins/ladda/ladda.min.css',
+	'resources/assets/css/plugins/ladda/ladda-themeless.min.css',
 	'resources/assets/css/main.css'
 	], 'public/css/plantilla.css');
 mix.scripts([
@@ -29,6 +31,9 @@ mix.scripts([
 	'resources/assets/js/plugins/fullcalendar/fullcalendar.min.js',
 	'resources/assets/js/locale/lang-all.js',
 	'resources/assets/js/plugins/steps/jquery.steps.min.js',
+	'resources/assets/js/plugins/ladda/spin.min.js',
+	'resources/assets/js/plugins/ladda/ladda.min.js',
+	'resources/assets/js/plugins/ladda/ladda.jquery.min.js',
 	'resources/assets/js/plugins/validate/jquery.validate.min.js',
 	/*-- Plantilla --*/
 	'resources/assets/js/inspinia.js',

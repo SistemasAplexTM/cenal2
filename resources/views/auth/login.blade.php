@@ -31,9 +31,16 @@
                     <h4>{{ Session::get('notification') }}</h4>
                 </div>
             @endif
+            @if(Session::has('no_cuenta'))
+                <div class="alert alert-danger">
+                    <h4><i class="fa fa-exclamation-circle"></i> {{ Session::get('no_cuenta') }}</h4>
+                    <p>Acercate a la sede más cercana para realizar el proceso de inscripción.</p>
+                    <p><a target="_blank" href="https://cenal.com.co/cenal/porque-estudiar-en-cenal.html#nuestras_sedes">Ver sedes</a></p>
+                </div>
+            @endif
             @if(Session::has('si_cuenta'))
                 <div class="alert alert-warning">
-                    <h4>{{ Session::get('si_cuenta') }}</h4>
+                    <h4>{{ Session::get('si_cuenta') }} <i class="fa fa-exclamation"></i> </h4>
                 </div>
             @endif
             <form id="form-login" class="m-t" role="form" method="POST" action="{{ route('login') }}">

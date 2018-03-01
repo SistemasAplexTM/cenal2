@@ -93,7 +93,7 @@ class PerfilController extends Controller
                 ]
             ]);
             $data->update($request->all());
-            return redirect()->action('Estudiante/PerfilController@index');
+            return redirect()->action('Estudiante\PerfilController@index');
         } catch (Exception $e) {
             return $e;
         }

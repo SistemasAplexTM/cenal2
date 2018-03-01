@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', 'Clases')
+@section('title', 'Programar módulo')
 @section('content')
 <div class="container" id="clases">
     <div class="row">
         <div class="ibox">
             <div class="ibox-title">
-                <h5><i class="fa fa-calendar-plus-o"></i> Clases</h5>
+                <h5><i class="fa fa-calendar-plus-o"></i> Programar módulo</h5>
             </div>
             <div class="ibox-content">
                 <form action="{{ url('clases') }}" method="POST">
@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="col-lg-9">
                             <div class="row">
-                                <div class="col-lg-9">
+                                <div class="col-lg-5 b-r">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <label for="sede_id" class="control-label gcore-label-top">Sede:</label>
@@ -26,7 +26,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 b-r">
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div id="data_1">
@@ -37,6 +37,16 @@
                                                         <input name="fecha_inicio" id="fecha_inicio" type="text" placeholder="dd/mm/aaaa" class="form-control" required="">
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 b-r">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="duracion">Duración: <small>(clases)</small></label> 
+                                                <input name="duracion" id="duracion" type="number" class="form-control" v-model="duracion" required="">
                                             </div>
                                         </div>
                                     </div>
@@ -93,27 +103,37 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="jornada_id">Jornada:</label> 
-                                                <select name="jornada_id" id="jornada_id" class="form-control" @click="deleteError('modulo')" required="">
+                                                <select name="jornada_id" id="jornada_id" class="form-control" @change="setInicioJornada()" @click="deleteError('modulo')" required="">
                                                     <option value="">Seleccione</option>
                                                     @foreach($jornadas as $jornada)
-                                                    <option value="{{ $jornada->id }}">{{ $jornada->jornada }}</option>
+                                                    <option  data-hora_inicio="{{ $jornada->hora_inicio }}" data-hora_fin="{{ $jornada->hora_fin }}"  value="{{ $jornada->id }}">{{ $jornada->jornada }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 b-r">
+                                <div class="col-lg-2">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label for="duracion">Duración: <small>(clases)</small></label> 
-                                                <input name="duracion" id="duracion" type="number" class="form-control" v-model="duracion" required="">
+                                                <label for="hora_inicio_jornada">Hora inicio:</label> 
+                                                <input  name="hora_inicio_jornada" id="hora_inicio_jornada" type="text" class="form-control" v-model="hora_inicio_jornada" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 b-r">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="hora_fin_jornada">Hora fin:</label> 
+                                                <input  name="hora_fin_jornada" id="hora_fin_jornada" type="text" class="form-control" v-model="hora_fin_jornada" readonly="">
                                             </div>
                                         </div>
                                     </div>
