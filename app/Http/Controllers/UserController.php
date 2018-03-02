@@ -142,6 +142,31 @@ class UserController extends Controller
         //
     }
 
+    public function delete($id,$logical)
+    {
+        
+        if(isset($logical) and $logical == 'true'){
+            $data = User::findOrFail($id);
+            $now = new \DateTime();
+            $data->deleted_at =$now->format('Y-m-d H:i:s');
+            if($data->save()){
+                    $answer=array(
+                        "datos" => 'Eliminacion exitosa.',
+                        "code" => 200
+                    ); 
+               }  else{
+                    $answer=array(
+                        "error" => 'Error al intentar Eliminar el registro.',
+                        "code" => 600
+                    );
+               }          
+                
+                return $answer;
+        }else{
+            $this->destroy($id);
+        }
+    }
+
     public function getAll(){
         $data = DB::table('users As a')
         ->join('model_has_roles AS b', 'a.id', 'b.model_id')
