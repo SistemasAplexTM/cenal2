@@ -48,7 +48,7 @@ class ValidarController extends Controller
                return view('Auth/register2', compact('data'));
             }else{
                 \Session::flash('no_cuenta', "No tienes una cuenta");
-                return \Redirect::back();
+                return \Redirect::route('login');
             }
         }
     }
@@ -127,6 +127,6 @@ class ValidarController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
         
-        return redirect('/home');
+        return redirect('/clases');
     }
 }

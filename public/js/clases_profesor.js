@@ -1,6 +1,6 @@
 $(document).ready(function(){
   $('#calendar').fullCalendar({
-    locale: 'es',
+    lang: 'es',
     header: {
       left: 'prev,next today',
       center: 'title',
@@ -10,7 +10,17 @@ $(document).ready(function(){
     editable: true,
     selectable: true,
     selectHelper: true,
-    events: 'clases/all',
+    events: {
+            url: 'clases/profesor/44',
+            error: function() 
+            {
+                alert("error");
+            },
+            success: function()
+            {
+                console.log("successfully loaded");
+            }
+    },
     dayClick: function(date, jsEvent, view){
       
       

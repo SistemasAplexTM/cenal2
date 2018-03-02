@@ -3,7 +3,19 @@ $(document).ready(function () {
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
     });
-    
+    // Ladda.bind( '.ladda-button',{ timeout: 2000 });
+    // var l = Ladda.bind('.ladda-button-demo');
+    // l.click(function(){
+    //     // Start loading
+    //     l.ladda('start');
+    //     // Do something in backend and then stop ladda
+    //     // setTimeout() is only for demo purpose
+    //     setTimeout(function(){
+    //           l.ladda('stop');
+    //     },2000);
+
+    // });
+
 });
 $.extend( true, $.fn.dataTable.defaults, {
 "language": {

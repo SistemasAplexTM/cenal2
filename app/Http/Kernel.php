@@ -66,6 +66,8 @@ class Kernel extends HttpKernel
         'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
         'VerifyifActive' => \App\Http\Middleware\VerifyifActive::class,
         'ChangePassword' => \App\Http\Middleware\ChangePassword::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
     ];
 }
 

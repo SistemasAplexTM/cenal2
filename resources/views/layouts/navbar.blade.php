@@ -8,11 +8,11 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar">
             <ul class="nav navbar-nav">
-                <li class="">
+                {{-- <li class="">
                     <a href="{{ route('home') }}"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
-                </li>
+                </li> --}}
                 <li>
-                    <a href="{{ url('/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Clases</span> </a>
+                    <a href="{{ url('/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Módulos programados</span> </a>
                 </li>
                 @if(Auth::user()->rol == 2)
                 <li>
@@ -20,34 +20,24 @@
                 </li>
                 @endif
                 
-                <li class="dropdown">
+                {{-- <li class="dropdown">
                     <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-archive"></i> <span class="nav-label">Coordinación académica</span> </a>
-                    {{-- <div class=""> --}}
-                      {{-- <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Dropdown
-                        <span class="caret"></span>
-                      </button> --}}
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li>
-                            <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('profesor') }}"><i class="fa fa-user"></i> <span class="nav-label">Profesor</span> </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('modulo') }}"><i class="fa fa-list"></i> <span class="nav-label">Módulo</span> </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('ubicacion') }}"><i class="fa fa-gears"></i> <span class="nav-label">Ubicación</span> </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('festivos') }}"><i class="fa fa-gears"></i> <span class="nav-label">Festivos</span> </a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                      </ul>
-                    {{-- </div> --}}
-                </li>
+                            <li>
+                                <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('profesor') }}"><i class="fa fa-user"></i> <span class="nav-label">Profesor</span> </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('modulo') }}"><i class="fa fa-list"></i> <span class="nav-label">Módulo</span> </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('ubicacion') }}"><i class="fa fa-map-marker"></i> <span class="nav-label">Ubicación</span> </a>
+                            </li>
+                        </ul>
+                </li> --}}
+                @role('Administrador|Coordinador')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-gears"></i> <span class="nav-label">Administración</span> </a>
                     {{-- <div class=""> --}}
@@ -63,58 +53,32 @@
                             <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
                         </li>
                         <li>
-                            <a href="{{ url('profesor') }}"><i class="fa fa-user"></i> <span class="nav-label">Profesor</span> </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('modulo') }}"><i class="fa fa-list"></i> <span class="nav-label">Módulo</span> </a>
+                            <a href="{{ url('modulo') }}"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">Módulos</span> </a>
                         </li>
                         <li>
                             <a href="{{ url('ubicacion') }}"><i class="fa fa-map-marker"></i> <span class="nav-label">Ubicación</span> </a>
                         </li>
-                        <li>
-                            <a href="{{ url('festivos') }}"><i class="fa fa-calendar-check-o"></i> <span class="nav-label">Festivos</span> </a>
-                        </li>
+                        @can('ver_usuarios')
+                            <li>
+                                <a href="{{ url('user') }}"><i class="fa fa-user"></i> <span class="nav-label">Usuarios</span> </a>
+                            </li>
+                        @endcan
                       </ul>
                     {{-- </div> --}}
                 </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-user"></i> <span class="nav-label">Profesor</span> </a>
-                    {{-- <div class=""> --}}
-                      {{-- <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Dropdown
-                        <span class="caret"></span>
-                      </button> --}}
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <li>
-                                <a href="{{ url('profesor/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Clases</span> </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('salon') }}"><i class="fa fa-list-ul"></i> <span class="nav-label">Asistencia</span> </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('profesor') }}"><i class="fa fa-check-square-o"></i> <span class="nav-label">Calificaciones</span> </a>
-                            </li>
-                        </ul>
-                    {{-- </div> --}}
-                </li>
-                {{-- <li>
-                    <a class="right-sidebar-toggle">
-                        <i class="fa fa-tasks"></i>
-                    </a>
-                </li> --}}
+                @endrole
             </ul>
             <ul class="nav navbar-top-links navbar-right">
                 @if(Auth::user()->rol == 0)
+                @role('Estudiante')
                 <li>
                     <a href="{{ url('/estudiante/perfil') }}"><i class="fa fa-user-circle"></i> <span class="nav-label">Perfil</span> </a>
                 </li>
+                @endrole
                 @endif
-                @if(Auth::user()->rol == 1)
-                <li>
-                    <a href="{{ url('/profesor/perfil') }}"><i class="fa fa-user-circle"></i> <span class="nav-label">Perfil</span> </a>
-                </li>
-                @endif
+                @role('Administrador')
                 <li><a href="{{ route('clients') }}"><i class="fa fa-code"></i> Soy desarrollador</a></li>
+                @endrole
                 @if(Auth::guest())
                 <li>
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

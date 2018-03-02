@@ -28,13 +28,12 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 
 	
 	// Route::get('profesor/clases/all', 'Profesor\ClasesController@getAll');
-	Route::resource('profesor/clases', 'Profesor\ClasesController');
 
-	Route::get('profesor/all', 'Profesor\ProfesorController@getAll');
-	Route::get('profesor/getDataUser/{user}', 'Profesor\ProfesorController@getDataUser');
-	Route::get('profesor/restaurar/{id}' , 'Profesor\ProfesorController@restaurar');
-	Route::get('profesor/delete/{id}/{logical?}', 'Profesor\ProfesorController@delete');
-	Route::resource('profesor', 'Profesor\ProfesorController');
+	Route::get('user/getRolesForSelect2', 'UserController@getRolesForSelect2');
+	Route::get('user/all', 'UserController@getAll');
+	Route::get('user/restaurar/{id}' , 'UserController@restaurar');
+	Route::get('user/delete/{id}/{logical?}', 'UserController@delete');
+	Route::resource('user', 'UserController');
 
 
 	Route::get('salon/getUbicacion/{id}', 'SalonController@getUbicacion');
@@ -62,7 +61,17 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
 
+	Route::get('clases/profesor/{profesor_id}', 'Profesor\ClasesController@getAll');
+
+	Route::get('clases/{clase_id}/getAll_estudiantes_asistencia/{clases_detalle_id}', 'Clases\ClasesController@getAll_estudiantes_asistencia');
+	Route::get('clases/{clase_id}/get_estudiante_asistencia', 'Clases\ClasesController@get_estudiante_asistencia');
+	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');
+	Route::get('clases/{clase_id}/profesor_asignado', 'Clases\ClasesController@profesor_asignado');
+	Route::get('clases/{clase_id}/estudiantes_inscritos', 'Clases\ClasesController@estudiantes_inscritos');
+	Route::get('clases/{clase_id}/agregar_estudiante/{estudiante_id}', 'Clases\ClasesController@agregar_estudiante');
 	Route::get('clases/buscar_estudiante/{dato}', 'Clases\ClasesController@buscar_estudiante');
+	Route::get('clases/{clase_id}/asignar_profesor/{profesor_id}', 'Clases\ClasesController@asignar_profesor');
+	Route::get('clases/{clase_id}/buscar_profesor/{dato}', 'Clases\ClasesController@buscar_profesor');
 	Route::get('clases/getFin/{id_clase}', 'Clases\ClasesController@getFin');
 	Route::get('clases/day', 'Clases\ClasesController@programarClases');
 	// Route::get('clases/{clase_id}', 'Clases\ClasesController@getAll');

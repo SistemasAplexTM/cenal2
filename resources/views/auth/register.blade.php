@@ -28,12 +28,6 @@
             <p><small>CENTRO NACIONAL DE CAPACITACIÓN LABORAL</small></p>
             <h4>Validar cuenta</h4>
             <p>Verifica si tienes una cuenta en el sistema con tu código de estudiante.</p>
-            @if(Session::has('no_cuenta'))
-                <div class="alert alert-warning">
-                    <h4>{{ Session::get('no_cuenta') }}</h4>
-                    <p>Acercate a la sede más cercana para realizar el proceso de inscripción.</p>
-                </div>
-            @endif
             <form id="form-login" class="m-t" role="form" method="POST" action="{{ route('validar') }}">
                 {{ csrf_field() }}
                 <div class="form-group {{ $errors->has('documneto') ? 'has-error' : '' }}">

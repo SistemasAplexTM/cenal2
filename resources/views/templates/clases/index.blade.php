@@ -1,14 +1,16 @@
 @extends('layouts.app')
-@section('title', 'Clases')
+@section('title', 'Módulos programados')
 @section('content')
-<div class="container" id="clases">
+<div class="container-fluid" id="clases">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5><i class="fa fa-calendar"></i> Clases</h5>
+                    <h5><i class="fa fa-calendar"></i> Módulos programados</h5>
                     <div class="ibox-tools">
-                        <a href="{{ route('clases.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-calendar-plus-o"></i> Nueva clase</a>
+                        @can('crear_clase')
+                        <a href="{{ route('clases.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-calendar-plus-o"></i> Programar módulo</a>
+                        @endcan
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -16,13 +18,20 @@
                         <table class="table table-hover" id="tbl-clases">
                             <thead>
                                 <tr>
-                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                     <th>Módulo</th>
+                                    <th>Estado</th>
+                                    {{-- @role('Administrador') --}}
+                                    <th>Sede</th>
+                                    {{-- @endrole --}}
                                     <th>Salón</th>
                                     <th>Jornada</th>
                                     <th>Progreso</th>
+                                    @role('Profesor')
+                                    <th>Próxima clase</th>
+                                    @else
                                     <th>Profesor</th>
-                                    <th>Acciones</th>
+                                    @endrole
                                 </tr>
                             </thead>
                             <tbody>

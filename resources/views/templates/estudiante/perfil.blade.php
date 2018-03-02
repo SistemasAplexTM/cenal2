@@ -15,7 +15,12 @@
     <div class="col-md-4">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Perfil</h5>
+                <h5>
+                    <i class="fa fa-user-circle"></i> Perfil
+                </h5>
+                <div class="ibox-tools">
+                    <a data-toggle="modal" title="Actualizar datos" data-target="#modal-edit" class="">Editar <i class="fa fa-edit"></i></a>
+                </div>
             </div>
             <div>
                 <div class="ibox-content no-padding border-left-right">
@@ -36,23 +41,22 @@
                     <h4><strong>{{ $data->nombres . ' ' .$data->primer_apellido . ' ' . $data->segundo_apellido  }}</strong>&nbsp;<span class="badge badge-success"> {{ $data->sede }} &nbsp;<i class="fa fa-map-marker"></i></span></h4>
                     <p><i class="fa fa-id-card-o icon-separed" ></i>{{ $data->num_documento }}</p>
                     <p><i class="fa fa-envelope icon-separed" ></i>{{ $data->correo }}</p>
-                    {{-- <h5>
-                        About me
-                    </h5>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitat.
-                    </p> --}}
                     <div class="user-button">
                         <div class="row">
                             <div class="col-md-12">
-                                <a data-toggle="modal" data-target="#modal-edit" class="btn btn-success btn-sm btn-circle pull-right"><i class="fa fa-gears"></i></a>
-                                <hr>
-                                <h4>Mensajes</h4>
+                                <div class="btn-group pull-right">
+                                    <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Certificado 01</a></li>
+                                        <li><a href="#">Certificado 02</a></li>
+                                        <li><a href="#">Certificado 03</a></li>
+                                    </ul>
+                                </div>
                                 <hr>
                             </div>
                         </div>
                     </div>
-                    <div>
+                    {{--<div>
                         <div class="feed-activity-list disabled">
                             <div class="feed-element">
                                 <a href="#" class="pull-left">
@@ -107,7 +111,7 @@
                             </div>
                         </div>
                         <button class="btn btn-primary btn-block "><i class="fa fa-arrow-down"></i> Ver más</button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -115,11 +119,9 @@
     <div class="col-lg-8">
         <div class="tabs-container">
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-money"></i>Finanzas</a></li>
+                <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-money"></i>Financiero</a></li>
                 <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Calificaciones</a></li>
-                <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Calificaciones</a></li>
-                <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Certificados</a></li>
-                <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Clases</a></li>
+                <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Asistencia</a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane active">
@@ -244,7 +246,7 @@
 
     <!-- Modal content-->
     <div class="modal-content animated flipInY">
-    <form action="{{ url('perfil/update') }}/{{ $data->id }}" method="POST">
+    <form action="{{ url('estudiante/perfil/update') }}/{{ $data->id }}" method="POST">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Imágen de perfil</h4>
