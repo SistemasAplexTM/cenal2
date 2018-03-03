@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Programas_unicos;
 
-class programasController extends Controller
+class ProgramasController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -218,7 +218,19 @@ class programasController extends Controller
         ->get();
         return Datatables::of($data)->make(true);
     }
-
+    public function geAllBySede($sede){
+        $data = DB::table('programas As a')
+        ->select(
+            'a.id',
+            'a.programa'
+        )
+        ->where([
+            ['a.sede_id', '=', $sede],
+            ['a.deleted_at', '=', NULL]
+        ])
+        ->get();
+        return $data;
+    }
     public function getDataModulosByPrograma($id_programa){
         $data = DB::table('pivot_programas_unicos_modulos As a')
         ->select(

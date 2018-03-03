@@ -304,43 +304,43 @@ button.toast-close-button {
 }
 
 .custom-radios input[type="radio"]#color-1 + label span {
-  background-color: #2f8d99;
+  background-color: #054265;
 }
 
 .custom-radios input[type="radio"]#color-2 + label span {
-  background-color: #42a5f5;
+  background-color: #32B3FE;
 }
 
 .custom-radios input[type="radio"]#color-3 + label span {
-  background-color: #00c5dc;
+  background-color: #1177B2;
 }
 
 .custom-radios input[type="radio"]#color-4 + label span {
-  background-color: #feb38d;
+  background-color: #4B95BF;
 }
 
 .custom-radios input[type="radio"]#color-5 + label span {
-  background-color: #6be5ac;
+  background-color: #185272;
 }
 
 .custom-radios input[type="radio"]#color-6 + label span {
-  background-color: #6B79C4;
+  background-color: #7F1216;
 }
 
 .custom-radios input[type="radio"]#color-7 + label span {
-  background-color: #b27f67;
+  background-color: #FF7176;
 }
 
 .custom-radios input[type="radio"]#color-8 + label span {
-  background-color: #143651;
+  background-color: #FF252B;
 }
 
 .custom-radios input[type="radio"]#color-9 + label span {
-  background-color: #7a396d;
+  background-color: #7F393B;
 }
 
 .custom-radios input[type="radio"]#color-10 + label span {
-  background-color: #afae59;
+  background-color: #CC1D23;
 }
 
 .custom-radios input[type="radio"]:checked + label span img {

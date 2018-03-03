@@ -125,7 +125,7 @@ class UbicacionController extends Controller
         $tags = Ubicacion::where([['nombre', 'like', $term.'%'],['deleted_at', NULL]])->pluck('nombre', 'id');
         $valid_tags = [];
         foreach ($tags as $id => $tag) {
-            $valid_tags[] = ['id' => $id, 'text' => $tag];
+            $valid_tags[] = ['id' => $tag, 'text' => $tag];
         }
         return \Response::json($valid_tags);
         

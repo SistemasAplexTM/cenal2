@@ -4,15 +4,16 @@ $(document).ready(function () {
         serverSide: true,
         ajax: 'salon/all',
         columns: [
-            { data: "nombre", name: 'nombre'},
+            { data: "sede", name: 'sede'},
             { data: "codigo", name: 'codigo'},
             { data: "capacidad", name: 'capacidad'},
+            { data: "ubicacion", name: 'ubicacion'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     var params = [
                         full.id,
-                        "'" + full.nombre + "'",
+                        full.sede_id,
                         "'" + full.codigo + "'",
                         full.capacidad,
                         "'" + full.ubicacion + "'",
@@ -50,22 +51,24 @@ function initSelect2(){
     });
 }
 
-function edit(id,nombre, codigo, capacidad, ubicacion){
+function edit(id,sede_id, codigo, capacidad, ubicacion){
     var data ={
         id:id,
-        nombre: nombre,
+        sede_id: sede_id,
         codigo: codigo,
         capacidad: capacidad,
         ubicacion: ubicacion
     };
     objVue.edit(data);
+    $('#ubicacion').val('Torre');
+    $('#ubicacion').trigger('change');
 }
 
 
 var objVue = new Vue({
     el: '#crud_salon',
     data:{
-        nombre:'',
+        sede_id:'',
         codigo:'',
         capacidad:'',
         ubicacion: [],
@@ -74,12 +77,12 @@ var objVue = new Vue({
     },
     methods:{
         resetForm: function(){
-            this.nombre = '';
+            this.sede_id = '';
             this.codigo = '';
             this.capacidad = '';
             this.editar = 0;
             $('#ubicacion').val(null).trigger('change');
-            initSelect2();
+            // initSelect2();
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -95,7 +98,7 @@ var objVue = new Vue({
         create: function(){
             let me = this;
             axios.post('salon',{
-                'nombre': me.nombre,
+                'sede_id': me.sede_id,
                 'codigo': me.codigo,
                 'capacidad': me.capacidad,
                 'ubicacion': $("#ubicacion").val()
@@ -147,7 +150,7 @@ var objVue = new Vue({
             var urlUpdate = 'salon/' + this.id;
             var me = this;
             axios.put(urlUpdate, {
-                'nombre': me.nombre,
+                'sede_id': me.sede_id,
                 'codigo': me.codigo,
                 'capacidad': me.capacidad,
                 'ubicacion': $("#ubicacion").val()
@@ -173,7 +176,7 @@ var objVue = new Vue({
         },
         edit: function(data){
             this.id = data['id'];
-            this.nombre = data['nombre'];
+            this.sede_id = data['sede_id'];
             this.codigo = data['codigo'];
             this.capacidad = data['capacidad'];
             

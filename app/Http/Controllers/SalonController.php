@@ -20,7 +20,13 @@ class SalonController extends Controller
     public function index()
     {
         $ubicacion = Ubicacion::where('deleted_at', NULL)->get();
-        return view('templates.salon', compact('ubicacion'));
+        $sedes = DB::table('sede AS a')
+        ->select(
+            'a.id',
+            'a.nombre'
+        )
+        ->get();
+        return view('templates.salon', compact('ubicacion', 'sedes'));
     }
 
     /**
@@ -34,8 +40,8 @@ class SalonController extends Controller
         try{
             $salon = new Salones;
             $salon->fill($request->all());
-            $save_ubicacion = json_encode( $request->ubicacion  );
-            $salon->ubicacion = $save_ubicacion;
+            // $save_ubicacion = json_encode( $request->ubicacion  );
+            $salon->ubicacion = $request->ubicacion;
             if ($salon->save()) {
                 $answer=array(
                     "datos" => $request->all(),
@@ -85,12 +91,14 @@ class SalonController extends Controller
 
     public function getAll(){
         $data = DB::table('salones As a')
+        ->join('sede AS b', 'a.sede_id', '=', 'b.id')
         ->select(
             'a.id',
-            'a.nombre',
+            'a.sede_id',
             'a.codigo',
             'a.capacidad',
             'a.ubicacion',
+            'b.nombre AS sede',
             'a.created_at',
             'a.updated_at'
         )

@@ -13976,3 +13976,6 @@ be a descendant of the grid when it is being dragged.
 .navbar-brand{
 	background-color: #1c84c6 !important; 
 }
+table{
+	width: 100%;
+}

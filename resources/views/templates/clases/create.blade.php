@@ -13,11 +13,11 @@
                     <div class="row">
                         <div class="col-lg-9">
                             <div class="row">
-                                <div class="col-lg-5 b-r">
+                                <div class="col-lg-4 b-r">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <label for="sede_id" class="control-label gcore-label-top">Sede:</label>
-                                            <select name="sede_id" id="sede_id" class="form-control" required="">
+                                            <select name="sede_id" v-model="sede"  id="sede_id" class="form-control" required="" @change="setProgramas()">
                                                 <option value="">Seleccione</option>
                                                 @foreach($sedes as $sede)
                                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
@@ -27,6 +27,48 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <span v-show="canrgando_programa==1">CARGANDO...</span>
+                                            <div class="input-group date">
+                                                <label for="programa">Programa:</label>
+                                                <select name="programa" id="programa" v-model="programa" class="form-control" required="">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="programa in programas" v-bind:value="programa.id">
+                                                        @{{ programa.programa }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <!-- <div class="col-sm-12"> -->
+                                            <label for="modulo_id" class="control-label gcore-label-top">Módulo:</label>
+                                            <select name="modulo_id" id="modulo_id" class="form-control" @click="deleteError('modulo')" required="">
+                                                <option data-duracion="" value="">Seleccione</option>
+                                                @foreach($modulos as $modulo)
+                                                <option data-duracion="{{ $modulo->duracion }}" value="{{ $modulo->id }}">{{ $modulo->nombre }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
+                                        <!-- </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 b-r">
+                                    <div class="form-group">
+                                        <!-- <div class="col-sm-12"> -->
+                                            <label for="modulo_id" class="control-label gcore-label-top">Clases:</label>
+                                            <input type="" name="" class="form-control" value="15" readonly="">
+                                            <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
+                                        <!-- </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-4 b-r">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div id="data_1">
@@ -41,69 +83,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 b-r">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label for="duracion">Duración: <small>(clases)</small></label> 
-                                                <input name="duracion" id="duracion" type="number" class="form-control" v-model="duracion" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-lg-5 b-r">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <label for="salon_id" class="control-label gcore-label-top">Salón:</label>
-                                            <select name="salon_id" id="salon_id" class="form-control" @change="setCapacidad" required="">
-                                                <option data-capacidad="" value="">Seleccione</option>
-                                                @foreach($salones as $salon)
-                                                <option data-capacidad="{{ $salon->capacidad }}" value="{{ $salon->id }}">{{ $salon->nombre }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label>Capacidad: <small>(estudiantes)</small></label> 
-                                                <input type="email" class="form-control" v-model="capacidad" readonly="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 b-r">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label>Ubicación:</label> 
-                                                <input type="email" class="form-control" v-model="ubicacion" readonly="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5 b-r">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <label for="modulo_id" class="control-label gcore-label-top">Módulo:</label>
-                                            <select name="modulo_id" id="modulo_id" class="form-control" @click="deleteError('modulo')" required="">
-                                                <option data-duracion="" value="">Seleccione</option>
-                                                @foreach($modulos as $modulo)
-                                                <option data-duracion="{{ $modulo->duracion }}" value="{{ $modulo->id }}">{{ $modulo->nombre }}</option>
-                                                @endforeach
-                                            </select>
-                                            <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div class="form-group">
@@ -134,6 +114,41 @@
                                             <div class="form-group">
                                                 <label for="hora_fin_jornada">Hora fin:</label> 
                                                 <input  name="hora_fin_jornada" id="hora_fin_jornada" type="text" class="form-control" v-model="hora_fin_jornada" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 b-r">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label for="salon_id" class="control-label gcore-label-top">Salón:</label>
+                                            <select name="salon_id" id="salon_id" class="form-control" @change="setCapacidad" required="">
+                                                <option data-capacidad="" value="">Seleccione</option>
+                                                @foreach($salones as $salon)
+                                                <option data-capacidad="{{ $salon->capacidad }}" value="{{ $salon->id }}">{{ $salon->nombre }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Capacidad: <small>(estudiantes)</small></label> 
+                                                <input type="email" class="form-control" v-model="capacidad" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 b-r">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Ubicación:</label> 
+                                                <input type="email" class="form-control" v-model="ubicacion" readonly="">
                                             </div>
                                         </div>
                                     </div>
