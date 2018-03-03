@@ -180,7 +180,7 @@
                             </a>
                             <div class="media-body ">
                                 <strong>
-                                    @{{ estudiante.nombre }}
+                                    @{{ estudiante.codigo }} - @{{ estudiante.nombre }}
                                 </strong>
                                 <br>
                                     <small class="text-muted">
@@ -380,7 +380,7 @@
                                         <input type="text" hidden="" id="clase_detalle">
                                         <label class="checkbox-inline i-checks check-link estudiante_asistencia">
                                             <input name="asistencia[]" id="input-asistencia{{ $estudiante->id }}" type="checkbox" value="{{ $estudiante->id }}" >  
-                                            <span class="m-l-xs asistencia">{{ $estudiante->nombre }}</span>
+                                            <span class="m-l-xs asistencia">{{ $estudiante->codigo }} - {{ $estudiante->nombre }}</span>
                                         </label>
                                     </li>
                                     @endforeach

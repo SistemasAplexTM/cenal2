@@ -37,7 +37,7 @@
                             </li>
                         </ul>
                 </li> --}}
-                @role('Administrador|Coordinador')
+                @role('Administrador')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-gears"></i> <span class="nav-label">Administración</span> </a>
                     {{-- <div class=""> --}}

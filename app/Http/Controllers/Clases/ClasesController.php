@@ -149,7 +149,7 @@ class ClasesController extends Controller
                 'a.observacion',
                 'a.estado_id',
                 'a.cant_estudiantes',
-                'b.nombre AS salon',
+                'b.codigo AS salon',
                 'b.capacidad',
                 'c.nombre AS modulo',
                 'd.jornada AS jornada',
@@ -524,7 +524,7 @@ class ClasesController extends Controller
             DB::raw("concat_ws(' ', nombres,primer_apellido, segundo_apellido) AS nombre"),
             'cant_asistencias',
             'programa',
-            'b.consecutivo',
+            'b.consecutivo AS codigo',
             'b.correo',
             'b.id'
         )
