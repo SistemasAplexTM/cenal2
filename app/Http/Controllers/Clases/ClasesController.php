@@ -206,8 +206,13 @@ class ClasesController extends Controller
                 ['a.deleted_at', '=', null],
                 ['a.sede_id', '=', $this->get_user('sede_id')]
             );
-        }elseif ($user->hasRole('Administrador|Coordinador')){
+        }elseif ($user->hasRole('Administrador')){
             $where = array(
+                ['a.deleted_at', '=', null]
+            );
+        }elseif ($user->hasRole('Coordinador')) {
+            $where = array(
+                ['a.sede_id', '=', $this->get_user('sede_id')],
                 ['a.deleted_at', '=', null]
             );
         }else{
@@ -232,7 +237,7 @@ class ClasesController extends Controller
                 'a.observacion',
                 'a.estado_id',
                 'a.cant_estudiantes',
-                'b.nombre AS salon',
+                'b.codigo AS salon',
                 'b.capacidad',
                 'c.nombre AS modulo',
                 'd.jornada AS jornada',

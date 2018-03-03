@@ -26,7 +26,6 @@ class UserRequest extends FormRequest
         return [
             'identification_card' => 'required|unique:users,identification_card',
             'name' => 'required',
-            'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
             'sede' => 'required',
         ];
@@ -36,7 +35,6 @@ class UserRequest extends FormRequest
         return [
             'identification_card.required' => 'El :attribute es obligatorio',
             'name.required' => 'El :attribute es obligatorio',
-            'last_name.required' => 'Los :attribute son obligatorios',
             'email.required' => 'El :attribute es obligatorio',
             'sede.required' => 'La :attribute es obligatoria',
         ];
@@ -46,7 +44,6 @@ class UserRequest extends FormRequest
         return [
             'identification_card' => 'documento',
             'name' => 'nombre',
-            'last_name' => 'apellidos',
             'email' => 'correo',
         ];
     }

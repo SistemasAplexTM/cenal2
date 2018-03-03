@@ -132,16 +132,20 @@ var objVue = new Vue({
     el: '#clases',
     data:{
         salon:'',
+        programa:'',
         capacidad:'',
         ubicacion:'',
         duracion:'',
         jornada:'',
+        sede:'',
         dato_profesor: '',
         profesor_asignado: '',
         dato_estudiante: '',
         estudiantes_inscritos: {},
+        programas: {},
         hora_inicio_jornada: '',
         hora_fin_jornada: '',
+        canrgando_programa: 0,
         estudiantes: {},
         profesores: {},
         formErrors: {}
@@ -168,6 +172,17 @@ var objVue = new Vue({
         },
         setCapacidad: function(){
             this.capacidad = $("#salon").find(':selected').attr('data-capacidad');
+        },
+        setProgramas: function(){
+            if (this.sede.length > 0) {
+                this.canrgando_programa = 1;
+                axios.get('../programas/getAllProgramasBySede/' + this.sede).then(response => {
+                    this.programas = response.data;
+                    this.canrgando_programa = 0;
+                });
+            }else{
+                this.programas = {};
+            }
         },
         setInicioJornada: function(){
             var inicio = $("#jornada_id").find(':selected').data("hora_inicio");

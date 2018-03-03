@@ -24,7 +24,7 @@ class SalonRequest extends FormRequest
     public function rules()
      {
         return [
-            'nombre' => 'required',
+            'sede_id' => 'required',
             'codigo' => 'required',
             'capacidad' => 'required'
         ];
@@ -32,7 +32,7 @@ class SalonRequest extends FormRequest
     public function messages()
     {
         return [
-            'nombre.required' => 'El :attribute es obligatorio',
+            'sede_id.required' => 'La :attribute es obligatoria',
             'codigo.required' => 'El :attribute es obligatorio',
             'capacidad.required' => 'La :attribute es obligatoria'
         ];
@@ -40,7 +40,7 @@ class SalonRequest extends FormRequest
     public function attributes()
     {
         return [
-            'nombre' => 'nombre',
+            'sede_id' => 'sede',
             'codigo' => 'código',
             'capacidad' => 'capacidad'
         ];
