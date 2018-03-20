@@ -4,7 +4,6 @@ $(document).ready(function () {
         serverSide: true,
         ajax: 'ubicacion/all',
         columns: [
-            { data: "id", name: 'id' },
             { data: "nombre", name: 'nombre'},
             {
                 sortable: false,

@@ -17,6 +17,7 @@
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plantilla.css') }}" rel="stylesheet">
     <link href="{{ asset('css/fullcalendar.print.css') }}" rel="stylesheet" media='print'>
+    <link href="https://cdn.datatables.net/keytable/2.3.2/css/keyTable.dataTables.min.css" rel="stylesheet" media='print'>
 </head>
 <body  class="top-navigation skin-1">
     <div id="wrapper">            
@@ -31,7 +32,8 @@
     </div>
 <!-- Scripts -->
     <script src="{{ asset('js/plantilla.js') }}"></script>
+    <script src="https://cdn.datatables.net/keytable/2.3.2/js/dataTables.keyTable.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-      @stack('scripts')
+    @stack('scripts')
 </body>
 </html>

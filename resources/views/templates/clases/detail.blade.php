@@ -17,7 +17,7 @@
                 </div>
                 <div class="ibox-content text-center">
                     <div class="row">
-                        <div class="col-xs-4 col-xs-offset-2">
+                        <div class="col-xs-4">
                             <small class="stats-label">
                                <i class="fa fa-calendar"></i> Fecha de inicio
                             </small>
@@ -31,6 +31,14 @@
                             </small>
                             <h4>
                                 {{ date("d-m-Y", strtotime($data->fecha_fin)) }}
+                            </h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stats-label">
+                                <i class="fa fa-calendar"></i> Fecha actual
+                            </small>
+                            <h4>
+                                {{ date("d-m-Y") }}
                             </h4>
                         </div>
                     </div>
@@ -65,12 +73,12 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-xs-8">
                             <small class="stats-label">
-                               <i class="fa fa-home"></i> Salón
+                               <i class="fa fa-home"></i> Salón &nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;<i class="fa fa-group"></i> Capacidad
                             </small>
                             <h4>
-                                {{ $data->salon }}
+                                {!! str_replace(',', '<br>', $data->salon) !!}
                             </h4>
                         </div>
                         <div class="col-xs-4">
@@ -79,14 +87,6 @@
                             </small>
                             <h4>
                                 {{ $data->cupos_usados }}
-                            </h4>
-                        </div>
-                        <div class="col-xs-4">
-                            <small class="stats-label">
-                               <i class="fa fa-group"></i>  Cupos totales
-                            </small>
-                            <h4>
-                                {{ $data->capacidad }}
                             </h4>
                         </div>
                     </div>
@@ -113,9 +113,9 @@
                                     </input>
                                 </div>
                                 <dd class="project-people" v-if="profesor_asignado.length > 0">
-                                    <a href="">
+                                    <a href="#">
                                         <h3>
-                                            <img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}">
+                                            <img alt="image" width='60px' class='img-circle' src="{{ $data->perfil_profesor }}">
                                                 @{{ profesor_asignado }}
                                             </img>
                                         </h3>
@@ -130,7 +130,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="progress progress-striped active m-b-sm">
-                                {!! "<div class='progress-bar' style='width: ".$porcentaje."%;'></div>" !!}
+                                {!! "<div class='progress-bar' style='width: ".$porcentaje."%;background-color: #1c84c6'></div>" !!}
                             </div>
                             <small>
                                 Se han dictado
@@ -150,9 +150,6 @@
                         <div class="feed-element">
                             <div class="form-group">
                                 <div class="col-lg-12">
-                                    <p>
-                                        2175023
-                                    </p>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-user-plus">
@@ -168,37 +165,13 @@
                             </div>
                         </div>
                         @endrole
-                        <div class="feed-element">
-                            <h5 class="text-center">
-                                Estudiantes inscritos
+                        <div class="feed-element text-center">
+                            <h5>
+                                Estudiantes inscritos - @{{ estudiantes_inscritos.length }}
                             </h5>
-                        </div>
-                        <div class="feed-element" v-for="estudiante in estudiantes_inscritos">
-                            <a class="pull-left" href="#">
-                                <img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}">
-                                </img>
+                            <a class="btn btn-sm btn-block btn-success right-sidebar-toggle">
+                                <i class="fa fa-list"></i> Ver estudiantes
                             </a>
-                            <div class="media-body ">
-                                <strong>
-                                    @{{ estudiante.codigo }} - @{{ estudiante.nombre }}
-                                </strong>
-                                <br>
-                                    <small class="text-muted">
-                                        <strong>
-                                            Asistencia:
-                                        </strong>
-                                        @{{ estudiante.cant_asistencias }} / {{ $data->total }}
-                                    </small>
-                                    <br>
-                                        <small class="text-muted">
-                                            <strong>
-                                                Programa:
-                                            </strong>
-                                            @{{ estudiante.programa }}
-                                        </small>
-                                    </br>
-                                </br>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -225,7 +198,7 @@
         </div>
     </div>
     <div aria-hidden="true" class="modal inmodal" id="mdl_agregar_estudiante" role="dialog" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content animated bounceInRight">
                 <div class="modal-header">
                     <button class="close" data-dismiss="modal" type="button">
@@ -244,7 +217,13 @@
                     </small>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-hover table-bordered">
+                    <div class="form-group">
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="dato_buscar" v-model="dato_buscar" placeholder="Buscar estudiante..." @keyup="buscar_estudiante_modal()">
+                          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                    <table class="table table-hover table-bordered" id="tbl_add_student">
                         <tr>
                             <th>
                                 Consecutivo
@@ -256,9 +235,28 @@
                                 Apellidos
                             </th>
                             <th>
+                                @{{ dato_buscar }}
                             </th>
                         </tr>
-                        <tr v-for="value in estudiantes">
+                        <tr v-for="result in estudiantes_result" v-if="dato_buscar.length>0">
+                            <td>
+                                @{{ result.consecutivo }}
+                            </td>
+                            <td>
+                                @{{ result.nombres }}
+                            </td>
+                            <td>
+                                @{{ result.primer_apellido + ' ' + result.segundo_apellido }}
+                            </td>
+                            <td>
+                                <button @click.prevent="agregar_estudiante(result.id)" class="btn btn-xs btn-primary" data-loading-text="Agregando..." id="agregar" type="button">
+                                    <i class="fa fa-add">
+                                    </i>
+                                    Agregar
+                                </button>
+                            </td>
+                        </tr>
+                        <tr v-for="value in estudiantes" v-if="dato_buscar.length<=0">
                             <td>
                                 @{{ value.consecutivo }}
                             </td>
@@ -371,8 +369,60 @@
                 <div class="modal-body">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <h2>Listado de asistencia</h2>
-                            <small>Indique la asistencia</small>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa fa-calendar"></i> Clase: <strong>{{ $data->modulo }}</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <span>
+                                        <i class="fa fa-home"></i> Salón: <strong>@{{ salon }}</strong>
+                                        <div class="btn-group pull-right" v-if="cambiar_salon==true">
+                                            <a href="#" data-toggle="dropdown" class="dropdown-toggle" aria-expanded="true" title="Opciones"><i class="fa fa-ellipsis-h"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#"><i class="fa fa-map-marker"></i> Ubicación</a></li>
+                                                <li><a href="#"><i class="fa fa-group"></i> Capacidad</a></li>
+                                                <li v-if="estado!='Terminado'"  class="divider"></li>
+                                                <li v-if="estado!='Terminado'" ><a href="#" @click.prevent="editar_salon=1"><i class="fa fa-edit"></i> Cambiar salón</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="input-group" v-if="editar_salon==1">
+                                            <select name="salon_id" id="salon_id" v-model="salon_id" class="form-control" >
+                                                <option v-for="salon in salones" v-bind:value="salon.id">
+                                                    @{{ salon.codigo }}
+                                                </option>
+                                            </select>
+                                            <span class="input-group-addon">
+                                                <a href="#" @click.prevent="changeSalon()">
+                                                    <i class="fa fa-save"></i>
+                                                </a>
+                                            </span>
+                                            <span class="input-group-addon">
+                                                <a href="#" @click.prevent="editar_salon=0">
+                                                    <i class="fa fa-close"></i>
+                                                </a>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa fa-clock-o"></i> Hora de inicio: <strong>{{ date("H:i", strtotime($data->inicio_jornada)) }}</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa fa-clock-o"></i> Hora de fin: <strong>{{ date("H:i", strtotime($data->fin_jornada)) }}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @role('Profesor')
+                        <div class="ibox-content">
+                            <h3>Listado de asistencia</h3>
                             <form action="">
                                 <ul class="todo-list m-t small-list">
                                     @foreach($estudiantes_inscritos AS $estudiante)
@@ -387,6 +437,7 @@
                                 </ul>
                             </form>
                         </div>
+                        @endrole
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -400,9 +451,10 @@
             </div>
         </div>
     </div>
+@include('layouts.sidebar')
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('js/clases.js') }}">
+<script src="{{ asset('js/clases_detail.js') }}">
 </script>
 @endpush

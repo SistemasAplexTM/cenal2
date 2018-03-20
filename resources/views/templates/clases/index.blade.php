@@ -9,7 +9,7 @@
                     <h5><i class="fa fa-calendar"></i> Módulos programados</h5>
                     <div class="ibox-tools">
                         @can('crear_clase')
-                        <a href="{{ route('clases.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-calendar-plus-o"></i> Programar módulo</a>
+                        <a href="{{ route('clases.create') }}" class="btn btn-success btn-sm"><i class="fa fa-calendar-plus-o"></i> Programar módulo</a>
                         @endcan
                     </div>
                 </div>
@@ -23,8 +23,9 @@
                                     <th>Estado</th>
                                     {{-- @role('Administrador') --}}
                                     <th>Sede</th>
+                                    <th><i title="Estudiantes inscritos" class="fa fa-group"></i></th>
                                     {{-- @endrole --}}
-                                    <th>Salón</th>
+                                    <th><small>Salón/Capacidad</small></th>
                                     <th>Jornada</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
@@ -35,97 +36,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- <tr>
-                                    <td class="project-status">
-                                        <span class="label label-primary">En curso</span>
-                                    </td>
-                                    <td class="project-title">
-                                        <a href="{{ url('clases/1') }}">Múdolo Office</a>
-                                        <br/>
-                                        <small>Inició 01 enero 2018 - Termina 01 junio 2018</small>
-                                    </td>
-                                    <td>
-                                        <p>Salón SI_01</p>
-                                        <small>Estudiantes 10 / 15</small>
-                                    </td>
-                                    <td>
-                                        <p>Diurno 7-10</p>
-                                    </td>
-                                    <td class="project-completion">
-                                            <small>Conpletado: 48%</small>
-                                            <div class="progress progress-mini">
-                                                <div style="width: 48%;" class="progress-bar"></div>
-                                            </div>
-                                    </td>
-                                    <td class="project-title">
-                                        <a href=""><img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}"> Ricardo Florez</a>
-                                    </td>
-                                    <td class="project-actions">
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Detalles </a>
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Editar </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="project-status">
-                                        <span class="label label-primary">En curso</span>
-                                    </td>
-                                    <td class="project-title">
-                                        <a href="{{ url('clases/1') }}">Múdolo cultura física</a>
-                                        <br/>
-                                        <small>Inició 20 enero 2018 - Termina 31 mayo 2018</small>
-                                    </td>
-                                    <td>
-                                        <p>Salón FI_01</p>
-                                        <small>Estudiantes 10 / 15</small>
-                                    </td>
-                                    <td>
-                                        <p>Diurno 7-10</p>
-                                    </td>
-                                    <td class="project-completion">
-                                            <small>Conpletado: 20%</small>
-                                            <div class="progress progress-mini">
-                                                <div style="width: 20%;" class="progress-bar"></div>
-                                            </div>
-                                    </td>
-                                    <td class="project-title">
-                                        <a href=""><img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}"> Julio Castañeda</a>
-                                    </td>
-                                    <td class="project-actions">
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Detalles </a>
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Editar </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="project-status">
-                                        <span class="label label-primary">En curso</span>
-                                    </td>
-                                    <td class="project-title">
-                                        <a href="{{ url('clases/1') }}">Múdolo Office</a>
-                                        <br/>
-                                        <small>Inició 01 enero 2018 - Termina 01 junio 2018</small>
-                                    </td>
-                                    <td>
-                                        <p>Salón SI_05</p>
-                                        <small>Estudiantes 10 / 15</small>
-                                    </td>
-                                    <td>
-                                        <p>Diurno 7-10</p>
-                                    </td>
-                                    <td class="project-completion">
-                                            <small>Conpletado: 67%</small>
-                                            <div class="progress progress-mini">
-                                                <div style="width: 67%;" class="progress-bar"></div>
-                                            </div>
-                                    </td>
-                                    <td class="project-title">
-                                        <a href=""><img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}"> Ricardo FLorez</a>
-                                    </td>
-                                    <td class="project-actions">
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Detalles </a>
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Editar </a>
-                                    </td>
-                                </tr> --}}
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Acciones</th>
+                                    <th>Módulo</th>
+                                    <th>Estado</th>
+                                    {{-- @role('Administrador') --}}
+                                    <th>Sede</th>
+                                    <th><i title="Estudiantes inscritos" class="fa fa-group"></i></th>
+                                    {{-- @endrole --}}
+                                    <th><small>Salón/Capacidad</small></th>
+                                    <th>Jornada</th>
+                                    <th>Progreso</th>
+                                    @role('Profesor')
+                                    <th>Próxima clase</th>
+                                    @else
+                                    <th>Profesor</th>
+                                    @endrole
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

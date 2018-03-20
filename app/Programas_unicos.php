@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Programas_unicos extends Model
 {
     protected $fillable = [
-    	'nombre'
+    	'nombre', 'modulos_json'
     ];
 }

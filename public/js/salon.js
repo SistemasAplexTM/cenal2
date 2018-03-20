@@ -60,8 +60,6 @@ function edit(id,sede_id, codigo, capacidad, ubicacion){
         ubicacion: ubicacion
     };
     objVue.edit(data);
-    $('#ubicacion').val('Torre');
-    $('#ubicacion').trigger('change');
 }
 
 
@@ -81,7 +79,8 @@ var objVue = new Vue({
             this.codigo = '';
             this.capacidad = '';
             this.editar = 0;
-            $('#ubicacion').val(null).trigger('change');
+            $('select option').remove();
+            $("#ubicacion").trigger("change");
             // initSelect2();
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
@@ -179,22 +178,31 @@ var objVue = new Vue({
             this.sede_id = data['sede_id'];
             this.codigo = data['codigo'];
             this.capacidad = data['capacidad'];
-            
+            var arregloUbicacion = data['ubicacion'].split(",");
+            if(data['ubicacion'] != 'null'){
+                $.each(arregloUbicacion, function(i, item) {
+                    var option = new Option(item.replace(/"/g, '') , item.replace(/"/g, ''), true, true);
+                    $('#ubicacion').append(option).trigger('change');
+                });
+            }
 
-            $('#ubicacion').children().remove();
-            axios.get('ubicacion/getForSelect2').then(response => {
-                $(response.data).each(function (index, value){
-                    $("#ubicacion").append('<option value="'+value.id+'">'+value.text+'<option>');
-                });
-            });
-            axios.get('salon/getUbicacion/'+data['id']).then(response => {
-                $(response.data).each(function (index, value){
-                    $('#ubicacion').val(value);
-                   $("#ubicacion option[value=" + value + "]").attr("selected", true);
-                });
-            });
-            $('#ubicacion').trigger('chosen:updated');
-            $('#ubicacion').trigger('change');
+
+
+
+            // $('#ubicacion').children().remove();
+            // axios.get('ubicacion/getForSelect2').then(response => {
+            //     $(response.data).each(function (index, value){
+            //         $("#ubicacion").append('<option value="'+value.id+'">'+value.text+'<option>');
+            //     });
+            // });
+            // axios.get('salon/getUbicacion/'+data['id']).then(response => {
+            //     $(response.data).each(function (index, value){
+            //         $('#ubicacion').val(value);
+            //        $("#ubicacion option[value=" + value + "]").attr("selected", true);
+            //     });
+            // });
+            // $('#ubicacion').trigger('chosen:updated');
+            // $('#ubicacion').trigger('change');
 
             this.editar = 1;
             this.formErrors = {};

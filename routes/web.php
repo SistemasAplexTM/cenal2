@@ -19,6 +19,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('/clients', 'Api\ClientsController@index')->name('clients');
 	Route::get('/clients/getAll', 'Api\ClientsController@getAll');
 
+	Route::put('/modulo/updateCell', 'ModuloController@updateCell');
+	Route::get('/modulo/getAllForSelect', 'ModuloController@getAllForSelect');
+	Route::get('/modulo/getByPrograma/{programa}', 'ModuloController@getByPrograma');
 	Route::get('/modulo', 'ModuloController@index')->name('modulo');
 	Route::get('/modulo/all', 'ModuloController@getAll');
 	Route::post('/modulo/store', 'ModuloController@store');
@@ -26,16 +29,14 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('modulo/restaurar/{id}' , 'ModuloController@restaurar');
 	Route::get('modulo/delete/{id}/{logical?}', 'ModuloController@delete');
 
-	
-	// Route::get('profesor/clases/all', 'Profesor\ClasesController@getAll');
-
+	Route::put('user/change_state', 'UserController@change_state');
 	Route::get('user/getRolesForSelect2', 'UserController@getRolesForSelect2');
 	Route::get('user/all', 'UserController@getAll');
 	Route::get('user/restaurar/{id}' , 'UserController@restaurar');
 	Route::get('user/delete/{id}/{logical?}', 'UserController@delete');
 	Route::resource('user', 'UserController');
 
-
+	Route::get('salon/getBySede/{sede}', 'SalonController@getBySede');
 	Route::get('salon/getUbicacion/{id}', 'SalonController@getUbicacion');
 	Route::get('salon/all', 'SalonController@getAll');
 	Route::get('salon/restaurar/{id}' , 'SalonController@restaurar');
@@ -53,8 +54,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('festivos/delete/{id}/{logical?}', 'FestivosController@delete');
 	Route::resource('festivos', 'FestivosController');
 
+	Route::get('getAllSedesForSelect', 'ProgramasController@getAllSedesForSelect');
+
 	Route::get('programas/getAllProgramasBySede/{sede}', 'ProgramasController@geAllBySede');
-	Route::put('programas/update_modules/{id}', 'ProgramasController@updateModules');
 	Route::post('programas/add_modules/{id}', 'ProgramasController@addModules');
 	Route::get('programas/getDataModulosByPrograma/{id_programa}', 'ProgramasController@getDataModulosByPrograma');
 	Route::get('programas/all', 'ProgramasController@getAll');
@@ -64,6 +66,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 
 	Route::get('clases/profesor/{profesor_id}', 'Profesor\ClasesController@getAll');
 
+	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
 	Route::get('clases/{clase_id}/getAll_estudiantes_asistencia/{clases_detalle_id}', 'Clases\ClasesController@getAll_estudiantes_asistencia');
 	Route::get('clases/{clase_id}/get_estudiante_asistencia', 'Clases\ClasesController@get_estudiante_asistencia');
 	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');
@@ -87,9 +90,4 @@ Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
 	Route::get('/estudiante/perfil/pendiente', 'Estudiante\PerfilController@pendiente');
 	Route::get('/estudiante/perfil', 'Estudiante\PerfilController@index');
 	Route::post('/estudiante/perfil/update/{id}', 'Estudiante\PerfilController@update');
-});
-/*-- Rutas para el profesor --*/
-Route::group(['middleware' => ['auth', 'teacher', 'VerifyifActive']], function(){
-	Route::get('/profesor/perfil', 'Profesor\PerfilController@index');
-	Route::get('/profesor/clases', 'Profesor\ClasesController@index');
 });

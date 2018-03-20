@@ -17,7 +17,7 @@
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <label for="sede_id" class="control-label gcore-label-top">Sede:</label>
-                                            <select name="sede_id" v-model="sede"  id="sede_id" class="form-control" required="" @change="setProgramas()">
+                                            <select name="sede_id" v-model="sede"  id="sede_id" class="form-control" required="" @change="setProgramas();setSalones()">
                                                 <option value="">Seleccione</option>
                                                 @foreach($sedes as $sede)
                                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
@@ -29,40 +29,68 @@
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                            <span v-show="canrgando_programa==1">CARGANDO...</span>
-                                            <div class="input-group date">
-                                                <label for="programa">Programa:</label>
-                                                <select name="programa" id="programa" v-model="programa" class="form-control" required="">
+                                            <br v-show="cargando==1">
+                                            <div class="sk-spinner sk-spinner-fading-circle text-center" v-show="cargando==1">
+                                                <div class="sk-circle1 sk-circle"></div>
+                                                <div class="sk-circle2 sk-circle"></div>
+                                                <div class="sk-circle3 sk-circle"></div>
+                                                <div class="sk-circle4 sk-circle"></div>
+                                                <div class="sk-circle5 sk-circle"></div>
+                                                <div class="sk-circle6 sk-circle"></div>
+                                                <div class="sk-circle7 sk-circle"></div>
+                                                <div class="sk-circle8 sk-circle"></div>
+                                                <div class="sk-circle9 sk-circle"></div>
+                                                <div class="sk-circle10 sk-circle"></div>
+                                                <div class="sk-circle11 sk-circle"></div>
+                                                <div class="sk-circle12 sk-circle"></div>
+                                            </div>
+                                            <div class="input-group"  v-show="cargando==0">
+                                                <label for="programa">
+                                                    Programa:
+                                                </label>
+                                                <select name="programa" id="programa" v-model="programa" class="form-control" required="" @change="setModulos()">
                                                     <option value="">Seleccione</option>
                                                     <option v-for="programa in programas" v-bind:value="programa.id">
                                                         @{{ programa.programa }}
                                                     </option>
-                                                </select>
+                                                </select>        
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group">
-                                        <!-- <div class="col-sm-12"> -->
+                                        <br v-show="cargandoModulos==1">
+                                        <div class="sk-spinner sk-spinner-fading-circle text-center" v-show="cargandoModulos==1">
+                                            <div class="sk-circle1 sk-circle"></div>
+                                            <div class="sk-circle2 sk-circle"></div>
+                                            <div class="sk-circle3 sk-circle"></div>
+                                            <div class="sk-circle4 sk-circle"></div>
+                                            <div class="sk-circle5 sk-circle"></div>
+                                            <div class="sk-circle6 sk-circle"></div>
+                                            <div class="sk-circle7 sk-circle"></div>
+                                            <div class="sk-circle8 sk-circle"></div>
+                                            <div class="sk-circle9 sk-circle"></div>
+                                            <div class="sk-circle10 sk-circle"></div>
+                                            <div class="sk-circle11 sk-circle"></div>
+                                            <div class="sk-circle12 sk-circle"></div>
+                                        </div>
+                                        <div class="input-group" v-show="cargandoModulos==0">
                                             <label for="modulo_id" class="control-label gcore-label-top">Módulo:</label>
-                                            <select name="modulo_id" id="modulo_id" class="form-control" @click="deleteError('modulo')" required="">
-                                                <option data-duracion="" value="">Seleccione</option>
-                                                @foreach($modulos as $modulo)
-                                                <option data-duracion="{{ $modulo->duracion }}" value="{{ $modulo->id }}">{{ $modulo->nombre }}</option>
-                                                @endforeach
+                                            <select name="modulo_id" id="modulo_id" v-model="modulo_id" class="form-control" required="" @click="deleteError('modulo')" @change="setDuracion()">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="modulo in modulos" v-bind:value="modulo.id" :data-duracion="modulo.duracion">
+                                                    @{{ modulo.name }}
+                                                </option>
                                             </select>
-                                            <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
-                                        <!-- </div> -->
+                                        </div>
+                                        <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
                                     </div>
                                 </div>
                                 <div class="col-lg-1 b-r">
                                     <div class="form-group">
-                                        <!-- <div class="col-sm-12"> -->
-                                            <label for="modulo_id" class="control-label gcore-label-top">Clases:</label>
-                                            <input type="" name="" class="form-control" value="15" readonly="">
-                                            <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
-                                        <!-- </div> -->
+                                            <label for="duracion" class="control-label gcore-label-top">Clases:</label>
+                                            <input type="" name="duracion" class="form-control" v-model="duracion" readonly="">
                                     </div>
                                 </div>
                             </div>
@@ -123,13 +151,30 @@
                                 <div class="col-lg-4 b-r">
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                            <label for="salon_id" class="control-label gcore-label-top">Salón:</label>
-                                            <select name="salon_id" id="salon_id" class="form-control" @change="setCapacidad" required="">
-                                                <option data-capacidad="" value="">Seleccione</option>
-                                                @foreach($salones as $salon)
-                                                <option data-capacidad="{{ $salon->capacidad }}" value="{{ $salon->id }}">{{ $salon->nombre }}</option>
-                                                @endforeach
-                                            </select>
+                                            <br v-show="cargando==1">
+                                                <div class="sk-spinner sk-spinner-fading-circle text-center" v-show="cargando==1">
+                                                    <div class="sk-circle1 sk-circle"></div>
+                                                    <div class="sk-circle2 sk-circle"></div>
+                                                    <div class="sk-circle3 sk-circle"></div>
+                                                    <div class="sk-circle4 sk-circle"></div>
+                                                    <div class="sk-circle5 sk-circle"></div>
+                                                    <div class="sk-circle6 sk-circle"></div>
+                                                    <div class="sk-circle7 sk-circle"></div>
+                                                    <div class="sk-circle8 sk-circle"></div>
+                                                    <div class="sk-circle9 sk-circle"></div>
+                                                    <div class="sk-circle10 sk-circle"></div>
+                                                    <div class="sk-circle11 sk-circle"></div>
+                                                    <div class="sk-circle12 sk-circle"></div>
+                                                </div>
+                                            <div class="input-group"  v-show="cargando==0">
+                                                <label for="salon_id" class="control-label gcore-label-top">Salón:</label>
+                                                <select name="salon_id" id="salon_id" v-model="salon" class="form-control" required="" @click="deleteError('salon')" @change="setCapacidad()" required="">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="salon in salones" v-bind:value="salon.id" :data-capacidad="salon.capacidad" :data-ubicacion="salon.ubicacion">
+                                                        @{{ salon.codigo }}
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -160,13 +205,13 @@
                                    <div class="form-group">
                                         <label class="col-sm-2 control-label">Días de clase: </label>
                                         <div class="col-sm-10">
-                                            <label class="checkbox-inline i-checks"> <input name="semena[1]" type="checkbox" value="1"> Lunes </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semena[2]" type="checkbox" value="2"> Martes </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semena[3]" type="checkbox" value="3"> Miércoles </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semena[4]" type="checkbox" value="4"> Jueves </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semena[5]" type="checkbox" value="5"> Viernes </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semena[6]" type="checkbox" value="6"> Sábado </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semena[7]" type="checkbox" value="7"> Domingo </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[1]" type="checkbox" value="1"> Lunes </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[2]" type="checkbox" value="2"> Martes </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[3]" type="checkbox" value="3"> Miércoles </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[4]" type="checkbox" value="4"> Jueves </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[5]" type="checkbox" value="5"> Viernes </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[6]" type="checkbox" value="6"> Sábado </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[7]" type="checkbox" value="7"> Domingo </label>
                                         </div>
                                     </div> 
                                 </div>
@@ -290,5 +335,5 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('js/clases.js') }}"></script>
+<script src="{{ asset('js/clases_create.js') }}"></script>
 @endpush

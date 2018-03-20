@@ -19,7 +19,7 @@ class VerifyifActive
         if (!Auth::guest()) {
             if (Auth::user()->confirmed == 0) {
                 Auth::logout();
-                return redirect('login')->with('VerifyifActive', 'Debe activar su cuenta para poder acceder.');
+                return redirect('login')->with('notification', 'Debe activar su cuenta para poder acceder.');
             }
             
         }

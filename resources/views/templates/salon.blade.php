@@ -45,7 +45,6 @@
                                             <input value="" placeholder="" class="form-control validarInputs" type="text" v-model="codigo" @click="deleteError('codigo')">
                                             <small id="msn1" class="help-block result-codigo" v-show="formErrors.codigo"></small>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +86,7 @@
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <div class="col-sm-12 col-sm-offset-0 guardar">
-                                            <button id="guardar" class="ladda-button btn btn-primary hvr-float-shadow" data-style="expand-right" @click.prevent="create()" v-if="editar==0"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+                                            <button id="guardar" class="ladda-button btn btn-success hvr-float-shadow" data-style="expand-right" @click.prevent="create()" v-if="editar==0"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
                                             <button type="button" id="editar" class="ladda-button btn btn-info hvr-float-shadow" data-style="expand-right" @click.prevent="update()" v-if="editar==1"><i class="fa fa-edit" aria-hidden="true"></i> Editar</button>
                                             <a type="button" id="cancelar" class="btn btn-white hvr-float-shadow" @click.prevent="cancel()"  v-if="editar==1"><i class="fa fa-times fa-fw"></i> Cancelar</a>
                                         </div>

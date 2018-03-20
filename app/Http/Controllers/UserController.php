@@ -182,6 +182,7 @@ class UserController extends Controller
             'a.address',
             'a.phone',
             'a.cellphone',
+            'a.activo',
             'c.name AS rol',
             'a.sede_id',
             'd.nombre AS sede'
@@ -225,5 +226,15 @@ class UserController extends Controller
             $valid_tags[] = ['id' => $tag->id, 'text' => $tag->name];
         }
         return \Response::json($valid_tags);
+    }
+    public function change_state(Request $request){
+        return $request->all();
+        DB::table('users')
+        ->where('id', '=', $request->user)
+        ->update(
+            ['activo' => $request->action]
+        );
+        $answer = array('code' => 200);
+        return $answer;
     }
 }

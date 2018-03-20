@@ -38,11 +38,24 @@ class ProgramasController extends Controller
     public function store(Request $request)
     {
         try{
-             $validatedData = $request->validate([
-                'nombre' => 'required'
+            $validatedData = $request->validate([
+                'nombre' => 'required',
+                'sedes' => 'required'
             ]);
             $programas_unicos = new Programas_unicos;
             $programas_unicos->nombre = $request->nombre;
+            $mod = array();
+            if(count($request->modulos) > 0){
+                foreach ($request->modulos as $key => $value) {
+                    $mod[] = array(
+                        'id' => $value['id'],
+                        'name' => $value['text'],
+                        'duracion' => $value['duracion']
+                    );
+                }
+            }
+
+            $programas_unicos->modulos_json = json_encode($mod);
             $programas_unicos->save();
             $idPrograma = $programas_unicos->id;
             $sedes = $request->sedes;
@@ -61,102 +74,8 @@ class ProgramasController extends Controller
                     );
                 }
             }
-            $answer=array(
-                "datos" => $request->all(),
-                "code" => 200
-            );
-            return $answer;
-        } catch (Exception $e) {
-            return $e;
-        }
-    }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function addModules(Request $request, $id)
-    {
-        try{
-            $modulos_programas = $this->getDataModulosByPrograma($id);
-            $resultado = array();
-            foreach ($modulos_programas as $key => $value) {
-                $resultado[$key] = $value->id_modulo;
-            }
-            $modulos_request = $request->modulos;
-            if (count($resultado) > 0) {
-                if (count($resultado) > count($modulos_request)) {
-                    $result = array_diff($resultado, $modulos_request);
-                    $result2 = array_diff($modulos_request, $resultado);
-                    foreach ($result as $valueDelete) {
-                        DB::table('pivot_programas_unicos_modulos')->where('id_modulo', '=', $valueDelete)->delete();
-                    }
-                    foreach ($result2 as $key => $valueInsert) {
-                        DB::table('pivot_programas_unicos_modulos')->insertGetId(
-                            ['id_prog_unicos' => $id, 'id_modulo' => $valueInsert]
-                        );
-                    }
-                    // echo '<pre>';
-                    // echo 'La bd es mayor que el request';
-                    // echo 'BD = ' . count($resultado) . ' Request = ' . count($modulos_request);
-                    // echo 'Request';
-                    // print_r($modulos_request);
-                    // echo '<br>';
-                    // echo 'BD';
-                    // print_r($resultado);
-                    // echo 'Diferencia';
-                    // print_r($result);
-                    // echo 'Result 2';
-                    // print_r($result2);
-                    // echo 'Eliminar';
-                }else{
-                    $result = array_diff($modulos_request, $resultado);
-                    $result2 = array_diff($resultado, $modulos_request);
-                    foreach ($result2 as $valueDelete) {
-                        DB::table('pivot_programas_unicos_modulos')->where('id_modulo', '=', $valueDelete)->delete();
-                    }
-                    foreach ($result as $key => $valueInsert) {
-                        DB::table('pivot_programas_unicos_modulos')->insertGetId(
-                            ['id_prog_unicos' => $id, 'id_modulo' => $valueInsert]
-                        );
-                    }
-                    // echo '<pre>';
-                    // echo 'El request es mayor que la bd';
-                    // echo 'BD = ' . count($resultado) . ' Request = ' . count($modulos_request);
-                    // echo 'Request';
-                    // print_r($modulos_request);
-                    // echo '<br>';
-                    // echo 'BD';
-                    // print_r($resultado);
-                    // echo 'Diferencia';
-                    // print_r($result);
-                    // echo 'Result 2';
-                    // print_r($result2);
-                    // echo '</pre>';
-                    // echo 'Agregar';
-                }
-                // exit();
-                // return $result;
-            }
+
             
-             $validatedData = $request->validate([
-                'nombre' => 'required'
-            ]);
-            $programas_unicos = Programas_unicos::findOrFail($id);
-            $programas_unicos->nombre = $request->nombre;
-            $programas_unicos->save();
-            // $idPrograma = $programas_unicos->id;
-            // $modulos = $request->modulos;
-            
-            // if (count($modulos) > 0) {
-            //     foreach ($modulos as $key => $value) {
-            //         DB::table('pivot_programas_unicos_modulos')
-            //         ->insertGetId(
-            //             ['id_prog_unicos' => $idPrograma, 'id_modulo' => $value]
-            //         );
-            //     }
-            // }
             $answer=array(
                 "datos" => $request->all(),
                 "code" => 200
@@ -167,29 +86,53 @@ class ProgramasController extends Controller
         }
     }
 
-    // /**
-    //  * Update the specified resource in storage.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @param  int  $id
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function updateModules(Request $request, $id)
-    // {
-    //     try {
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {   
+        try {
+            $data = Programas_unicos::findOrFail($id);
+            $mod = array();
+            if(count($request->modulos) > 0){
+                foreach ($request->modulos as $key => $value) {
+                    $cadena= $value['text'];
+                    if (strpos($cadena, '(')) {
+                        $parte1=explode('(',$cadena);
+                        $parte2=explode(')',$parte1[1]);
+                        $parentesis= $parte2[0];
+                        $mod[] = array(
+                            'id' => $value['id'],
+                            'name' => $parte1[0],
+                            'duracion' => $parentesis
+                        );
+                    }else{
+                        $mod[] = array(
+                            'id' => $value['id'],
+                            'name' => $value['text'],
+                            'duracion' => $value['duracion']
+                        );
+                    }
+
+                }
+            }
+            $data->modulos_json = json_encode($mod);
+            $data->nombre = $request->nombre;
+            $data->save();
+            $answer=array(
+                "datos" => $request->all(),
+                "code" => 200
+            );
+            return $answer;
             
-    //         $data = Programas_unicos::findOrFail($id);
-    //         $data->update($request->all());
-    //         $answer=array(
-    //             "datos" => $request->all(),
-    //             "code" => 200
-    //         );
-    //         return $answer;
-            
-    //     } catch (Exception $e) {
-    //         return $e;
-    //     }
-    // }
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -211,6 +154,7 @@ class ProgramasController extends Controller
         ->select(
             'a.id_prog_unicos',
             'd.nombre AS programa',
+            'd.modulos_json AS modulos',
             'b.sede_id',
             'c.nombre'
         )
@@ -228,17 +172,7 @@ class ProgramasController extends Controller
             ['a.sede_id', '=', $sede],
             ['a.deleted_at', '=', NULL]
         ])
-        ->get();
-        return $data;
-    }
-    public function getDataModulosByPrograma($id_programa){
-        $data = DB::table('pivot_programas_unicos_modulos As a')
-        ->select(
-            'a.id_modulo'
-        )
-        ->where([['a.deleted_at', '=', NULL],
-                ['a.id_prog_unicos', '=', $id_programa]
-                ])
+        ->orderBy('a.programa')
         ->get();
         return $data;
     }
@@ -257,7 +191,24 @@ class ProgramasController extends Controller
         ->get();
         return $data;
     }
-
+    public function getAllSedesForSelect(Request $request){
+        $term = $request->term ?: '';
+        $data = DB::table('sede As a')
+        ->select(
+            'a.id',
+            'a.nombre'
+        )
+        ->where([
+            ['a.nombre', 'LIKE', $term.'%'],
+            ['a.deleted_at', '=', NULL]
+        ])
+        ->get();
+        $valid_data = [];
+        foreach ($data as $id => $tag) {
+            $valid_data[] = ['id' => $tag->id, 'text' => $tag->nombre];
+        }
+        return \Response::json($valid_data);
+    }
 
     public function delete($id,$logical)
     {

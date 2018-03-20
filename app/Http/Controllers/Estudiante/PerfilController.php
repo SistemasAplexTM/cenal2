@@ -67,7 +67,8 @@ class PerfilController extends Controller
                 'Teléfono fijo',
                 'Teléfono movil',
                 'Dirección',
-                'Correo'
+                'Correo',
+                'Número de documento',
             );
 
             DB::table('historial_estudiante')->insert([
@@ -90,6 +91,11 @@ class PerfilController extends Controller
                     'id_estudiante' => $id,
                     'tipo_campo' => $datos_historial[3],
                     'valor' => $data->correo
+                ],
+                [
+                    'id_estudiante' => $id,
+                    'tipo_campo' => $datos_historial[4],
+                    'valor' => $data->num_documento
                 ]
             ]);
             $data->update($request->all());
@@ -170,6 +176,7 @@ class PerfilController extends Controller
         ->join('factura AS b', 'a.factura_id', 'b.id')
         ->join('estudiante AS c', 'b.estudiante_id', 'c.id')
         ->join('concepto AS d', 'a.concepto_id', 'd.id')
+        ->leftJoin('recibo_caja_detalle AS e', 'a.id', 'e.detalle_factura_id')
         ->select(
             'a.id',
             'a.fecha_inicio',
@@ -177,7 +184,10 @@ class PerfilController extends Controller
             'a.cuota',
             'a.observacion',
             'd.descripcion',
-             DB::raw("IF(DATEDIFF(NOW(),a.fecha_inicio) > 0 AND a.saldo_vencido = 0,0,DATEDIFF(NOW(),a.fecha_inicio)) AS dias")
+            'e.recibo_caja_id',
+            'e.valor',
+            'e.saldo',
+            DB::raw("IF(DATEDIFF(NOW(),a.fecha_inicio) >= 0 AND a.saldo_vencido = 0,0,DATEDIFF(NOW(),a.fecha_inicio)) AS dias")
         )->where([
             ['c.id', '=', $this->getId()],
             ['a.deleted_at', '=' ,NULL ],

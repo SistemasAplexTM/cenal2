@@ -63,7 +63,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'mora' => \App\Http\Middleware\MoraMiddleware::class,
-        'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
         'VerifyifActive' => \App\Http\Middleware\VerifyifActive::class,
         'ChangePassword' => \App\Http\Middleware\ChangePassword::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,

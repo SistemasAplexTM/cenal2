@@ -19,6 +19,7 @@ class ModuloController extends Controller
         ->select(
             'a.id',
             'a.nombre',
+            'a.duracion',
             'a.created_at',
             'a.updated_at'
         )
@@ -42,11 +43,26 @@ class ModuloController extends Controller
     }
 
     public function update(ModuloRequest $request, $id){
-    	try {
+        try {
             $data = Modulos::findOrFail($id);
             $data->update($request->all());
             $answer=array(
                 "datos" => $request->all(),
+                "code" => 200
+            );
+            return $answer;
+            
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function updateCell(Request $request){
+    	try {
+            $obj = $request->obj;
+            $data = Modulos::findOrFail($obj['id']);
+            $data->update($obj);
+            $answer=array(
                 "code" => 200
             );
             return $answer;
@@ -90,5 +106,37 @@ class ModuloController extends Controller
         $data = Modulos::findOrFail($id);
         $data->deleted_at = NULL;
         $data->save();
+    }
+
+    public function getByPrograma($programa){
+        $data = DB::table('pivot_programas_unicos_programas AS a')
+        ->join('programas_unicos AS b', 'a.id_prog_unicos', 'b.id')
+        ->select(
+            'b.modulos_json'
+        )
+        ->where('a.id_programa', '=', $programa)
+        ->first();
+        
+        return (isset($data->modulos_json) ? $data->modulos_json : null);
+    }
+
+    public function getAllForSelect(Request $request){
+        $term = $request->term ?: '';
+        $data = DB::table('modulos As a')
+        ->select(
+            'a.id',
+            'a.nombre AS text',
+            'a.duracion'
+        )
+        ->where([
+            ['a.nombre', 'LIKE', $term.'%'],
+            ['a.deleted_at', '=', NULL]
+        ])
+        ->get();
+        $answer = array(
+            'code' => 200,
+            'items' => $data
+        );
+        return \Response::json($answer);
     }
 }

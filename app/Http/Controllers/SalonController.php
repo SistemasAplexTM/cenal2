@@ -30,6 +30,18 @@ class SalonController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $data = Salones::findOrFail($id);
+        return $data;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -38,13 +50,11 @@ class SalonController extends Controller
     public function store(SalonRequest $request)
     {
         try{
-            $salon = new Salones;
-            $salon->fill($request->all());
-            // $save_ubicacion = json_encode( $request->ubicacion  );
-            $salon->ubicacion = $request->ubicacion;
-            if ($salon->save()) {
+            $data = new Salones;
+            $data->fill($request->all());
+            $data->ubicacion = implode(",", $request->ubicacion);
+            if ($data->save()) {
                 $answer=array(
-                    "datos" => $request->all(),
                     "code" => 200
                 );
             }
@@ -65,11 +75,15 @@ class SalonController extends Controller
     {
         try {
             $data = Salones::findOrFail($id);
-            $data->update($request->all());
-            $answer=array(
-                "datos" => $request->all(),
-                "code" => 200
-            );
+            $data->fill($request->all());
+            if (count($request->ubicacion) > 0)  {
+                $data->ubicacion = implode(",", $request->ubicacion);
+            }
+            if ($data->save()) {
+                $answer=array(
+                    "code" => 200
+                );
+            }
             return $answer;
             
         } catch (Exception $e) {
@@ -98,13 +112,28 @@ class SalonController extends Controller
             'a.codigo',
             'a.capacidad',
             'a.ubicacion',
-            'b.nombre AS sede',
-            'a.created_at',
-            'a.updated_at'
+            'b.nombre AS sede'
         )
         ->where('a.deleted_at', '=', NULL)
         ->get();
         return Datatables::of($data)->make(true);
+    }
+
+    public function getBySede($sede){
+        $data = DB::table('salones As a')
+        ->select(
+            'a.id',
+            'a.sede_id',
+            'a.codigo',
+            'a.capacidad',
+            'a.ubicacion'
+        )
+        ->where([
+            ['a.sede_id', '=', $sede],
+            ['a.deleted_at', '=', NULL]
+        ])
+        ->get();
+        return $data;
     }
 
 

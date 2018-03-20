@@ -22,97 +22,107 @@
                     <a data-toggle="modal" title="Actualizar datos" data-target="#modal-edit" class="">Editar <i class="fa fa-edit"></i></a>
                 </div>
             </div>
-            <div>
-                <div class="ibox-content no-padding border-left-right">
-                    @if($data->genero_id == 1)
-                        <a type="button" data-toggle="modal" data-target="#modal-img">
-                            <img alt="image" class="img-responsive " src="{{ asset('img/user-default.png') }}">
-                        </a>
-                    @elseif($data->genero_id == 1)
-                        <img alt="image" class="img-responsive" src="{{ asset('img/user-default-f.png') }}">
-                    @else
-                        <img alt="image" class="img-responsive" src="{{ asset('img/user-update.png') }}">
-                    @endif
-                </div>
-                <div class="ibox-content profile-content">
-                    <p class="no-margins">
-                        <span class="label label-success"><i class="fa fa-barcode"></i> {{ $data->consecutivo }}</span>
-                    </p>
-                    <h4><strong>{{ $data->nombres . ' ' .$data->primer_apellido . ' ' . $data->segundo_apellido  }}</strong>&nbsp;<span class="badge badge-success"> {{ $data->sede }} &nbsp;<i class="fa fa-map-marker"></i></span></h4>
-                    <p><i class="fa fa-id-card-o icon-separed" ></i>{{ $data->num_documento }}</p>
-                    <p><i class="fa fa-envelope icon-separed" ></i>{{ $data->correo }}</p>
-                    <div class="user-button">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group pull-right">
-                                    <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Certificado 01</a></li>
-                                        <li><a href="#">Certificado 02</a></li>
-                                        <li><a href="#">Certificado 03</a></li>
-                                    </ul>
-                                </div>
-                                <hr>
+            <div class="ibox-content no-padding border-left-right">
+                @if($data->genero_id == 1)
+                    <a type="button" data-toggle="modal" data-target="#modal-img">
+                        <img alt="image" class="img-responsive " src="{{ asset('img/user-default.png') }}">
+                    </a>
+                @elseif($data->genero_id == 1)
+                    <img alt="image" class="img-responsive" src="{{ asset('img/user-default-f.png') }}">
+                @else
+                    <img alt="image" class="img-responsive" src="{{ asset('img/user-update.png') }}">
+                @endif
+            </div>
+            <div class="ibox-content profile-content">
+                <div class="col-lg-12">
+                    <div class="widget style1 blue-bg">
+                        <div class="row vertical-align">
+                            <div class="col-xs-3">
+                                <i class="fa fa-barcode fa-3x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <h2 class="font-bold">{{ $data->consecutivo }}</h2>
                             </div>
                         </div>
                     </div>
-                    {{--<div>
-                        <div class="feed-activity-list disabled">
-                            <div class="feed-element">
-                                <a href="#" class="pull-left">
-                                    <img alt="image" class="img-circle" src="{{ asset('img/user-default.png') }}">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">Hace 40 min.</small>
-                                    <strong>Julian Lasso</strong><br>
-                                    <small class="text-muted">27-10-2017 9:10 am</small>
-                                    <div >
-                                        Los requerimientos del documento IEEE deben estar justificados con la firma del cliente.
-                                    </div>
-                                    <div class="pull-right">
-                                        <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Responder</a>
-                                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <h4>
+                        <strong>{{ $data->nombres . ' ' .$data->primer_apellido . ' ' . $data->segundo_apellido  }}</strong>&nbsp;
+                        <span class="badge badge-success pull-right"> {{ $data->sede }} &nbsp;
+                            <i class="fa fa-map-marker"></i>
+                        </span>
+                    </h4>
+                    <p><i class="fa fa-id-card-o icon-separed" ></i>{{ $data->num_documento }}</p>
+                    <p><i class="fa fa-envelope icon-separed" ></i>{{ $data->correo }}</p>
+                    <div class="user-button">
+                        <div class="btn-group">
+                            <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Certificado 01</a></li>
+                                <li><a href="#">Certificado 02</a></li>
+                                <li><a href="#">Certificado 03</a></li>
+                            </ul>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                {{--<div>
+                    <div class="feed-activity-list disabled">
+                        <div class="feed-element">
+                            <a href="#" class="pull-left">
+                                <img alt="image" class="img-circle" src="{{ asset('img/user-default.png') }}">
+                            </a>
+                            <div class="media-body ">
+                                <small class="pull-right">Hace 40 min.</small>
+                                <strong>Julian Lasso</strong><br>
+                                <small class="text-muted">27-10-2017 9:10 am</small>
+                                <div >
+                                    Los requerimientos del documento IEEE deben estar justificados con la firma del cliente.
                                 </div>
-                            </div>
-                            <div class="feed-element">
-                                <a href="#" class="pull-left">
-                                    <img alt="image" class="img-circle" src="{{ asset('img/user-default-f.png') }}">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">Hace 1 día.</small>
-                                    <strong>Maria Doneya</strong><br>
-                                    <small class="text-muted">26-10-2017 8:43 am</small>
-                                     <div >
-                                        La estructura de la base de datos se hace en la fase planeación, no en la fase de desarrolo y menos en la de pruebas.
-                                    </div>
-                                    <div class="pull-right">
-                                        <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Responder</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="feed-element">
-                                <a href="#" class="pull-left">
-                                    <img alt="image" class="img-circle" src="{{ asset('img/user-default.png') }}">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">Hace 3 día.</small>
-                                    <strong>Andrés</strong><br>
-                                    <small class="text-muted">24-10-2017 11:00 am</small>
-                                     <div >
-                                        El plazo para la entrega de evidencia se vence en 2 horas.
-                                    </div>
-                                    <div class="pull-right">
-                                         <div class="well">
-                                            La plataforma está bloqueada, no he podido subir mi evidencia.
-                                        </div>
-                                        <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Responder</a>
-                                    </div>
+                                <div class="pull-right">
+                                    <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Responder</a>
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-block "><i class="fa fa-arrow-down"></i> Ver más</button>
-                    </div> --}}
-                </div>
+                        <div class="feed-element">
+                            <a href="#" class="pull-left">
+                                <img alt="image" class="img-circle" src="{{ asset('img/user-default-f.png') }}">
+                            </a>
+                            <div class="media-body ">
+                                <small class="pull-right">Hace 1 día.</small>
+                                <strong>Maria Doneya</strong><br>
+                                <small class="text-muted">26-10-2017 8:43 am</small>
+                                 <div >
+                                    La estructura de la base de datos se hace en la fase planeación, no en la fase de desarrolo y menos en la de pruebas.
+                                </div>
+                                <div class="pull-right">
+                                    <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Responder</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feed-element">
+                            <a href="#" class="pull-left">
+                                <img alt="image" class="img-circle" src="{{ asset('img/user-default.png') }}">
+                            </a>
+                            <div class="media-body ">
+                                <small class="pull-right">Hace 3 día.</small>
+                                <strong>Andrés</strong><br>
+                                <small class="text-muted">24-10-2017 11:00 am</small>
+                                 <div >
+                                    El plazo para la entrega de evidencia se vence en 2 horas.
+                                </div>
+                                <div class="pull-right">
+                                     <div class="well">
+                                        La plataforma está bloqueada, no he podido subir mi evidencia.
+                                    </div>
+                                    <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Responder</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block "><i class="fa fa-arrow-down"></i> Ver más</button>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -130,9 +140,12 @@
                             <thead>
                             <tr>
                                 <th>Estado</th>
+                                <th>Recibo</th>
                                 <th>Concepto</th>
                                 <th>Fecha</th>
-                                <th>Valor</th>
+                                <th>Valor total</th>
+                                <th>Valor pagado</th>
+                                <th>Saldo</th>
                                 <th>Días</th>
                                 <th>Observación</th>
                             </tr>
@@ -141,18 +154,21 @@
                                 @foreach($finanzas as $val)
                                     <tr>
                                         <td>
-                                        @if($val->dias == 0)
+                                        @if($val->saldo_vencido == 0)
                                             <span class="label label-primary"><i class="fa fa-check"></i> Pagado</span>
-                                        @elseif($val->dias > 0 && $val->dias < 6)
+                                        @elseif($val->dias >= 0 && $val->dias < 6)
                                             <span class="label label-danger"><i class="fa fa-exclamation-circle"></i> En mora</span>
                                         @else
                                             <span class="label label-warning"><i class="fa fa-exclamation"></i> Pendiente</span>
                                         @endif
                                         </td>
+                                        <td>{{ $val->recibo_caja_id }}</td>
                                         <td>{{ $val->descripcion }}</td>
                                         <td>{{ $val->fecha_inicio }}</td>
                                         <td>$ {{ number_format($val->cuota,2) }}</td>
-                                        <td>{{ ($val->dias == 0)? '' : $val->dias }}</td>
+                                        <td>$ {{ number_format($val->valor,2) }}</td>
+                                        <td>$ {{ number_format($val->saldo,2) }}</td>
+                                        <td>{{ ($val->dias == 0 && $val->saldo_vencido == 0) ? '' : $val->dias }}</td>
                                         <td>{{ $val->observacion }}</td>
                                     </tr>
                                 @endforeach
@@ -249,7 +265,8 @@
     <form action="{{ url('estudiante/perfil/update') }}/{{ $data->id }}" method="POST">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Imágen de perfil</h4>
+        {{-- <h4 class="modal-title">Actualizar datos</h4> --}}
+        <h2 class="text-center">{{ $data->consecutivo }}</h2>
       </div>
       <div class="modal-body">
              {{ csrf_field() }}
@@ -298,7 +315,7 @@
                         <label for="">Documento</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-id-card-o"></i></span>
-                            <input class="form-control" value="{{ $data->num_documento }}" readonly="">
+                            <input class="form-control" name="num_documento" value="{{ $data->num_documento }}">
                         </div>
                     </div>
                     <div class="form-group">

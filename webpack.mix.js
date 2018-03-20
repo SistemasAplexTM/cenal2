@@ -13,11 +13,12 @@ mix.styles([
 	'resources/assets/css/plugins/steps/jquery.steps.css',
 	// 'resources/assets/css/plugins/ladda/ladda.min.css',
 	'resources/assets/css/plugins/ladda/ladda-themeless.min.css',
+	'resources/assets/css/plugins/switchery/switchery.css',
 	'resources/assets/css/main.css'
 	], 'public/css/plantilla.css');
 mix.scripts([
 	'resources/assets/js/plugins/fullcalendar/moment.min.js',
-	'resources/assets/js/jquery-3.1.1.min.js',
+	'resources/assets/js/jquery-2.1.1.js',
 	'resources/assets/js/plugins/jquery-ui.min.js',
 	'resources/assets/js/bootstrap.min.js',
 	/*-- Plugins --*/
@@ -35,6 +36,7 @@ mix.scripts([
 	'resources/assets/js/plugins/ladda/ladda.min.js',
 	'resources/assets/js/plugins/ladda/ladda.jquery.min.js',
 	'resources/assets/js/plugins/validate/jquery.validate.min.js',
+	'resources/assets/js/plugins/switchery/switchery.js',
 	/*-- Plantilla --*/
 	'resources/assets/js/inspinia.js',
 	'resources/assets/js/main.js',

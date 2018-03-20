@@ -75,11 +75,12 @@ class ClasesController extends Controller
     public function store(Request $request)
     {
         // Guardar en tabla clases
-        $clases_id    = Clases::create($request->all())->id;
-        $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semena);
+        $clases_id = Clases::create($request->all())->id;
+        
+        $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
         // Guardar en tabla clases_detalle
         $hora_inicio = $request->hora_inicio_jornada;
-        $hora_fin    = $request->hora_fin;
+        $hora_fin = $request->hora_fin;
         $modulo = DB::table('modulos AS a')
         ->select(
             'a.nombre'
@@ -88,7 +89,7 @@ class ClasesController extends Controller
         ->get();
         foreach ($fechas_clase as $key => $value) {
             DB::table('clases_detalle')->insert([
-                ['title' => 'clase de '. $modulo[0]->nombre, 'clases_id' => $clases_id, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color],
+                ['title' => 'clase de '. $modulo[0]->nombre, 'clases_id' => $clases_id, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon_id],
             ]);
 
         }
@@ -113,7 +114,9 @@ class ClasesController extends Controller
                 'a.end',
                 'a.all_day',
                 'a.color',
-                'b.descripcion AS estado'
+                'b.descripcion AS estado',
+                DB::raw('(SELECT b.codigo FROM salones AS b WHERE b.id = a.salon_id) AS salon'),
+                DB::raw('(SELECT c.sede_id FROM clases AS c WHERE c.id = a.clases_id) AS sede_id')
             )
             ->where([
                 ['a.deleted_at', '=', null],
@@ -133,7 +136,7 @@ class ClasesController extends Controller
     {
         $this->info_user();
         $data = DB::table('clases As a')
-            ->join('salones AS b', 'a.salon_id', 'b.id')
+            // ->join('salones AS b', 'a.salon_id', 'b.id')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
             ->join('jornadas AS d', 'a.jornada_id', 'd.id')
             ->join('estado AS e', 'a.estado_id', 'e.id')
@@ -145,12 +148,12 @@ class ClasesController extends Controller
                 DB::raw('(select count(estado_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id and`g`.`estado_id` = 3)) AS completadas'),
                 DB::raw('(select count(id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS total'),
                 DB::raw('(select count(id) from `clases_estudiante` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS cupos_usados'),
+                DB::raw('(SELECT GROUP_CONCAT(DISTINCT s.codigo,"    /    ", s.capacidad SEPARATOR ", ") AS salon FROM clases_detalle AS j INNER JOIN salones AS s ON j.salon_id = s.id WHERE j.clases_id = a.id ) AS salon'),
+
                 'a.fecha_inicio',
                 'a.observacion',
                 'a.estado_id',
                 'a.cant_estudiantes',
-                'b.codigo AS salon',
-                'b.capacidad',
                 'c.nombre AS modulo',
                 'd.jornada AS jornada',
                 'd.hora_inicio AS inicio_jornada',
@@ -160,6 +163,7 @@ class ClasesController extends Controller
                 'e.clase AS clase_estado',
                 'f.nombre AS sede',
                 'a.profesor_id',
+                'g.img AS perfil_profesor',
                 DB::raw("concat_ws(' ', g.name,g.last_name) AS profesor")
             )
             ->where([
@@ -222,7 +226,7 @@ class ClasesController extends Controller
 
         }
         $data = DB::table('clases As a')
-            ->join('salones AS b', 'a.salon_id', 'b.id')
+            // ->join('salones AS b', 'k.salon_id', 'b.id')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
             ->join('jornadas AS d', 'a.jornada_id', 'd.id')
             ->join('estado AS e', 'a.estado_id', 'e.id')
@@ -233,12 +237,11 @@ class ClasesController extends Controller
                 DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
                 DB::raw('(select count(estado_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id and`g`.`estado_id` = 3)) AS completadas'),
                 DB::raw('(select count(id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS total'),
+                DB::raw('(select count(g.estudiante_id) from `clases_estudiante` as `g` where (`g`.`clases_id` = a.id )) AS cant'),
+                DB::raw('(SELECT GROUP_CONCAT(DISTINCT s.codigo,"    /    ", s.capacidad SEPARATOR ", ") AS salon FROM clases_detalle AS j INNER JOIN salones AS s ON j.salon_id = s.id WHERE j.clases_id = a.id ) AS salon'),
                 'a.fecha_inicio',
                 'a.observacion',
                 'a.estado_id',
-                'a.cant_estudiantes',
-                'b.codigo AS salon',
-                'b.capacidad',
                 'c.nombre AS modulo',
                 'd.jornada AS jornada',
                 'e.descripcion AS estado',
@@ -252,22 +255,22 @@ class ClasesController extends Controller
             ->where($where)
             ->orderBy('estado')
             ->get();
-            foreach ($data as $key => $value) {
-                if ($value->completadas == $value->total) {
-                    DB::table('clases')
-                    ->where('id', '=', $value->id)
-                    ->update(
-                        ['estado_id' => 3]
-                    );
-                }
-                if ($value->completadas > 0 && $value->completadas < $value->total) {
-                    DB::table('clases')
-                    ->where('id', '=', $value->id)
-                    ->update(
-                        ['estado_id' => 2]
-                    );
-                }
+        foreach ($data as $key => $value) {
+            if ($value->completadas == $value->total) {
+                DB::table('clases')
+                ->where('id', '=', $value->id)
+                ->update(
+                    ['estado_id' => 3]
+                );
             }
+            if ($value->completadas > 0 && $value->completadas < $value->total) {
+                DB::table('clases')
+                ->where('id', '=', $value->id)
+                ->update(
+                    ['estado_id' => 2]
+                );
+            }
+        }
         return Datatables::of($data)->make(true);
     }
 
@@ -358,6 +361,9 @@ class ClasesController extends Controller
                 'a.segundo_apellido'
             )
             ->where([['a.deleted_at', '=', null], ['a.consecutivo', '=', $dato]])
+            ->orWhere('a.num_documento', '=', $dato)
+            ->orWhere('a.nombres', 'like', '%'.$dato.'%')
+            ->orWhere('a.primer_apellido', 'LIKE', '%'.$dato.'%')
             ->get();
         return $data;
     }
@@ -383,11 +389,11 @@ class ClasesController extends Controller
         ->get();
 
         $salon = DB::table('salones AS a')
-        ->join('clases AS b', 'a.id', 'b.salon_id')
+        ->join('clases_detalle AS b', 'a.id', 'b.salon_id')
         ->select(
             'a.capacidad'
         )
-        ->where([['b.id', '=', $clases_id]])
+        ->where([['b.clases_id', '=', $clases_id]])
         ->get();
         if ($salon[0]->capacidad == $cupos_usados[0]->cant) {
             $answer = array(
@@ -486,6 +492,27 @@ class ClasesController extends Controller
         return $data;
     }
 
+    public function changeSalon(Request $request)
+    {
+        try {
+            if ($request->salon_id != 0) {
+                DB::table('clases_detalle')
+                ->where('id', '=', $request->clases_detalle_id)
+                ->update(
+                    ['salon_id' => $request->salon_id]
+                );
+                $salon = DB::table('salones AS b')
+                ->select('b.codigo')
+                ->where('b.id', '=', $request->salon_id)
+                ->get();
+                $answer = array('code' => 200, 'salon' => $salon[0]->codigo);
+                return $answer;            
+            }
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
     public function asignar_profesor($clases_id, $profesor_id)
     {
         try {
@@ -521,7 +548,7 @@ class ClasesController extends Controller
         ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
         ->join('programas AS c', 'b.programas_id', 'c.id')
         ->select(
-            DB::raw("concat_ws(' ', nombres,primer_apellido, segundo_apellido) AS nombre"),
+            DB::raw("concat_ws(' ', primer_apellido, segundo_apellido, nombres) AS nombre"),
             'cant_asistencias',
             'programa',
             'b.consecutivo AS codigo',
@@ -529,6 +556,7 @@ class ClasesController extends Controller
             'b.id'
         )
         ->where('a.clases_id', '=', $clases_id)
+        ->orderBy('nombre')
         ->get();
 
         return $data;
@@ -570,8 +598,13 @@ class ClasesController extends Controller
 
         //otras fechas calculadas a partir de la pascua.
 
+        $this->otrasFechasCalculadas(-6); //lunes santo
+        $this->otrasFechasCalculadas(-5); //martes santo
+        $this->otrasFechasCalculadas(-4); //miercoles santo
         $this->otrasFechasCalculadas(-3); //jueves santo
         $this->otrasFechasCalculadas(-2); //viernes santo
+        $this->otrasFechasCalculadas(-1); //sábado santo
+        $this->otrasFechasCalculadas(0); //domingo santo
 
         $this->otrasFechasCalculadas(43, true); //Ascención el Señor pascua
         $this->otrasFechasCalculadas(64, true); //Corpus Cristi

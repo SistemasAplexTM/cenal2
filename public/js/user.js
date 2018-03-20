@@ -9,8 +9,20 @@ $(document).ready(function () {
             { data: "email", name: 'email'},
             { data: "rol", name: 'rol'},
             { data: "sede", name: 'sede'},
-            // { data: "cellphone", name: 'cellphone'},
-            // { data: "email", name: 'email'},
+            {
+                "render": function (data, type, full, meta) {
+                    var activo = '';
+                    if (full.activo == 0) {
+                        // estado = '<label class="checkbox-inline i-checks check-link estudiante_asistencia"><input type="checkbox" checked onclick="change_state_user(0,'+full.id+')" value="" ></label>';
+                        estado = '<input type="checkbox" checked="" onclick="change_state_user(0,'+full.id+')">';
+                        // estado = '<div class="switch"><div class="onoffswitch"><input type="checkbox" checked onclick="change_state_user(0,'+full.id+')" class="onoffswitch-checkbox" id="example2"><label class="onoffswitch-label" for="example1"><span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span></label></div></div>';
+                    }else{
+                        estado = '<input type="checkbox" onclick="change_state_user(1,'+full.id+')">';
+                        // estado = '<div class="switch"><div class="onoffswitch"><input type="checkbox" onclick="change_state_user(1,'+full.id+')" class="onoffswitch-checkbox" id="example2"><label class="onoffswitch-label" for="example1"><span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span></label></div></div>'
+                    }
+                    return estado;
+                }
+            },
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
@@ -31,8 +43,8 @@ $(document).ready(function () {
         ]
     });
     initSelect2();
-});
 
+});
 function initSelect2(){
     $('#roles').select2({
         tags: true,
@@ -66,6 +78,10 @@ function edit(id, name, last_name, address, phone, cellphone, email){
         email: email
     };
     objVue.edit(data);
+}
+
+function change_state_user(action, user){
+    objVue.change_state_user(action, user);
 }
 
 
@@ -206,6 +222,14 @@ var objVue = new Vue({
                     this.name = response.data.data[0].name;
                     this.email = response.data.data[0].email;
                 }
+            });
+        },
+        change_state_user: function(action, user){
+            axios.put('user/change_state', {
+                user: user,
+                action: action
+            }).then(response => {
+                
             });
         },
         edit: function(data){

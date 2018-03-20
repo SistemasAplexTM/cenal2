@@ -8,3 +8,22 @@
 table{
 	width: 100%;
 }
+body { padding-top: 50px; }
+#right-sidebar{
+	width: 400px !important;
+}
+#right-sidebar.sidebar-open.sidebar-top, #right-sidebar.sidebar-open{
+	top: 50px;
+}
+#right-sidebar {
+    background-color: #fff;
+    border-left: 1px solid #e7eaec;
+    border-top: 1px solid #e7eaec;
+    overflow: hidden;
+    position: fixed;
+    top: 60px;
+    width: 260px !important;
+    z-index: 1009;
+    bottom: 0;
+    right: -400px;
+}
