@@ -2468,6 +2468,11 @@ $('.chosen-select').select2();
  /*-- Función para recargar datatables --*/
 function recargarTabla(tabla){
     $('#' + tabla).dataTable()._fnAjaxUpdate();
+    table =  $('#' + tabla).DataTable();
+            table
+             .search( '' )
+             .columns().search( '' )
+             .draw();
 };
 
 /*-- Función para pasar el id de jQuery  a vue para eliminarlo --*/

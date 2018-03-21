@@ -3,7 +3,7 @@
 @section('content')
 <div class="container" id="crud_modulo">
 	<div class="row">
-		<form class="form-horizontal" role="form" action="" method="post">
+		{{-- <form class="form-horizontal" role="form" action="" method="post">
 			<div class="col-lg-5">
 				<div class="ibox float-e-margins">
 	                <div class="ibox-title">
@@ -60,16 +60,22 @@
 	                </div>
 	            </div>
 			</div>
-		</form>
-		<div class="col-lg-7">
+		</form> --}}
+		<div class="col-lg-6 col-lg-offset-3">
 			<div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5><i class="fa fa-list"></i> Módulos</h5>
+                    <h5><i class="fa fa-puzzle-piece"></i> Módulos</h5>
                     <div class="ibox-tools">
 
                     </div>
                 </div>
                 <div class="ibox-content">
+                	<div class="alert alert-danger" role="alert" v-show="JSON.stringify(formErrors)!='{}'">
+                		<ul>
+                			<li class="result-nombre"></li>
+                			<li class="result-duracion"></li>
+                		</ul>
+					</div>
                     <!--***** contenido ******-->
                     <div class="table-responsive">
                         <table id="tbl-modulos" class="table table-striped table-hover table-bordered">
@@ -82,20 +88,11 @@
                             </thead>
                             <tfoot style="display: table-header-group;">
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Duración <small>(clases)</small></th>
-                                    <th class="none">Acciones</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="none"></th>
                                 </tr>
                             </tfoot>
-                            <tbody>
-                            </tbody>
-                            {{-- <tfoot>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Duración <small>(clases)</small></th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </tfoot> --}}
                         </table>
                     </div>
                 </div>

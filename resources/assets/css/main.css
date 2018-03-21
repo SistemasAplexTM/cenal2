@@ -27,3 +27,7 @@ body { padding-top: 50px; }
     bottom: 0;
     right: -400px;
 }
+
+.show {
+  display: inline-block !important;
+}

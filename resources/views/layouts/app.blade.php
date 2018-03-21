@@ -33,6 +33,7 @@
 <!-- Scripts -->
     <script src="{{ asset('js/plantilla.js') }}"></script>
     <script src="https://cdn.datatables.net/keytable/2.3.2/js/dataTables.keyTable.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.16/api/fnFilterClear.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     @stack('scripts')
 </body>

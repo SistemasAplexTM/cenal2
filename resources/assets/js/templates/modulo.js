@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    $('#tbl-modulos tfoot th ').each( function () {
+    $('#tbl-modulos tfoot th ').each( function (key, value) {
         var title = $(this).text();
-        $(this).html( '<input class="form-control input-sm" type="text" placeholder="Buscar '+title+'" />' );
-        $('.none').html('');
+        $(this).html( '<div id="form-group'+key+'"><input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Buscar '+title+'" /></div>' );
+        $('.none').html('<button class="btn btn-success btn-xs" onclick="saveData()"><i class="fa fa-save" ></i></button>');
     });
     var table = $('#tbl-modulos').DataTable({
         keys: true,
@@ -15,15 +15,11 @@ $(document).ready(function () {
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    var params = [
-                        full.id, 
-                        "'" + full.nombre + "'",
-                        full.duracion
+                    var btn_delete = " <a id='btn_delete_"+full.id+"' onclick=\"confirm("+full.id+")\" class='btn btn-outline btn-danger btn-xs' title='Eliminar'><i class='fa fa-trash'></i></a> ";
+                    var btn_confirm = " <a id='btn_confirm_"+full.id+"' onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs hide' title='Confirmar'><i class='fa fa-check'></i></a> ";
+                    var btn_cancel = " <a id='btn_cancel_"+full.id+"' onclick=\"cancel(" + full.id + ")\" class='btn btn-outline btn-primary btn-xs hide' title='Confirmar'><i class='fa fa-times'></i></a> ";
 
-                    ];
-                    var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
-                    return  btn_delete;
+                    return  btn_delete + btn_confirm + btn_cancel;
                 }
             }
         ],
@@ -53,13 +49,28 @@ $(document).ready(function () {
     });
 });
 
-function edit(id,nombre,duracion){
-    var data ={
-        id:id,
-        nombre: nombre,
-        duracion: duracion
-    };
-    objVue.edit(data);
+function saveData(){
+    var nombre = $("#input0").val();
+    var duracion = $("#input1").val();
+    objVue.store(nombre, duracion);
+}
+
+function confirm(id){
+    $("#btn_delete_" + id).removeClass('show');
+    $("#btn_confirm_" + id).removeClass('hide');
+    $("#btn_cancel_" + id).removeClass('hide');
+    $("#btn_delete_" + id).addClass('hide');
+    $("#btn_confirm_" + id).addClass('show');
+    $("#btn_cancel_" + id).addClass('show');
+}
+
+function cancel(id){
+    $("#btn_delete_" + id).addClass('show');
+    $("#btn_confirm_" + id).addClass('hide');
+    $("#btn_cancel_" + id).addClass('hide');
+    $("#btn_delete_" + id).removeClass('hide');
+    $("#btn_confirm_" + id).removeClass('show');
+    $("#btn_cancel_" + id).removeClass('show');
 }
 
 
@@ -79,6 +90,7 @@ var objVue = new Vue({
             this.nombre = '';
             this.duracion = '';
             this.editar = 0;
+            $(".input-search").val('');
             this.formErrors = {};
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
@@ -92,16 +104,20 @@ var objVue = new Vue({
                }
             });
         },
-        store: function(){
+        store: function(nombre, duracion){
             let me = this;
+            if (nombre == null && duracion == null) {
+                nombre = me.nombre;
+                duracion = me.duracion;
+            }
             axios.post('modulo/store',{
-                'nombre': me.nombre,
-                'duracion': me.duracion
+                'nombre': nombre,
+                'duracion': duracion
             })
             .then(function (response){
                 toastr.success('Registrado con éxito');
-                recargarTabla('tbl-modulos');
                 me.resetForm();
+                recargarTabla('tbl-modulos');
             })
             .catch(function(error){
                 if (error.response.status === 422) {
@@ -110,7 +126,7 @@ var objVue = new Vue({
                 $.each(me.formErrors, function (key, value) {
                     $('.result-' + key).html(value);
                 });
-                toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
+                toastr.error("Error al registrar.", {timeOut: 50000});
             });
         },
         delete: function(data){
@@ -136,32 +152,6 @@ var objVue = new Vue({
                 this.updateTable();
             });
         },
-        update: function update() {
-            var urlUpdate = 'modulo/' + this.id;
-            var me = this;
-            axios.put(urlUpdate, {
-                'nombre' : this.nombre,
-                'duracion' : this.duracion
-            }).then(function (response) {
-                if (response.data['code'] == 200) {
-                    toastr.success('Registro actualizado correctamente');
-                    toastr.options.closeButton = true;
-                    me.editar = 0;
-                } else {
-                    toastr.warning(response.data['error']);
-                    toastr.options.closeButton = true;
-                    console.log(response.data);
-                }
-                me.resetForm();
-                me.updateTable();
-            }).catch(function (error) {
-                me.listErrors = '';
-                if (error.response.status === 422) {
-                    me.formErrors = error.response.data;
-                }
-                toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
-            });
-        },
         updateCell: function updateCell(rowData) {
             var urlUpdate = 'modulo/updateCell';
             var me = this;
@@ -185,17 +175,6 @@ var objVue = new Vue({
                 }
                 toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
-        },
-        edit: function(data){
-            this.id = data['id'];
-            this.nombre = data['nombre'];
-            this.duracion = data['duracion'];
-            this.editar = 1;
-            this.formErrors = {};
-        },
-        cancel: function(){
-            this.resetForm();
         }
     }
-    
 });
