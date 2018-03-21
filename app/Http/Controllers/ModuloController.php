@@ -14,8 +14,12 @@ class ModuloController extends Controller
     	return view('templates.modulo');
     }
 
-    public function getAll(){
-    	$data = DB::table('modulos As a')
+    public function getAll($type){
+        $op = '=';
+        if ($type == 'b') {
+            $op = '<>';
+        }
+        $data = DB::table('modulos As a')
         ->select(
             'a.id',
             'a.nombre',
@@ -23,9 +27,9 @@ class ModuloController extends Controller
             'a.created_at',
             'a.updated_at'
         )
-        ->where('a.deleted_at', '=', NULL)
+        ->where('a.deleted_at',  $op , NULL)
         ->get();
-    	return Datatables::of($data)->make(true);
+        return Datatables::of($data)->make(true);
     }
 
     public function store(ModuloRequest $request){

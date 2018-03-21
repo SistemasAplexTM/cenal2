@@ -1,25 +1,36 @@
-$(document).ready(function () {
-    $('#tbl-modulos tfoot th ').each( function (key, value) {
-        var title = $(this).text();
-        $(this).html( '<div id="form-group'+key+'"><input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Buscar '+title+'" /></div>' );
-        $('.none').html('<button class="btn btn-success btn-xs" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+$(function () {
+    $('body').tooltip({
+        selector: 'a[rel="tooltip"], [data-toggle="tooltip"]'
     });
+});
+$(document).ready(function(){
+   getTable('a'); 
+});
+function getTable(on_delete) {
+    $("#tbl-modulos").dataTable().fnDestroy();
+    if (on_delete === 'a') {
+        $('#tbl-modulos tfoot th ').each( function (key, value) {
+            $(this).show();
+            $(this).html( '<input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Buscar o  Registrar" />' );
+            $('.none').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+        });
+    }else{
+        $('#tbl-modulos tfoot th').each( function (key, value) {
+            $(this).hide();
+        });
+    }
     var table = $('#tbl-modulos').DataTable({
         keys: true,
         processing: true,
         serverSide: true,
-        ajax: 'modulo/all',
+        ajax: 'modulo/all/' + on_delete,
         columns: [
             { data: "nombre", name: 'nombre'},
             { data: "duracion", name: 'duracion'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    var btn_delete = " <a id='btn_delete_"+full.id+"' onclick=\"confirm("+full.id+")\" class='btn btn-outline btn-danger btn-xs' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    var btn_confirm = " <a id='btn_confirm_"+full.id+"' onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs hide' title='Confirmar'><i class='fa fa-check'></i></a> ";
-                    var btn_cancel = " <a id='btn_cancel_"+full.id+"' onclick=\"cancel(" + full.id + ")\" class='btn btn-outline btn-primary btn-xs hide' title='Confirmar'><i class='fa fa-times'></i></a> ";
-
-                    return  btn_delete + btn_confirm + btn_cancel;
+                    return imp_btn(on_delete, full.id);
                 }
             }
         ],
@@ -47,30 +58,12 @@ $(document).ready(function () {
             }
         } );
     });
-});
+}
 
 function saveData(){
     var nombre = $("#input0").val();
     var duracion = $("#input1").val();
     objVue.store(nombre, duracion);
-}
-
-function confirm(id){
-    $("#btn_delete_" + id).removeClass('show');
-    $("#btn_confirm_" + id).removeClass('hide');
-    $("#btn_cancel_" + id).removeClass('hide');
-    $("#btn_delete_" + id).addClass('hide');
-    $("#btn_confirm_" + id).addClass('show');
-    $("#btn_cancel_" + id).addClass('show');
-}
-
-function cancel(id){
-    $("#btn_delete_" + id).addClass('show');
-    $("#btn_confirm_" + id).addClass('hide');
-    $("#btn_cancel_" + id).addClass('hide');
-    $("#btn_delete_" + id).removeClass('hide');
-    $("#btn_confirm_" + id).removeClass('show');
-    $("#btn_cancel_" + id).removeClass('show');
 }
 
 
@@ -138,7 +131,7 @@ var objVue = new Vue({
                     toastr.options.closeButton = true;
                 });
             }else{
-                axios.delete('modulo/' + data.id).then(response => {
+                axios.get('modulo/delete/' + data.id + '/' + data.logical).then(response => {
                     this.updateTable();
                     toastr.success('Registro eliminado correctamente.');
                     toastr.options.closeButton = true;

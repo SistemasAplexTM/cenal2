@@ -23,7 +23,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('/modulo/getAllForSelect', 'ModuloController@getAllForSelect');
 	Route::get('/modulo/getByPrograma/{programa}', 'ModuloController@getByPrograma');
 	Route::get('/modulo', 'ModuloController@index')->name('modulo');
-	Route::get('/modulo/all', 'ModuloController@getAll');
+	Route::get('/modulo/all/{type}', 'ModuloController@getAll');
 	Route::post('/modulo/store', 'ModuloController@store');
 	Route::put('/modulo/{id}', 'ModuloController@update');
 	Route::get('modulo/restaurar/{id}' , 'ModuloController@restaurar');

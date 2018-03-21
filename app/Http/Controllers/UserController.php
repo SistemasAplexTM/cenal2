@@ -187,7 +187,11 @@ class UserController extends Controller
             'a.sede_id',
             'd.nombre AS sede'
         )
-        ->where('a.deleted_at', '=', NULL)
+        ->where([
+            ['a.name','<>', 'Administrador'],
+            ['a.code', NULL],
+            ['a.deleted_at', '=', NULL]
+        ])
         ->get();
         return Datatables::of($data)->make(true);
     }
@@ -228,7 +232,7 @@ class UserController extends Controller
         return \Response::json($valid_tags);
     }
     public function change_state(Request $request){
-        return $request->all();
+        
         DB::table('users')
         ->where('id', '=', $request->user)
         ->update(

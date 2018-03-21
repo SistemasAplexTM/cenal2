@@ -14034,3 +14034,6 @@ body { padding-top: 50px; }
 .show {
   display: inline-block !important;
 }
+.table-foot {
+    display: table-header-group;
+}
