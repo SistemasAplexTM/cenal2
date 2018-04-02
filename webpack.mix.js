@@ -11,6 +11,7 @@ mix.styles([
 	'resources/assets/css/plugins/select2/select2.min.css',
 	'resources/assets/css/plugins/fullcalendar/fullcalendar.css',
 	'resources/assets/css/plugins/steps/jquery.steps.css',
+	'resources/assets/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css',
 	// 'resources/assets/css/plugins/ladda/ladda.min.css',
 	'resources/assets/css/plugins/ladda/ladda-themeless.min.css',
 	'resources/assets/css/plugins/switchery/switchery.css',

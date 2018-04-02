@@ -132,12 +132,11 @@
                                             <label for="" class="control-label gcore-label-top">Sede:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <select name="sede" id="sede" class="form-control">
-                                                <option value="">Seleccione</option>
-                                                @foreach($sedes as $sede)
-                                                    <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                                                @endforeach
-                                            </select>
+                                            <v-select label="nombre" v-model="sede_id" :options="{{ $sedes }}">
+                                                <span slot="no-options">
+                                                  No hay datos
+                                                </span>
+                                            </v-select>
                                         </div>
 
                                     </div>
@@ -149,11 +148,16 @@
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <div class="col-sm-4">
-                                            <label for="" class="control-label gcore-label-top">Roles:</label>
+                                            <label for="" class="control-label gcore-label-top">Rol:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                        	<select name="roles[]" id="roles" class="form-control" multiple="">
-                                        	</select>
+                                            <v-select label="name" v-model="rol" :options="{{ $roles }}">
+                                                <span slot="no-options">
+                                                  No hay datos
+                                                </span>
+                                            </v-select>
+                                        	{{-- <select name="roles[]" id="roles" class="form-control" multiple="">
+                                        	</select> --}}
                                         </div>
 
                                     </div>
@@ -194,7 +198,7 @@
                                     <th>Identificación</th>
                                     <th>Nombre</th>
                                     <th>Correo</th>
-                                    <th>Tipo</th>
+                                    <th>Rol</th>
                                     <th>Sede</th>
                                     <th>Activo</th>
                                     <th>Acciones</th>
@@ -208,7 +212,7 @@
                                     <th>Identificación</th>
                                     <th>Nombre</th>
                                     <th>Correo</th>
-                                    <th>Tipo</th>
+                                    <th>Rol</th>
                                     <th>Sede</th>
                                     <th>Activo</th>
                                     <th>Acciones</th>

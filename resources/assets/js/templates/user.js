@@ -28,12 +28,17 @@ $(document).ready(function () {
                 "render": function (data, type, full, meta) {
                     var params = [
                         full.id, 
+                        full.identification_card, 
                         "'" + full.name + "'",
                         "'" + full.last_name + "'",
                         "'" + full.address + "'",
                         "'" + full.phone + "'",
                         "'" + full.cellphone + "'",
-                        "'" + full.email + "'"
+                        "'" + full.email + "'",
+                        "'" + full.sede + "'",
+                        full.sede_id,
+                        "'" + full.rol + "'",
+                        full.rol_id
                     ];
                     var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
                     var btn_edit =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-edit'></i></a> ";
@@ -42,40 +47,22 @@ $(document).ready(function () {
             }
         ]
     });
-    initSelect2();
-
 });
-function initSelect2(){
-    $('#roles').select2({
-        tags: true,
-        tokenSeparators: [','],
-        ajax: {
-            url: 'user/getRolesForSelect2',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return {
-                    term: params.term
-                }
-            },
-            processResults: function (data, page) {
-                return {
-                    results: data
-                };
-            }
-        }
-    });
-}
 
-function edit(id, name, last_name, address, phone, cellphone, email){
+function edit(id,identification_card, name, last_name, address, phone, cellphone, email,sede,sede_id,rol, rol_id){
     var data ={
         id:id,
+        identification_card:identification_card,
         name: name,
         last_name: last_name,
         address: address,
         phone: phone,
         cellphone: cellphone,
-        email: email
+        email: email,
+        sede: sede,
+        sede_id: sede_id,
+        rol: rol,
+        rol_id: rol_id
     };
     objVue.edit(data);
 }
@@ -95,8 +82,9 @@ var objVue = new Vue({
         cellphone: '',
         email: '',
         user_id: '',
+        sede_id: null,
+        rol: null,
         identification_card: '',
-        roles: {},
         editar: 0,
         formErrors: {}
     },
@@ -109,8 +97,8 @@ var objVue = new Vue({
             this.phone = '',
             this.cellphone = '',
             this.email = '',
-            this.roles = {},
-            $('#roles').val(null).trigger('change');
+            this.sede_id = null,
+            this.rol = null,
             this.editar = 0;
             this.formErrors = {};
         },
@@ -135,8 +123,8 @@ var objVue = new Vue({
                 'phone': me.phone,
                 'cellphone': me.cellphone,
                 'email': me.email,
-                'sede': $('#sede').val(),
-                'roles': $('#roles').val()
+                'sede_id': me.sede_id,
+                'roles': me.rol
             })
             .then(function (response){
                  if (response.data['code'] == 200) {
@@ -190,7 +178,8 @@ var objVue = new Vue({
                 'phone': me.phone,
                 'cellphone': me.cellphone,
                 'email': me.email,
-                'roles': me.roles
+                'sede_id': me.sede_id,
+                'roles': me.rol
             }).then(function (response) {
                 me.resetForm();
                 recargarTabla('tbl-user');
@@ -243,6 +232,8 @@ var objVue = new Vue({
             this.phone = data['phone'],
             this.cellphone = data['cellphone'],
             this.email = data['email'],
+            this.sede_id = {id: data['sede_id'], nombre: data['sede']};
+            this.rol = {id: data['rol_id'], name: data['rol']};
             this.editar = 1;
             this.formErrors = {};
         },

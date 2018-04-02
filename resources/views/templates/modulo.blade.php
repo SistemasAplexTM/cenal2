@@ -8,6 +8,7 @@
                 <div class="ibox-title">
                     <h5><i class="fa fa-puzzle-piece"></i> Módulos</h5>
                     <div class="ibox-tools">
+                        @role('Administrador')
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
                             <i class="fa fa-ellipsis-h"></i>
                         </a>
@@ -16,6 +17,7 @@
                             <li><a href="#" onclick="getTable('b')"><i class="fa fa-trash"></i> Ver eliminados</a>
                             </li>
                         </ul>
+                        @endrole
                     </div>
                 </div>
                 <div class="ibox-content">

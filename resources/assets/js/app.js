@@ -7,6 +7,7 @@
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
 
 window.swal = require('sweetalert2');
@@ -16,6 +17,8 @@ window.toastr = require('toastr');
 
 // import SweetModal from 'sweet-modal-vue/plugin.js'
 // Vue.use(SweetModal)
+import vSelect from 'vue-select'
+Vue.component('v-select', vSelect)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

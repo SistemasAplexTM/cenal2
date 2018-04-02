@@ -18,10 +18,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        $roles = array(
-            'Administrador',
-            'Coordinador'
-        );
+        $roles = DB::table('roles As a')
+        ->select(
+            'a.id',
+            'a.name'
+        )
+        ->where('a.deleted_at', NULL)
+        ->get();
         $sedes = DB::table('sede AS a')
         ->select(
             'a.id',
@@ -61,40 +64,15 @@ class UserController extends Controller
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'cellphone' => $request->cellphone,
-                'sede_id' => $request->sede,
+                'sede_id' => $request->sede_id['id'],
                 'password' => bcrypt($request->identification_card)
             ]);
+            $user->assignRole($request->roles['id']);
             
-            // Asignación del rol
-            foreach ($request->roles as $key => $value) {
-                $user->assignRole($value);
-            }
             return array('code' => 200);
         } catch (Exception $e) {
             return $e;
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -116,11 +94,11 @@ class UserController extends Controller
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'cellphone' => $request->cellphone,
+                'sede_id' => $request->sede_id['id'],
                 'password' => bcrypt($request->identification_card)
             ]);
-            foreach ($request->roles as $key => $value) {
-                $data->assignRole($value);
-            }
+            DB::table('model_has_roles')->where('model_id', '=', $data->id)->delete();
+            $data->assignRole($request->roles['id']);
             $answer=array(
                 "code" => 200
             );
@@ -169,8 +147,8 @@ class UserController extends Controller
 
     public function getAll(){
         $data = DB::table('users As a')
-        ->join('model_has_roles AS b', 'a.id', 'b.model_id')
-        ->join('roles AS c', 'b.role_id', 'c.id')
+        ->leftJoin('model_has_roles AS b', 'a.id', 'b.model_id')
+        ->leftJoin('roles AS c', 'b.role_id', 'c.id')
         ->join('sede AS d', 'a.sede_id', 'd.id')
         ->select(
             'a.id',
@@ -183,6 +161,7 @@ class UserController extends Controller
             'a.phone',
             'a.cellphone',
             'a.activo',
+            'c.id AS rol_id',
             'c.name AS rol',
             'a.sede_id',
             'd.nombre AS sede'

@@ -37,7 +37,7 @@ class LoginController extends Controller
     {
         $user = Auth::user();
         if ($user->hasRole('Estudiante')) {
-            return '/home';   
+            return 'estudiante/perfil';   
         }
         return '/clases';
     }

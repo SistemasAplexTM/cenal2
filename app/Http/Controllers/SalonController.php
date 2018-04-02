@@ -52,6 +52,7 @@ class SalonController extends Controller
         try{
             $data = new Salones;
             $data->fill($request->all());
+            $data->sede_id = $request->sede_id['id'];
             $data->ubicacion = implode(",", $request->ubicacion);
             if ($data->save()) {
                 $answer=array(
@@ -76,6 +77,7 @@ class SalonController extends Controller
         try {
             $data = Salones::findOrFail($id);
             $data->fill($request->all());
+            $data->sede_id = $request->sede_id['id'];
             if (count($request->ubicacion) > 0)  {
                 $data->ubicacion = implode(",", $request->ubicacion);
             }
@@ -171,5 +173,15 @@ class SalonController extends Controller
     public function getUbicacion($id){
         $data = Salones::findOrFail($id);
         return json_decode($data->ubicacion);
+    }
+
+    public function getAllSede(){
+        $sedes = DB::table('sede AS a')
+        ->select(
+            'a.id',
+            'a.nombre'
+        )
+        ->get();
+        return json_encode($sedes);
     }
 }

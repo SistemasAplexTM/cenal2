@@ -16,7 +16,7 @@ $(document).ready(function () {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     //var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    var btn_edit =  "<a href='clases/" + full.id + "/edit' class='btn btn-white btn-sm'><i class='fa fa-folder'></i> Detalles </a> ";
+                    var btn_edit =  "<a href='clases/" + full.id + "/edit' class='btn btn-warning btn-sm'><i class='fa fa-folder'></i> Detalles </a> ";
                     return btn_edit ;
                 }
             },
@@ -63,7 +63,7 @@ $(document).ready(function () {
                         }
                     }
                     if (roles.includes('Profesor')) {
-                        return 'Próxima fecha';
+                        return '';
                     }
                 }
             }

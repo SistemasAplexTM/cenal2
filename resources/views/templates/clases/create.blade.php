@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="col-lg-9">
                             <div class="row">
-                                <div class="col-lg-4 b-r">
+                                <div class="col-lg-3 b-r">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <label for="sede_id" class="control-label gcore-label-top">Sede:</label>
@@ -26,7 +26,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-5">
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <br v-show="cargando==1">
@@ -44,16 +44,19 @@
                                                 <div class="sk-circle11 sk-circle"></div>
                                                 <div class="sk-circle12 sk-circle"></div>
                                             </div>
-                                            <div class="input-group"  v-show="cargando==0">
-                                                <label for="programa">
-                                                    Programa:
-                                                </label>
-                                                <select name="programa" id="programa" v-model="programa" class="form-control" required="" @change="setModulos()">
+                                            <div v-show="cargando==0">
+                                                <label for="programa">Programa:</label>
+                                                <v-select label="programa" :options="programas" :on-change="setModulos">
+                                                    <span slot="no-options">
+                                                      No hay datos
+                                                    </span>
+                                                </v-select>
+                                                {{-- <select name="programa" id="programa" v-model="programa" class="form-control" required="" @change="setModulos()">
                                                     <option value="">Seleccione</option>
                                                     <option v-for="programa in programas" v-bind:value="programa.id">
                                                         @{{ programa.programa }}
                                                     </option>
-                                                </select>        
+                                                </select>  --}}       
                                             </div>
                                         </div>
                                     </div>
@@ -76,13 +79,19 @@
                                             <div class="sk-circle12 sk-circle"></div>
                                         </div>
                                         <div class="input-group" v-show="cargandoModulos==0">
-                                            <label for="modulo_id" class="control-label gcore-label-top">Módulo:</label>
-                                            <select name="modulo_id" id="modulo_id" v-model="modulo_id" class="form-control" required="" @click="deleteError('modulo')" @change="setDuracion()">
+                                            <label for="modulo_id" class="control-label gcore-label-top">Módulo:  @{{ modulo_id }}</label>
+                                            <v-select v-model="modulo_id" label="name" :options="modulos" :on-change="setDuracion">
+                                                <span slot="no-options">
+                                                  No hay datos
+                                                </span>
+                                            </v-select>
+                                            <input type="hidden" id="modulo_id" name="modulo_id" />
+                                            {{-- <select name="modulo_id" id="modulo_id" v-model="modulo_id" class="form-control" required="" @click="deleteError('modulo')" @change="setDuracion()">
                                                 <option value="">Seleccione</option>
                                                 <option v-for="modulo in modulos" v-bind:value="modulo.id" :data-duracion="modulo.duracion">
                                                     @{{ modulo.name }}
                                                 </option>
-                                            </select>
+                                            </select> --}}
                                         </div>
                                         <small id="msn1" class="help-block result-modulo" v-show="formErrors.modulo"></small>
                                     </div>

@@ -2495,10 +2495,10 @@ function deshacerEliminar(id){
 
 function imp_btn(on_delete,id){
 
-    var btn_cancel = " <a id='btn_cancel_"+id+"' onclick=\"cancel('_cancel_'," + id + ")\" class='btn btn-outline btn-primary btn-xs hide' data-toggle='tooltip' title='Cancelar'><i class='fa fa-times'></i></a> ";    
+    var btn_cancel = " <a id='btn_cancel_"+id+"' onclick=\"cancel('_cancel_'," + id + ")\" class='btn btn-outline btn-danger btn-xs hide' data-toggle='tooltip' title='Cancelar'><i class='fa fa-times'></i></a> ";    
     if (on_delete === 'a') {
         var btn_confirm = " <a id='btn_confirm_"+id+"' onclick=\"confirm('_confirm_',"+id+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' title='Eliminar'><i class='fa fa-trash'></i></a>";
-        var btn_delete = " <a id='btn_delete_"+id+"' onclick=\"eliminar(" + id + ","+true+")\" class='btn btn-outline btn-danger btn-xs hide' data-toggle='tooltip' title='Confirmar'><i class='fa fa-check'></i></a> ";
+        var btn_delete = " <a id='btn_delete_"+id+"' onclick=\"eliminar(" + id + ","+true+")\" class='btn btn-outline btn-primary btn-xs hide' data-toggle='tooltip' title='Confirmar'><i class='fa fa-check'></i></a> ";
         return  btn_delete + btn_confirm + btn_cancel;
     }
 
@@ -2506,7 +2506,7 @@ function imp_btn(on_delete,id){
 
     else{
         var btn_confirm = " <a id='btn_confirm_"+id+"' onclick=\"confirm('_confirm_',"+id+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' title='Eliminar permanentemente'><i class='fa fa-eraser'></i></a> ";
-        var btn_delete = " <a id='btn_delete_"+id+"' onclick=\"eliminar(" + id + ","+false+")\" class='btn btn-outline btn-danger btn-xs hide' data-toggle='tooltip' title='Confirmar'><i class='fa fa-check'></i></a> ";
+        var btn_delete = " <a id='btn_delete_"+id+"' onclick=\"eliminar(" + id + ","+false+")\" class='btn btn-outline btn-primary btn-xs hide' data-toggle='tooltip' title='Confirmar'><i class='fa fa-check'></i></a> ";
         var btn_restore = " <a id='btn_restore_"+id+"' onclick=\"deshacerEliminar("+id+")\" class='btn btn-outline btn-primary btn-xs' data-toggle='tooltip' title='Restaurar'><i class='fa fa-refresh'></i></a> ";
         return  btn_restore + btn_delete + btn_confirm + btn_cancel;
     }

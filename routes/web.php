@@ -18,6 +18,8 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('/baloto', 'MoraController@baloto')->name('baloto');
 	Route::get('/clients', 'Api\ClientsController@index')->name('clients');
 	Route::get('/clients/getAll', 'Api\ClientsController@getAll');
+	
+	Route::get('/sede/all', 'SalonController@getAllSede');
 
 	Route::put('/modulo/updateCell', 'ModuloController@updateCell');
 	Route::get('/modulo/getAllForSelect', 'ModuloController@getAllForSelect');

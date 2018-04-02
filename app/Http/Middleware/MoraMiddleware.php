@@ -17,7 +17,8 @@ class MoraMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->rol == 0){
+        $user = Auth::user();
+        if($user->hasRole('Estudiante')){
             $email = Auth::user()->email;
             $data = DB::table('estudiante AS a')
             ->select(

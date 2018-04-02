@@ -130,8 +130,8 @@
         <div class="tabs-container">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-money"></i>Financiero</a></li>
-                <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Calificaciones</a></li>
-                <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Asistencia</a></li>
+                {{-- <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Calificaciones</a></li> --}}
+                <li><a data-toggle="tab" href="#" ><i class="fa fa-calendar-check"></i>Asistencia</a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane active">

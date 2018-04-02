@@ -29,7 +29,7 @@
                                     <th>Jornada</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
-                                    <th>Próxima clase</th>
+                                    <th></th>
                                     @else
                                     <th>Profesor</th>
                                     @endrole
@@ -50,7 +50,7 @@
                                     <th>Jornada</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
-                                    <th>Próxima clase</th>
+                                    <th></th>
                                     @else
                                     <th>Profesor</th>
                                     @endrole

@@ -13,6 +13,7 @@ $(document).ready(function () {
                 "render": function (data, type, full, meta) {
                     var params = [
                         full.id,
+                        "'" + full.sede + "'",
                         full.sede_id,
                         "'" + full.codigo + "'",
                         full.capacidad,
@@ -51,9 +52,10 @@ function initSelect2(){
     });
 }
 
-function edit(id,sede_id, codigo, capacidad, ubicacion){
+function edit(id,sede,sede_id, codigo, capacidad, ubicacion){
     var data ={
         id:id,
+        sede: sede,
         sede_id: sede_id,
         codigo: codigo,
         capacidad: capacidad,
@@ -66,22 +68,31 @@ function edit(id,sede_id, codigo, capacidad, ubicacion){
 var objVue = new Vue({
     el: '#crud_salon',
     data:{
-        sede_id:'',
+        sede_id: null,
+        sedes2: [],
         codigo:'',
         capacidad:'',
         ubicacion: [],
         editar: 0,
         formErrors: {}
     },
+    created(){
+        this.get_sedes();
+    },
     methods:{
         resetForm: function(){
-            this.sede_id = '';
+            this.sede_id = null;
             this.codigo = '';
             this.capacidad = '';
             this.editar = 0;
             $('select option').remove();
             $("#ubicacion").trigger("change");
             // initSelect2();
+        },
+        get_sedes: function(){
+            axios.get('sede/all').then(response => { 
+                this.sedes2 = response.data;
+            });
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -175,7 +186,7 @@ var objVue = new Vue({
         },
         edit: function(data){
             this.id = data['id'];
-            this.sede_id = data['sede_id'];
+            this.sede_id = {id: data['sede_id'], nombre: data['sede']};
             this.codigo = data['codigo'];
             this.capacidad = data['capacidad'];
             var arregloUbicacion = data['ubicacion'].split(",");

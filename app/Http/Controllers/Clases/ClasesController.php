@@ -173,9 +173,8 @@ class ClasesController extends Controller
             ->get();
         $data = $data[0];
         $porcentaje = $data->completadas / $data->total * 100;
-        $estudiantes_inscritos = $this->estudiantes_inscritos($id);
 
-        return view('templates.clases.detail', compact('data', 'porcentaje', 'estudiantes_inscritos'));
+        return view('templates.clases.detail', compact('data', 'porcentaje'));
     }
 
     /**
@@ -355,15 +354,12 @@ class ClasesController extends Controller
         $data = DB::table('estudiante As a')
             ->select(
                 'a.id',
-                'a.consecutivo',
-                'a.nombres',
-                'a.primer_apellido',
-                'a.segundo_apellido'
+                'a.consecutivo AS codigo',
+                'a.num_documento',
+                DB::raw("concat_ws(' ', a.primer_apellido, a.segundo_apellido, a.nombres) AS nombre")
             )
             ->where([['a.deleted_at', '=', null], ['a.consecutivo', '=', $dato]])
             ->orWhere('a.num_documento', '=', $dato)
-            ->orWhere('a.nombres', 'like', '%'.$dato.'%')
-            ->orWhere('a.primer_apellido', 'LIKE', '%'.$dato.'%')
             ->get();
         return $data;
     }
@@ -480,11 +476,12 @@ class ClasesController extends Controller
                 'a.id',
                 'a.name',
                 'a.last_name',
-                'a.email'
+                'a.email',
+                'a.identification_card'
             )
             ->where([
                 ['a.name', 'LIKE', $dato.'%'],
-                ['c.name', '=', 'Profesor'],
+                ['c.id', '=', 1],
                 ['a.sede_id', '=', DB::raw('(SELECT sede_id FROM clases WHERE id = '.$clases_id.')')],
                 ['a.deleted_at', '=', null]
             ])
@@ -549,7 +546,6 @@ class ClasesController extends Controller
         ->join('programas AS c', 'b.programas_id', 'c.id')
         ->select(
             DB::raw("concat_ws(' ', primer_apellido, segundo_apellido, nombres) AS nombre"),
-            'cant_asistencias',
             'programa',
             'b.consecutivo AS codigo',
             'b.correo',

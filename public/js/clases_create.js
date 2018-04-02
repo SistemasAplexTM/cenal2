@@ -7,7 +7,6 @@ $(document).ready(function () {
         autoclose: true,
     });
 
-
     $("#jornada").on('change', function(){
         objVue.setHorasJornada();
     });
@@ -21,16 +20,16 @@ var objVue = new Vue({
     el: '#clases',
     data:{
         salon:'',
-        programa:'',
-        modulo_id:'',
+        programa: '',
+        modulo_id:null,
         capacidad:'',
         ubicacion:'',
         duracion:'',
         jornada:'',
         sede:'',
-        programas: {},
-        modulos: {},
-        salones: {},
+        programas: [],
+        modulos: [],
+        salones: [],
         hora_inicio_jornada: '',
         hora_fin_jornada: '',
         cargando: 0,
@@ -42,8 +41,8 @@ var objVue = new Vue({
             this.duracion = '';
             this.capacidad = '';
             this.ubicacion = '';
-            this.salones = {};
-            this.modulos = {};
+            this.salones = [];
+            this.modulos = [];
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -60,8 +59,12 @@ var objVue = new Vue({
             this.capacidad = $("#salon_id").find(':selected').data('capacidad');
             this.ubicacion = $("#salon_id").find(':selected').data('ubicacion');
         },
-        setDuracion: function(){
-            this.duracion = $("#modulo_id").find(':selected').data('duracion');
+        setDuracion: function(val){
+            $("#modulo_id").val('');
+            if (val != null) {
+                $("#modulo_id").val(val.id);
+                this.duracion = val.duracion;
+            }
         },
         setProgramas: function(){
             this.resetForm();
@@ -72,20 +75,23 @@ var objVue = new Vue({
                     this.cargando = 0;
                 });
             }else{
-                this.programas = {};
+                this.programas = [];
             }
         },
-        setModulos: function(){
-            if (this.programa > 0) {
+        setModulos: function(val){
+            this.duracion = '';
+            if (val != null) {
                 this.cargandoModulos = 1;
-                axios.get('../modulo/getByPrograma/' + this.programa).then(response => {
-                    if(response.data != null){
+                axios.get('../modulo/getByPrograma/' + val.id).then(response => {
+                    if(response.data.length > 0){
                         this.modulos = response.data 
+                    }else{
+                        this.modulos = [];
                     }
                     this.cargandoModulos = 0;
                 });
             }else{
-                this.modulos = {};
+                this.modulos = [];
             }
         },
         setSalones: function(){
@@ -96,7 +102,7 @@ var objVue = new Vue({
                     this.cargando = 0;
                 });
             }else{
-                this.salones = {};
+                this.salones = [];
             }
         },
         setInicioJornada: function(){
