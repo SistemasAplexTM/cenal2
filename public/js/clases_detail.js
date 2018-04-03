@@ -61,6 +61,7 @@ var objVue = new Vue({
         estudiantes: {},
         estudiantes_asistencia: [],
         estudiantes_inscritos: {},
+        repeatObj: {},
         profesores: {},
         formErrors: {}
     },
@@ -109,13 +110,9 @@ var objVue = new Vue({
                 this.verSidebar = 1; 
                 this.dato_estudiante = '';
                 if (response.data.code == 600) {
+                    this.repeatObj = response.data.data;
                     this.repeatInscrito = true;
                     this.repeatInscritoMessage = 'El estudiante ya está inscrito';
-                    // swal({
-                    //     type: 'error',
-                    //     // title: 'Espera...',
-                    //     text: "El estudiante ya está inscrito a esta clase!"
-                    // });
                 }
                 if (response.data.code == 601) {
                     swal({
@@ -127,6 +124,7 @@ var objVue = new Vue({
                 if (response.data.code == 200) {
                     this.verSidebar = 0; 
                     this.repeatInscrito = false;
+                    this.repeatObj = {};
                     this.repeatInscritoMessage = 'Agregar';
                     this.get_estudiantes_inscritos();
                 }

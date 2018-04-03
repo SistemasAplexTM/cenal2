@@ -367,12 +367,19 @@ class ClasesController extends Controller
     public function agregar_estudiante($clases_id, $estudiante_id)
     {
         $exist = DB::table('clases_estudiante AS a')
-        ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
-        ->join('programas AS c', 'b.programas_id', 'c.id')
+        ->join('clases AS b', 'a.clases_id', 'b.id')
+        ->join('jornadas AS c', 'b.jornada_id', 'c.id')
+        ->join('sede AS d', 'b.sede_id', 'd.id')
         ->select(
-            DB::raw("count(estudiante_id) AS cant")
+            'b.id',
+            'd.nombre AS sede',
+            'c.jornada'
         )
-        ->where([['a.estudiante_id', '=', $estudiante_id], ['a.clases_id', '=', $clases_id]])
+        ->where([
+            ['a.estudiante_id', '=', $estudiante_id],
+            ['b.modulo_id', '=', 2],
+            ['b.estado_id', '<>', 3]
+        ])
         ->get();
 
         $cupos_usados = DB::table('clases_estudiante AS a')
@@ -396,7 +403,7 @@ class ClasesController extends Controller
                 'code' => 601
             );
         }else{
-            if ($exist[0]->cant == 0) {
+            if (count($exist) <= 0) {
                 DB::table('clases_estudiante')
                 ->insert([
                     ['clases_id' => $clases_id, 'estudiante_id' => $estudiante_id]
@@ -404,7 +411,8 @@ class ClasesController extends Controller
                 $answer = array('code' => 200);
             }else{
                 $answer = array(
-                    'code' => 600
+                    'code' => 600,
+                    'data' => $exist[0]
                 );
             }
         }

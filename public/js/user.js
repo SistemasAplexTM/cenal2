@@ -47,30 +47,7 @@ $(document).ready(function () {
             }
         ]
     });
-    // initSelect2();
-
 });
-// function initSelect2(){
-//     $('#roles').select2({
-//         tags: true,
-//         tokenSeparators: [','],
-//         ajax: {
-//             url: 'user/getRolesForSelect2',
-//             dataType: 'json',
-//             delay: 250,
-//             data: function(params) {
-//                 return {
-//                     term: params.term
-//                 }
-//             },
-//             processResults: function (data, page) {
-//                 return {
-//                     results: data
-//                 };
-//             }
-//         }
-//     });
-// }
 
 function edit(id,identification_card, name, last_name, address, phone, cellphone, email,sede,sede_id,rol, rol_id){
     var data ={

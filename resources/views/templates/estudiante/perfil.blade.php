@@ -6,12 +6,12 @@
       width: 100% !important;
     }
   </style>
-<div class="row animated fadeInRight">
-    @if(session('mora'))
+<div class="row animated fadeInRight" id="perfil">
+    {{-- @if(session('mora'))
         <div class="alert alert-danger">
             <h2>Mensajdelkmlkmdflskm</h2>
         </div>
-    @endif
+    @endif --}}
     <div class="col-md-4">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
@@ -131,7 +131,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-money"></i>Financiero</a></li>
                 {{-- <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Calificaciones</a></li> --}}
-                <li><a data-toggle="tab" href="#" ><i class="fa fa-calendar-check"></i>Asistencia</a></li>
+                <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-calendar"></i>Asistencia</a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane active">
@@ -178,55 +178,61 @@
                 </div>
                 <div id="tab-2" class="tab-pane">
                     <div class="panel-body">
-                       <div class="col-md-6">
-                            <div class="ibox float-e-margins">
-                                <div class="ibox-title">
-                                    <h5>Pagado</h5>
-                                </div>
-                                <div class="ibox-content">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="tbl-recibos-pagados" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Valor</th>
-                                                    <th>Descuento</th>
-                                                    <th>Neto</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-                                </div>
+                        <div class="col-md-4">
+                            <a href="#" class="list-group-item active" style="text-align: center;">
+                                Modulos
+                            </a>
+                            <div class="alert alert-success text-center" v-if="modulos.length <= 0">No se encuentra inscrito a nungún módulo actualmente</div>
+                            <div class="btn-group-vertical" id="listaModulos" style="width: 100%;" v-if="modulos.length > 0">
+                                <button v-for="modulo in modulos" type="button" @click.prevent="listarAsistencia(modulo.id)" class="btn btn-default btn-block" style="text-align:left;"> 
+                                    @{{ modulo.nombre }}
+                                </button>
                             </div>
                         </div>
-                       <div class="col-md-6">
-                            <div class="ibox float-e-margins">
-                                <div class="ibox-title">
-                                    <h5>Pendiente </h5>
-                                </div>
-                                <div class="ibox-content">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="tbl-pendiente" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Descripción</th>
-                                                    <th>Fecha</th>
-                                                    <th>Cuota</th>
-                                                    <th>Saldo vencido</th>
-                                                    <th>Días</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-md-8">
+                            <table class="table table-striped table-bordered" id="tbl-finanzas" width="200px">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Módulo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>08-04-2018</th>
+                                        <td>
+                                            <span class="btn btn-danger btn-xs"><i class="fa fa-times"></i></span>
+                                            <span class="btn btn-primary btn-xs"><i class="fa fa-check"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>08-04-2018</th>
+                                        <td>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" checked="" disabled="">
+                                                <label for="checkbox3">
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>08-04-2018</th>
+                                        <td>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" checked="" disabled="">
+                                                <label for="checkbox3">
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>08-04-2018</th>
+                                        <td>
+                                            
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                </div>
-                <div id="tab-3" class="tab-pane">
-                    <div class="panel-body">
-                       
-
                     </div>
                 </div>
             </div>

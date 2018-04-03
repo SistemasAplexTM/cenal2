@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 });
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
+	Route::get('/estudiante/modulosByEstudiente/{estudiante_id}', 'Estudiante\PerfilController@getModulosByEstudiente');
 	Route::get('/estudiante/perfil/pagado', 'Estudiante\PerfilController@pagado');
 	Route::get('/estudiante/perfil/pendiente', 'Estudiante\PerfilController@pendiente');
 	Route::get('/estudiante/perfil', 'Estudiante\PerfilController@index');

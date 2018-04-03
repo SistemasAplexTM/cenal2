@@ -52,6 +52,31 @@
                         </p>
                     </div>
                 </div>
+                <div class="feed-element" v-if="repeatInscrito">
+                    <div class="media-body">
+                        <div class="alert alert-danger">
+                            <a class="btn btn-primary pull-right" :href="'../'+repeatObj.id+'/edit'" >
+                                <i class="fa fa-eye">
+                                </i>
+                                ver
+                            </a>
+                            <strong>
+                                El estudiante ya se encuentra inscrito
+                            </strong>
+                            <p class="text-muted">
+                                    Sede:
+                                <strong>
+                                    @{{ repeatObj.sede }}
+                                </strong>
+                                <br>
+                                    Jornada:
+                                <strong>
+                                    @{{ repeatObj.jornada }}
+                                </strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="sidebar-message" v-if="verSidebar===2">
                 @role('Profesor')    

@@ -17,6 +17,7 @@ class MoraMiddleware
      */
     public function handle($request, Closure $next)
     {
+
         $user = Auth::user();
         if($user->hasRole('Estudiante')){
             $email = Auth::user()->email;
@@ -29,6 +30,7 @@ class MoraMiddleware
                 ['correo', '=' ,$email ],
                 ['a.deleted_at', '=' ,NULL ]
             ])->get();
+            // abort(403, 'acá vamos');
             $id = $data[0]->id;
             if(count($data) > 0){
                 $cartera = DB::table('factura AS a')

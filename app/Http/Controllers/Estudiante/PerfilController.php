@@ -11,6 +11,7 @@ use App\Estudiante;
 use App\NivelAcademico;
 use App\EstadoCivil;
 use App\HistorialEstudiante;
+use JavaScript;
 
 class PerfilController extends Controller
 {
@@ -55,6 +56,10 @@ class PerfilController extends Controller
         $nivel_academico = NivelAcademico::select(['id','descripcion'])->where('deleted_at', '=' ,NULL)->get();
         $estado_civil = EstadoCivil::select(['id','descripcion'])->where('deleted_at', '=' ,NULL)->get();
         $finanzas = $this->finanzas();
+
+        JavaScript::put([
+            'estudiante_id' => $data->id,
+        ]);
         
         return view('templates/estudiante/perfil', compact('data', 'nivel_academico', 'estado_civil', 'finanzas'));   
     }
@@ -215,6 +220,22 @@ class PerfilController extends Controller
         ])->get();
         $id = $data[0]->id;
         return $id;
+    }
+
+    public function getModulosByEstudiente($estudiante_id){
+        $data = DB::table('clases AS a')
+        ->join('modulos AS b', 'a.modulo_id', 'b.id')
+        ->join('clases_estudiante AS c', 'a.id', 'c.clases_id')
+        ->select(
+            'b.id',
+            'b.nombre'
+        )
+        ->where([
+            ['c.estudiante_id',$estudiante_id],
+            ['a.deleted_at',NULL]
+        ])
+        ->get();
+        return \Response::json($data);
     }
 
 }
