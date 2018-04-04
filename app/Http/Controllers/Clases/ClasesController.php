@@ -80,7 +80,7 @@ class ClasesController extends Controller
         $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
         // Guardar en tabla clases_detalle
         $hora_inicio = $request->hora_inicio_jornada;
-        $hora_fin = $request->hora_fin;
+        $hora_fin = $request->hora_fin_jornada;
         $modulo = DB::table('modulos AS a')
         ->select(
             'a.nombre'

@@ -12,7 +12,8 @@ $(function() {
 var objVue = new Vue({
     el: '#perfil',
     data:{
-        modulos: []
+        modulos: [],
+        asistencia: []
     },
     created(){
         this.get_modulos(estudiante_id);
@@ -21,6 +22,11 @@ var objVue = new Vue({
         get_modulos: function(estudiante_id){
             axios.get('modulosByEstudiente/' + estudiante_id).then(response => { 
                 this.modulos = response.data;
+            });
+        },
+        get_asistencia: function(modulo_id){
+            axios.get('asistencia/'+estudiante_id+'/'+modulo_id).then(response => { 
+                this.asistencia = response.data;
             });
         }
     }
