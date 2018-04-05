@@ -10,6 +10,13 @@
             <div class="ibox-content">
                 <form action="{{ url('clases') }}" method="POST">
                     {{ csrf_field() }}
+                        @if (Session::has('message'))
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <div class="alert alert-danger">{{ Session::get('message') }}</div>
+                                </div>      
+                            </div>
+                        @endif
                     <div class="row">
                         <div class="col-lg-9">
                             <div class="row">

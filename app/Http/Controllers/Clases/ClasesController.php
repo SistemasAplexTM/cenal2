@@ -11,6 +11,8 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Session;
+use Illuminate\Support\Facades\Redirect;
 
 class ClasesController extends Controller
 {
@@ -72,10 +74,35 @@ class ClasesController extends Controller
      */
     public function store(Request $request)
     {
+        $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
+        $new_f = array();
+        foreach ($fechas_clase as $key => $value) {
+            // $new_f[$key]="'".$value.' '.$request->hora_inicio_jornada."'";
+            array_push($new_f, $value.' '.$request->hora_inicio_jornada);
+
+        }
+
+        $valid_salon = DB::table('clases_detalle AS a')
+        ->join('salones AS b', 'a.salon_id', 'b.id')
+        ->select(
+            'a.id',
+            'a.start',
+            'b.codigo'
+        )
+        ->where([
+            ['a.salon_id', $request->salon_id],
+            ['a.estado_id', '<>', 3 ],
+            ['a.deleted_at', NULL]
+        ])
+        ->whereIn('start', $new_f)
+        ->get();
+        if (count($valid_salon) > 0) {
+            Session::flash('message', "El salón está ocupado");
+            return Redirect::back();
+        }
         // Guardar en tabla clases
         $clases_id = Clases::create($request->all())->id;
 
-        $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
         // Guardar en tabla clases_detalle
         $hora_inicio = $request->hora_inicio_jornada;
         $hora_fin = $request->hora_fin_jornada;

@@ -239,35 +239,11 @@ class PerfilController extends Controller
     }
 
     public function asistenciaEstudiente($estudiante_id, $modulo_id){
-        // SELECT
-        // DATE_FORMAT(a.`start`, '%Y-%m-%d') AS fecha,
-        // IFNULL(
-        //         (
-        //             SELECT
-        //                 a.id
-        //             FROM
-        //                 clases_estudiante_asistencia AS a
-        //             LEFT OUTER JOIN clases_detalle AS b ON a.clases_detalle_id = b.id
-        //             LEFT OUTER JOIN clases AS c ON b.clases_id = c.id
-        //             WHERE
-        //                 a.estudiante_id = 754
-        //             AND c.modulo_id = 2
-        //             AND b.`start` = a.`start`
-        //         ),
-        //         null
-        //     ) AS asistencia
-        // FROM
-        // clases_detalle AS a
-        // INNER JOIN clases AS b ON a.clases_id = b.id
-        // INNER JOIN clases_estudiante AS c ON c.clases_id = b.id
-        // WHERE
-        // b.modulo_id = 2 AND
-        // c.estudiante_id = 754
-
         $data = DB::table('clases_detalle AS a')
         ->join('clases AS b', 'a.clases_id', 'b.id')
         ->join('clases_estudiante AS c', 'c.clases_id', 'b.id')
         ->select(
+            'a.estado_id',
             DB::raw("DATE_FORMAT(a.`start`, '%Y-%m-%d') AS fecha"),
             DB::raw("IFNULL(
                 (
