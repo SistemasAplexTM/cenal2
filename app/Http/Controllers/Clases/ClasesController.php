@@ -688,7 +688,10 @@ class ClasesController extends Controller
                 ['a.estudiantes_id', $estudiante_id],
             ])
             ->delete();
-            return true;
+            $answer = array(
+                'code' => 200,
+            );
+            return $answer;
         } catch (Exception $e) {
             return $e;
         }
