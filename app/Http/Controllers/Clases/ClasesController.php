@@ -11,8 +11,6 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Auth;
-
 
 class ClasesController extends Controller
 {
@@ -30,7 +28,7 @@ class ClasesController extends Controller
     public function index()
     {
         $this->info_user();
-        return view('templates.clases.index'); 
+        return view('templates.clases.index');
     }
 
     /**
@@ -40,9 +38,9 @@ class ClasesController extends Controller
      */
     public function create()
     {
-        $modulos    = Modulos::where('deleted_at', null)->get();
-        $salones    = Salones::where('deleted_at', null)->get();
-        $jornadas   = DB::table('jornadas')
+        $modulos  = Modulos::where('deleted_at', null)->get();
+        $salones  = Salones::where('deleted_at', null)->get();
+        $jornadas = DB::table('jornadas')
             ->select(
                 'id',
                 'jornada',
@@ -76,20 +74,20 @@ class ClasesController extends Controller
     {
         // Guardar en tabla clases
         $clases_id = Clases::create($request->all())->id;
-        
+
         $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
         // Guardar en tabla clases_detalle
         $hora_inicio = $request->hora_inicio_jornada;
-        $hora_fin = $request->hora_fin;
-        $modulo = DB::table('modulos AS a')
-        ->select(
-            'a.nombre'
-        )
-        ->where('a.id', '=', $request->modulo_id)
-        ->get();
+        $hora_fin    = $request->hora_fin;
+        $modulo      = DB::table('modulos AS a')
+            ->select(
+                'a.nombre'
+            )
+            ->where('a.id', '=', $request->modulo_id)
+            ->get();
         foreach ($fechas_clase as $key => $value) {
             DB::table('clases_detalle')->insert([
-                ['title' => 'clase de '. $modulo[0]->nombre, 'clases_id' => $clases_id, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon_id],
+                ['title' => 'clase de ' . $modulo[0]->nombre, 'clases_id' => $clases_id, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon_id],
             ]);
 
         }
@@ -136,7 +134,7 @@ class ClasesController extends Controller
     {
         $this->info_user();
         $data = DB::table('clases As a')
-            // ->join('salones AS b', 'a.salon_id', 'b.id')
+        // ->join('salones AS b', 'a.salon_id', 'b.id')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
             ->join('jornadas AS d', 'a.jornada_id', 'd.id')
             ->join('estado AS e', 'a.estado_id', 'e.id')
@@ -171,7 +169,7 @@ class ClasesController extends Controller
                 ['a.id', '=', $id],
             ])
             ->get();
-        $data = $data[0];
+        $data       = $data[0];
         $porcentaje = $data->completadas / $data->total * 100;
 
         return view('templates.clases.detail', compact('data', 'porcentaje'));
@@ -207,25 +205,25 @@ class ClasesController extends Controller
             $where = array(
                 ['a.profesor_id', '=', $this->get_user('id')],
                 ['a.deleted_at', '=', null],
-                ['a.sede_id', '=', $this->get_user('sede_id')]
+                ['a.sede_id', '=', $this->get_user('sede_id')],
             );
-        }elseif ($user->hasRole('Administrador')){
+        } elseif ($user->hasRole('Administrador')) {
             $where = array(
-                ['a.deleted_at', '=', null]
+                ['a.deleted_at', '=', null],
             );
-        }elseif ($user->hasRole('Coordinador')) {
+        } elseif ($user->hasRole('Coordinador')) {
             $where = array(
                 ['a.sede_id', '=', $this->get_user('sede_id')],
-                ['a.deleted_at', '=', null]
+                ['a.deleted_at', '=', null],
             );
-        }else{
+        } else {
             $where = array(
-                ['a.deleted_at', '=', null]
+                ['a.deleted_at', '=', null],
             );
 
         }
         $data = DB::table('clases As a')
-            // ->join('salones AS b', 'k.salon_id', 'b.id')
+        // ->join('salones AS b', 'k.salon_id', 'b.id')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
             ->join('jornadas AS d', 'a.jornada_id', 'd.id')
             ->join('estado AS e', 'a.estado_id', 'e.id')
@@ -249,7 +247,7 @@ class ClasesController extends Controller
                 'a.profesor_id',
                 DB::raw("concat_ws(' ', i.name,i.last_name) AS profesor"),
                 'i.img AS profesor_img'
-                
+
             )
             ->where($where)
             ->orderBy('estado')
@@ -257,17 +255,17 @@ class ClasesController extends Controller
         foreach ($data as $key => $value) {
             if ($value->completadas == $value->total) {
                 DB::table('clases')
-                ->where('id', '=', $value->id)
-                ->update(
-                    ['estado_id' => 3]
-                );
+                    ->where('id', '=', $value->id)
+                    ->update(
+                        ['estado_id' => 3]
+                    );
             }
             if ($value->completadas > 0 && $value->completadas < $value->total) {
                 DB::table('clases')
-                ->where('id', '=', $value->id)
-                ->update(
-                    ['estado_id' => 2]
-                );
+                    ->where('id', '=', $value->id)
+                    ->update(
+                        ['estado_id' => 2]
+                    );
             }
         }
         return Datatables::of($data)->make(true);
@@ -367,52 +365,52 @@ class ClasesController extends Controller
     public function agregar_estudiante($clases_id, $estudiante_id)
     {
         $exist = DB::table('clases_estudiante AS a')
-        ->join('clases AS b', 'a.clases_id', 'b.id')
-        ->join('jornadas AS c', 'b.jornada_id', 'c.id')
-        ->join('sede AS d', 'b.sede_id', 'd.id')
-        ->select(
-            'b.id',
-            'd.nombre AS sede',
-            'c.jornada'
-        )
-        ->where([
-            ['a.estudiante_id', '=', $estudiante_id],
-            ['b.modulo_id', '=', 2],
-            ['b.estado_id', '<>', 3]
-        ])
-        ->get();
+            ->join('clases AS b', 'a.clases_id', 'b.id')
+            ->join('jornadas AS c', 'b.jornada_id', 'c.id')
+            ->join('sede AS d', 'b.sede_id', 'd.id')
+            ->select(
+                'b.id',
+                'd.nombre AS sede',
+                'c.jornada'
+            )
+            ->where([
+                ['a.estudiante_id', '=', $estudiante_id],
+                ['a.clases_id', '=', $clases_id],
+                ['b.estado_id', '<>', 3],
+            ])
+            ->get();
 
         $cupos_usados = DB::table('clases_estudiante AS a')
-        ->select(
-            DB::raw("count(a.estudiante_id) AS cant")
-        )
-        ->where([
-            ['a.clases_id', '=', $clases_id]
-        ])
-        ->get();
+            ->select(
+                DB::raw("count(a.estudiante_id) AS cant")
+            )
+            ->where([
+                ['a.clases_id', '=', $clases_id],
+            ])
+            ->get();
 
         $salon = DB::table('salones AS a')
-        ->join('clases_detalle AS b', 'a.id', 'b.salon_id')
-        ->select(
-            'a.capacidad'
-        )
-        ->where([['b.clases_id', '=', $clases_id]])
-        ->get();
+            ->join('clases_detalle AS b', 'a.id', 'b.salon_id')
+            ->select(
+                'a.capacidad'
+            )
+            ->where([['b.clases_id', '=', $clases_id]])
+            ->get();
         if ($salon[0]->capacidad == $cupos_usados[0]->cant) {
             $answer = array(
-                'code' => 601
+                'code' => 601,
             );
-        }else{
+        } else {
             if (count($exist) <= 0) {
                 DB::table('clases_estudiante')
-                ->insert([
-                    ['clases_id' => $clases_id, 'estudiante_id' => $estudiante_id]
-                ]);
+                    ->insert([
+                        ['clases_id' => $clases_id, 'estudiante_id' => $estudiante_id],
+                    ]);
                 $answer = array('code' => 200);
-            }else{
+            } else {
                 $answer = array(
                     'code' => 600,
-                    'data' => $exist[0]
+                    'data' => $exist[0],
                 );
             }
         }
@@ -424,61 +422,61 @@ class ClasesController extends Controller
         try {
             foreach ($request->estudiantes_id as $key => $value) {
                 DB::table('clases_estudiante_asistencia')
-                ->insert([
-                    ['clases_detalle_id' => $request->clases_detalle_id, 'estudiante_id' => $value]
-                ]);
+                    ->insert([
+                        ['clases_detalle_id' => $request->clases_detalle_id, 'estudiante_id' => $value],
+                    ]);
             }
             DB::table('clases_detalle')
-            ->where('id', '=', $request->clases_detalle_id)
-            ->update(
-                ['estado_id' => 3, 'color' => '#999da3']
-            );
+                ->where('id', '=', $request->clases_detalle_id)
+                ->update(
+                    ['estado_id' => 3, 'color' => '#999da3']
+                );
 
             DB::table('clases_profesor_asistencia')
-            ->insert([
-                ['clases_detalle_id' => $request->clases_detalle_id, 'user_id' => $this->get_user('id')]
-            ]);
+                ->insert([
+                    ['clases_detalle_id' => $request->clases_detalle_id, 'user_id' => $this->get_user('id')],
+                ]);
             $answer = array('code' => 200);
-           
+
             return $answer;
         } catch (Exception $e) {
-            
+
         }
     }
 
     public function get_estudiante_asistencia($estudiante_id, $clases_detalle_id)
     {
         $data = DB::table('clases_estudiante_asistencia AS a')
-        ->select(
-            DB::raw('count(a.id) AS cantidad')
-        )
-        ->where([
-            ['estudiante_id', '=', $estudiante_id],
-            ['clases_detalle_id', '=', $clases_detalle_id]
-        ])
-        ->get();
+            ->select(
+                DB::raw('count(a.id) AS cantidad')
+            )
+            ->where([
+                ['estudiante_id', '=', $estudiante_id],
+                ['clases_detalle_id', '=', $clases_detalle_id],
+            ])
+            ->get();
         return $data;
     }
 
     public function getAll_estudiantes_asistencia($clase_id, $clases_detalle_id)
     {
         $data = DB::table('clases_estudiante_asistencia AS a')
-        ->select(
-            'a.estudiante_id',
-            DB::raw('(SELECT c.descripcion FROM clases_detalle AS b INNER JOIN estado AS c ON c.id = b.estado_id WHERE b.id = a.clases_detalle_id) AS estado')
-        )
-        ->where([
-            ['clases_detalle_id', '=', $clases_detalle_id]
-        ])
-        ->get();
+            ->select(
+                'a.estudiante_id',
+                DB::raw('(SELECT c.descripcion FROM clases_detalle AS b INNER JOIN estado AS c ON c.id = b.estado_id WHERE b.id = a.clases_detalle_id) AS estado')
+            )
+            ->where([
+                ['clases_detalle_id', '=', $clases_detalle_id],
+            ])
+            ->get();
         return $data;
     }
 
     public function buscar_profesor($clases_id, $dato)
     {
         $data = DB::table('users As a')
-        ->join('model_has_roles AS b', 'a.id', 'b.model_id')
-        ->join('roles AS c', 'b.role_id', 'c.id')
+            ->join('model_has_roles AS b', 'a.id', 'b.model_id')
+            ->join('roles AS c', 'b.role_id', 'c.id')
             ->select(
                 'a.sede_id',
                 'a.id',
@@ -488,10 +486,10 @@ class ClasesController extends Controller
                 'a.identification_card'
             )
             ->where([
-                ['a.name', 'LIKE', $dato.'%'],
+                ['a.name', 'LIKE', $dato . '%'],
                 ['c.id', '=', 1],
-                ['a.sede_id', '=', DB::raw('(SELECT sede_id FROM clases WHERE id = '.$clases_id.')')],
-                ['a.deleted_at', '=', null]
+                ['a.sede_id', '=', DB::raw('(SELECT sede_id FROM clases WHERE id = ' . $clases_id . ')')],
+                ['a.deleted_at', '=', null],
             ])
             ->get();
         return $data;
@@ -502,16 +500,16 @@ class ClasesController extends Controller
         try {
             if ($request->salon_id != 0) {
                 DB::table('clases_detalle')
-                ->where('id', '=', $request->clases_detalle_id)
-                ->update(
-                    ['salon_id' => $request->salon_id]
-                );
+                    ->where('id', '=', $request->clases_detalle_id)
+                    ->update(
+                        ['salon_id' => $request->salon_id]
+                    );
                 $salon = DB::table('salones AS b')
-                ->select('b.codigo')
-                ->where('b.id', '=', $request->salon_id)
-                ->get();
+                    ->select('b.codigo')
+                    ->where('b.id', '=', $request->salon_id)
+                    ->get();
                 $answer = array('code' => 200, 'salon' => $salon[0]->codigo);
-                return $answer;            
+                return $answer;
             }
         } catch (Exception $e) {
             return $e;
@@ -522,46 +520,46 @@ class ClasesController extends Controller
     {
         try {
             DB::table('clases')
-            ->where('id', '=', $clases_id)
-            ->update(
-                ['id' => $clases_id, 'profesor_id' => $profesor_id]
-            );
+                ->where('id', '=', $clases_id)
+                ->update(
+                    ['id' => $clases_id, 'profesor_id' => $profesor_id]
+                );
             $answer = array('code' => 200, 'datos' => $profesor_id);
-            return $answer;            
+            return $answer;
         } catch (Exception $e) {
             return $e;
         }
     }
-    
+
     public function profesor_asignado($clases_id)
     {
         $data = DB::table('clases AS a')
-        ->leftJoin('users AS b', 'a.profesor_id', 'b.id')
-        ->select(
-            DB::raw("concat_ws(' ', b.name,b.last_name) AS profesor"),
-            'a.profesor_id'
-        )
-        ->where('a.id', '=', $clases_id)
-        ->get();
+            ->leftJoin('users AS b', 'a.profesor_id', 'b.id')
+            ->select(
+                DB::raw("concat_ws(' ', b.name,b.last_name) AS profesor"),
+                'a.profesor_id'
+            )
+            ->where('a.id', '=', $clases_id)
+            ->get();
 
         return $data;
     }
-    
+
     public function estudiantes_inscritos($clases_id)
     {
         $data = DB::table('clases_estudiante AS a')
-        ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
-        ->join('programas AS c', 'b.programas_id', 'c.id')
-        ->select(
-            DB::raw("concat_ws(' ', primer_apellido, segundo_apellido, nombres) AS nombre"),
-            'programa',
-            'b.consecutivo AS codigo',
-            'b.correo',
-            'b.id'
-        )
-        ->where('a.clases_id', '=', $clases_id)
-        ->orderBy('nombre')
-        ->get();
+            ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
+            ->join('programas AS c', 'b.programas_id', 'c.id')
+            ->select(
+                DB::raw("concat_ws(' ', primer_apellido, segundo_apellido, nombres) AS nombre"),
+                'programa',
+                'b.consecutivo AS codigo',
+                'b.correo',
+                'b.id'
+            )
+            ->where('a.clases_id', '=', $clases_id)
+            ->orderBy('nombre')
+            ->get();
 
         return $data;
     }
@@ -679,6 +677,21 @@ class ClasesController extends Controller
             return false;
         }
 
+    }
+
+    public function removeStudentClass($clases_id, $estudiante_id)
+    {
+        try {
+            DB::table('clases_estudiante AS a')
+            ->where([
+                ['a.clases_id', $clases_id],
+                ['a.estudiantes_id', $estudiante_id],
+            ])
+            ->delete();
+            return true;
+        } catch (Exception $e) {
+            return $e;
+        }
     }
 
 }

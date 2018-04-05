@@ -74,7 +74,6 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');
 	Route::get('clases/{clase_id}/profesor_asignado', 'Clases\ClasesController@profesor_asignado');
 	Route::get('clases/{clase_id}/estudiantes_inscritos', 'Clases\ClasesController@estudiantes_inscritos');
-	Route::get('clases/{clase_id}/agregar_estudiante/{estudiante_id}', 'Clases\ClasesController@agregar_estudiante');
 	Route::get('clases/buscar_estudiante/{dato}', 'Clases\ClasesController@buscar_estudiante');
 	Route::get('clases/{clase_id}/asignar_profesor/{profesor_id}', 'Clases\ClasesController@asignar_profesor');
 	Route::get('clases/{clase_id}/buscar_profesor/{dato}', 'Clases\ClasesController@buscar_profesor');
@@ -86,6 +85,8 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
 	Route::resource('clases', 'Clases\ClasesController');
 });
+	Route::get('clases/{clase_id}/agregar_estudiante/{estudiante_id}', 'Clases\ClasesController@agregar_estudiante');
+	Route::get('clases/{clase_id}/retirar_estudiante/{estudiante_id}', 'Clases\ClasesController@removeStudentClass');
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
 	Route::get('/estudiante/modulosByEstudiente/{estudiante_id}', 'Estudiante\PerfilController@getModulosByEstudiente');
