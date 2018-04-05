@@ -679,13 +679,13 @@ class ClasesController extends Controller
 
     }
 
-    public function removeStudentClass($clases_id, $estudiante_id)
+    public function removeStudentClass($clase_id, $estudiante_id)
     {
         try {
-            DB::table('clases_estudiante AS a')
+            DB::table('clases_estudiante')
             ->where([
-                ['a.clases_id', $clases_id],
-                ['a.estudiantes_id', $estudiante_id],
+                ['clases_id', $clase_id],
+                ['estudiante_id', $estudiante_id],
             ])
             ->delete();
             $answer = array(
