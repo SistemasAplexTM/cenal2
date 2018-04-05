@@ -78,13 +78,13 @@ class ClasesController extends Controller
         $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
         // Guardar en tabla clases_detalle
         $hora_inicio = $request->hora_inicio_jornada;
-        $hora_fin    = $request->hora_fin;
-        $modulo      = DB::table('modulos AS a')
-            ->select(
-                'a.nombre'
-            )
-            ->where('a.id', '=', $request->modulo_id)
-            ->get();
+        $hora_fin = $request->hora_fin_jornada;
+        $modulo = DB::table('modulos AS a')
+        ->select(
+            'a.nombre'
+        )
+        ->where('a.id', '=', $request->modulo_id)
+        ->get();
         foreach ($fechas_clase as $key => $value) {
             DB::table('clases_detalle')->insert([
                 ['title' => 'clase de ' . $modulo[0]->nombre, 'clases_id' => $clases_id, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon_id],

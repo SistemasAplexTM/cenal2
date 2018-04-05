@@ -184,7 +184,7 @@
                             </a>
                             <div class="alert alert-success text-center" v-if="modulos.length <= 0">No se encuentra inscrito a nungún módulo actualmente</div>
                             <div class="btn-group-vertical" id="listaModulos" style="width: 100%;" v-if="modulos.length > 0">
-                                <button v-for="modulo in modulos" type="button" @click.prevent="listarAsistencia(modulo.id)" class="btn btn-default btn-block" style="text-align:left;"> 
+                                <button v-for="modulo in modulos" type="button" @click.prevent="get_asistencia(modulo.id)" class="btn btn-default btn-block active" style="text-align:left;"> 
                                     @{{ modulo.nombre }}
                                 </button>
                             </div>
@@ -197,37 +197,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th>08-04-2018</th>
+                                    <tr v-for="value in asistencia">
+                                        <th>@{{ value.fecha }}</th>
                                         <td>
-                                            <span class="btn btn-danger btn-xs"><i class="fa fa-times"></i></span>
-                                            <span class="btn btn-primary btn-xs"><i class="fa fa-check"></i></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>08-04-2018</th>
-                                        <td>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" checked="" disabled="">
-                                                <label for="checkbox3">
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>08-04-2018</th>
-                                        <td>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" checked="" disabled="">
-                                                <label for="checkbox3">
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>08-04-2018</th>
-                                        <td>
-                                            
+                                            <span v-show="value.asistencia!=null" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></span>
+                                            <span v-show="value.asistencia==null" class="btn btn-primary btn-xs"><i class="fa fa-check"></i></span>
                                         </td>
                                     </tr>
                                 </tbody>

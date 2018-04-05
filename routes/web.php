@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('clases/{clase_id}/retirar_estudiante/{estudiante_id}', 'Clases\ClasesController@removeStudentClass');
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
+	Route::get('/estudiante/asistencia/{estudiante_id}/{modulo_id}', 'Estudiante\PerfilController@asistenciaEstudiente');
 	Route::get('/estudiante/modulosByEstudiente/{estudiante_id}', 'Estudiante\PerfilController@getModulosByEstudiente');
 	Route::get('/estudiante/perfil/pagado', 'Estudiante\PerfilController@pagado');
 	Route::get('/estudiante/perfil/pendiente', 'Estudiante\PerfilController@pendiente');
