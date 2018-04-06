@@ -56,27 +56,29 @@ $(document).ready(function () {
             },
         }
     });
-    $('#modulos').select2({
-        tokenSeparators: [','],
-        ajax: {
-            dataType: 'json',
-            url: 'modulo/getAllForSelect',
-            delay: 250,
-            data: function(params) {
-                return {
-                    term: params.term
-                }
-            },
-            processResults: function (data, page) {
-              return {
-                results: data.items
-              };
-            },
-        },
-        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-        templateResult: formatRepo,
-        templateSelection: formatRepoSelection
-    });
+    // $('#modulos').select2({
+    //     tokenSeparators: [','],
+    //     allowClear: true,
+    //     ajax: {
+    //         dataType: 'json',
+    //         url: 'modulo/getAllForSelect',
+    //         delay: 250,
+    //         cache:false,
+    //         data: function(params) {
+    //             return {
+    //                 term: params.term
+    //             }
+    //         },
+    //         processResults: function (data, page) {
+    //           return {
+    //             results: data.items
+    //           };
+    //         },
+    //     },
+    //     escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+    //     templateResult: formatRepo,
+    //     templateSelection: formatRepoSelection
+    // });
 });
 
 function formatRepo (repo) {
@@ -93,6 +95,7 @@ function formatRepo (repo) {
 }
 
 function formatRepoSelection (repo) {
+    console.log(repo);
     if (typeof repo.duracion != "undefined") {
         return repo.text + ' (' + repo.duracion + ')';
     }else{
@@ -117,17 +120,19 @@ var objVue = new Vue({
         nombre:'',
         sedes: [],
         modulos: [],
+        modulos_selected: [],
         editar: 0,
         formErrors: {}
+    },
+    created(){
+        this.getModulos();
     },
     methods:{
         resetForm: function(){
             this.nombre = '';
             this.sedes = {};
-            this.modulos = {};
+            this.modulos_selected = [];
             this.editar = 0;
-            $('select option').remove();
-            $("#modulos").trigger("change");
             $("#sedes").trigger("change");
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
@@ -148,7 +153,7 @@ var objVue = new Vue({
             axios.post('programas',{
                 'nombre' : this.nombre,
                 'sedes' : $('#sedes').val(),
-                'modulos' : me.modulos
+                'modulos' : me.modulos_selected
             })
             .then(function (response){
                 if (response.data['code'] == 200) {
@@ -203,12 +208,18 @@ var objVue = new Vue({
                 recargarTabla('tbl-programas');
             });
         },
+        getModulos: function(data){
+            var url = 'modulo/getAllForSelect';
+            axios.get(url).then(response => {
+                this.modulos = response.data;
+            });
+        },
         update: function update() {
             var urlUpdate = 'programas/' + this.id;
             var me = this;
             axios.put(urlUpdate, {
                 'nombre': me.nombre,
-                'modulos': $('#modulos').select2('data')
+                'modulos': me.modulos_selected
             }).then(function (response) {
                 if (response.data['code'] == 200) {
                     toastr.success('Registro actualizado correctamente');
@@ -236,16 +247,17 @@ var objVue = new Vue({
             this.formErrors = {};
             /* ASIGNAR VALORES AL SELECT FUNCIONALIDADES */
             jsonModulos = JSON.parse(data['modulos']);
-            if(jsonModulos != null){
-                $.each(jsonModulos, function(i, item) {
-                    var option = new Option(item.name + ' (' + item.duracion + ')', item.id, true, true);
-                    $('#modulos').append(option).trigger('change');
-                    // $("#modulos").append('<option value="'+item.id+'" selected="selected">'+ item.name+'</option>');
-                });
-                // $('#modulos').trigger('change'); // Notify any JS components that the value changed--
-            }
+            this.modulos_selected = jsonModulos;
+            // if(jsonModulos != null){
+            //     $.each(jsonModulos, function(i, item) {
+            //         var option = new Option(item.name + ' (' + item.duracion + ')', item.id, true, true);
+            //         $('#modulos').append(option).trigger('change');
+            //         // $("#modulos").append('<option value="'+item.id+'" selected="selected">'+ item.name+'</option>');
+            //     });
+            //     // $('#modulos').trigger('change'); // Notify any JS components that the value changed--
+            // }
             $("#sedes").trigger("change");
-            $("#modulos").trigger("change");
+            // $("#modulos").trigger("change");
         },
         add_module: function(data){
             this.id = data['id'];

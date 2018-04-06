@@ -53,7 +53,19 @@
                                             <label for="" class="control-label gcore-label-top">Módulos:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <select name="modulos[]" id="modulos" data-placeholder="Seleccione..." multiple="multiple" class="form-control js-example-basic-multiple" @click="deleteError('modulos')"></select>
+                                            <v-select multiple :options="modulos.items" label="name" v-model="modulos_selected">
+                                                <template slot="option" slot-scope="option">
+                                                    @{{ option.name }} <br> 
+                                                    <span class="fa fa-clock-o"></span>
+                                                    @{{ option.duracion }} (Clases)
+                                                </template>
+                                                <template slot="selected-option" scope="option">
+                                                  <div class="selected d-center">
+                                                    @{{ option.name }} (@{{ option.duracion }})
+                                                  </div>
+                                                </template>
+                                              </v-select>
+                                            {{-- <select name="modulos[]" id="modulos" data-placeholder="Seleccione..." multiple="multiple" class="form-control js-example-basic-multiple" @click="deleteError('modulos')"></select> --}}
                                             <small id="msn1" class="help-block result-modulos" v-show="formErrors.modulos"></small>
                                         </div>
                                     </div>

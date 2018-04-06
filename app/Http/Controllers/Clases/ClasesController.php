@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Session;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Input;
 
 class ClasesController extends Controller
 {
@@ -65,21 +66,11 @@ class ClasesController extends Controller
             ->get();
         return view('templates.clases.create', compact('modulos', 'salones', 'jornadas', 'sedes'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function validarSalon(Request $request){
         $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
         $new_f = array();
         foreach ($fechas_clase as $key => $value) {
-            // $new_f[$key]="'".$value.' '.$request->hora_inicio_jornada."'";
             array_push($new_f, $value.' '.$request->hora_inicio_jornada);
-
         }
 
         $valid_salon = DB::table('clases_detalle AS a')
@@ -96,10 +87,49 @@ class ClasesController extends Controller
         ])
         ->whereIn('start', $new_f)
         ->get();
+        $answer = array(
+            'errorSalon' => false
+        );
         if (count($valid_salon) > 0) {
-            Session::flash('message', "El salón está ocupado");
-            return Redirect::back();
+            $answer = array(
+                'errorSalon' => true,
+                'fechas' => $valid_salon
+            );
         }
+        return $answer;
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
+        // $new_f = array();
+        // foreach ($fechas_clase as $key => $value) {
+        //     array_push($new_f, $value.' '.$request->hora_inicio_jornada);
+        // }
+
+        // $valid_salon = DB::table('clases_detalle AS a')
+        // ->join('salones AS b', 'a.salon_id', 'b.id')
+        // ->select(
+        //     'a.id',
+        //     'a.start',
+        //     'b.codigo'
+        // )
+        // ->where([
+        //     ['a.salon_id', $request->salon_id],
+        //     ['a.estado_id', '<>', 3 ],
+        //     ['a.deleted_at', NULL]
+        // ])
+        // ->whereIn('start', $new_f)
+        // ->get();
+        // if (count($valid_salon) > 0) {
+        //     Session::flash('message', "El salón está ocupado");
+        //     return Redirect::back()->withInput();
+        // }
         // Guardar en tabla clases
         $clases_id = Clases::create($request->all())->id;
 

@@ -49,7 +49,7 @@ class ProgramasController extends Controller
                 foreach ($request->modulos as $key => $value) {
                     $mod[] = array(
                         'id' => $value['id'],
-                        'name' => $value['text'],
+                        'name' => $value['name'],
                         'duracion' => $value['duracion']
                     );
                 }
@@ -100,7 +100,7 @@ class ProgramasController extends Controller
             $mod = array();
             if(count($request->modulos) > 0){
                 foreach ($request->modulos as $key => $value) {
-                    $cadena= $value['text'];
+                    $cadena= $value['name'];
                     if (strpos($cadena, '(')) {
                         $parte1=explode('(',$cadena);
                         $parte2=explode(')',$parte1[1]);
@@ -113,7 +113,7 @@ class ProgramasController extends Controller
                     }else{
                         $mod[] = array(
                             'id' => $value['id'],
-                            'name' => $value['text'],
+                            'name' => $value['name'],
                             'duracion' => $value['duracion']
                         );
                     }

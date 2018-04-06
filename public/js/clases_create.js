@@ -21,17 +21,21 @@ var objVue = new Vue({
     data:{
         salon:'',
         programa: '',
-        modulo_id:null,
         capacidad:'',
         ubicacion:'',
         duracion:'',
         jornada:'',
         sede:'',
+        modulo_id:null,
+        errorSalon:false,
         programas: [],
         modulos: [],
         salones: [],
+        semana: [],
+        fechasError: [],
         hora_inicio_jornada: '',
         hora_fin_jornada: '',
+        fecha_inicio: '',
         cargando: 0,
         cargandoModulos: 0,
         formErrors: {}
@@ -110,6 +114,18 @@ var objVue = new Vue({
             var fin = $("#jornada_id").find(':selected').data("hora_fin");
             this.hora_inicio_jornada = moment(inicio, "HH:mm:ss").format('HH:mm');
             this.hora_fin_jornada = moment(fin, "HH:mm:ss").format('HH:mm');
+        },
+        save: function(){
+            var formData = new FormData($('#create_clase_form')[0]);
+            console.log(new FormData($('#create_clase_form')[0]));
+            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            axios.post('validarSalon', formData, config).then(response => {
+                this.errorSalon = response.data.errorSalon;
+                this.fechasError = response.data.fechas;
+                if (!this.errorSalon) {
+                    this.$refs.form.submit();
+                }
+            });
         }
     }
     

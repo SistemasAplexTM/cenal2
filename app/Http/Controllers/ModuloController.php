@@ -129,7 +129,7 @@ class ModuloController extends Controller
         $data = DB::table('modulos As a')
         ->select(
             'a.id',
-            'a.nombre AS text',
+            'a.nombre AS name',
             'a.duracion'
         )
         ->where([

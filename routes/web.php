@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('clases/profesor/{profesor_id}', 'Profesor\ClasesController@getAll');
 
 	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
+	Route::post('clases/validarSalon', 'Clases\ClasesController@validarSalon');
 	Route::get('clases/{clase_id}/getAll_estudiantes_asistencia/{clases_detalle_id}', 'Clases\ClasesController@getAll_estudiantes_asistencia');
 	Route::get('clases/{clase_id}/get_estudiante_asistencia', 'Clases\ClasesController@get_estudiante_asistencia');
 	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');

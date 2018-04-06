@@ -1,24 +1,26 @@
 @extends('layouts.app')
 @section('title', 'Programar módulo')
 @section('content')
-<div class="container" id="clases">
+<div class="container-fluid" id="clases">
     <div class="row">
         <div class="ibox">
             <div class="ibox-title">
                 <h5><i class="fa fa-calendar-plus-o"></i> Programar módulo</h5>
             </div>
             <div class="ibox-content">
-                <form action="{{ url('clases') }}" method="POST">
+                <form action="{{ url('clases') }}" method="POST" id="create_clase_form" enctype="multipart/form-data" ref="form">
                     {{ csrf_field() }}
-                        @if (Session::has('message'))
-                            <div class="row">
-                                <div class="col-lg-9">
-                                    <div class="alert alert-danger">{{ Session::get('message') }}</div>
-                                </div>      
-                            </div>
-                        @endif
                     <div class="row">
-                        <div class="col-lg-9">
+                        <div class="col-lg-2" v-if="errorSalon">
+                            <div class="well">
+                                El salón no está disponible en las siguientes fechas:
+                                <ul class="list-group">
+                                  <li class="list-group-item" v-for="fecha in fechasError">@{{ fecha.start }}</li>
+                                </ul>
+                                <button class="btn btn-default btn-block" @click.prevent="errorSalon=false;fechasError=[]">Aceptar</button>
+                            </div>
+                        </div>
+                        <div class="col-lg-9" :class="{'col-lg-7' : errorSalon}">
                             <div class="row">
                                 <div class="col-lg-3 b-r">
                                     <div class="form-group">
@@ -27,7 +29,7 @@
                                             <select name="sede_id" v-model="sede"  id="sede_id" class="form-control" required="" @change="setProgramas();setSalones()">
                                                 <option value="">Seleccione</option>
                                                 @foreach($sedes as $sede)
-                                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                                <option {{ old('sede_id') == $sede->id ? 'selected' : '' }} value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -209,13 +211,13 @@
                                    <div class="form-group">
                                         <label class="col-sm-2 control-label">Días de clase: </label>
                                         <div class="col-sm-10">
-                                            <label class="checkbox-inline i-checks"> <input name="semana[1]" type="checkbox" value="1"> Lunes </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semana[2]" type="checkbox" value="2"> Martes </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semana[3]" type="checkbox" value="3"> Miércoles </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semana[4]" type="checkbox" value="4"> Jueves </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semana[5]" type="checkbox" value="5"> Viernes </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semana[6]" type="checkbox" value="6"> Sábado </label>
-                                            <label class="checkbox-inline i-checks"> <input name="semana[7]" type="checkbox" value="7"> Domingo </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[1]" type="checkbox" id="1" value="1"> Lunes </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[2]" type="checkbox" id="2" value="2"> Martes </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[3]" type="checkbox" id="3" value="3"> Miércoles </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[4]" type="checkbox" id="4" value="4"> Jueves </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[5]" type="checkbox" id="5" value="5"> Viernes </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[6]" type="checkbox" id="6" value="6"> Sábado </label>
+                                            <label class="checkbox-inline i-checks"> <input name="semana[7]" type="checkbox" id="7" value="7"> Domingo </label>
                                         </div>
                                     </div> 
                                 </div>
@@ -228,7 +230,7 @@
                                     
                                     <div class="custom-radios">
                                     <div>
-                                      <input type="radio" id="color-1" name="color" value="#2f8d99" checked>
+                                      <input type="radio" id="color-1" name="color" value="#2f8d99" checked @if(old('color') == "#2f8d99") checked @endif>
                                       <label for="color-1">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -237,7 +239,7 @@
                                     </div>
                                     
                                     <div>
-                                      <input type="radio" id="color-2" name="color" value="#42a5f5">
+                                      <input @if(old('color') == "#42a5f5") checked @endif type="radio" id="color-2" name="color" value="#42a5f5">
                                       <label for="color-2">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -246,7 +248,7 @@
                                     </div>
                                     
                                     <div>
-                                      <input type="radio" id="color-3" name="color" value="#00c5dc">
+                                      <input @if(old('color') == "#00c5dc") checked @endif type="radio" id="color-3" name="color" value="#00c5dc">
                                       <label for="color-3">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -255,7 +257,7 @@
                                     </div>
 
                                     <div>
-                                      <input type="radio" id="color-4" name="color" value="#feb38d">
+                                      <input @if(old('color') == "#feb38d") checked @endif type="radio" id="color-4" name="color" value="#feb38d">
                                       <label for="color-4">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -263,7 +265,7 @@
                                       </label>
                                     </div>
                                     <div>
-                                      <input  type="radio" id="color-5" name="color" value="#EE6E73">
+                                      <input @if(old('color') == "#EE6E73") checked @endif  type="radio" id="color-5" name="color" value="#EE6E73">
                                       <label for="color-5">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -271,7 +273,7 @@
                                       </label>
                                     </div>
                                     <div>
-                                      <input type="radio" id="color-6" name="color" value="#6B79C4">
+                                      <input @if(old('color') == "#6B79C4") checked @endif type="radio" id="color-6" name="color" value="#6B79C4">
                                       <label for="color-6">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -279,7 +281,7 @@
                                       </label>
                                     </div>
                                     <div>
-                                      <input type="radio" id="color-7" name="color" value="#6B79C4">
+                                      <input @if(old('color') == "#FF7176") checked @endif type="radio" id="color-7" name="color" value="#FF7176">
                                       <label for="color-7">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -287,7 +289,7 @@
                                       </label>
                                     </div>
                                     <div>
-                                      <input type="radio" id="color-8" name="color" value="#6B79C4">
+                                      <input @if(old('color') == "#FF252B") checked @endif type="radio" id="color-8" name="color" value="#FF252B">
                                       <label for="color-8">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -295,7 +297,7 @@
                                       </label>
                                     </div>
                                     <div>
-                                      <input type="radio" id="color-9" name="color" value="#6B79C4">
+                                      <input @if(old('color') == "#7F393B") checked @endif type="radio" id="color-9" name="color" value="#7F393B">
                                       <label for="color-9">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -303,7 +305,7 @@
                                       </label>
                                     </div>
                                     <div>
-                                      <input type="radio" id="color-10" name="color" value="#6B79C4">
+                                      <input @if(old('color') == "#CC1D23") checked @endif type="radio" id="color-10" name="color" value="#CC1D23">
                                       <label for="color-10">
                                         <span>
                                           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/242518/check-icn.svg" alt="Checked Icon" />
@@ -326,7 +328,7 @@
                         {{-- <div class="col-lg-4"> --}}
                             <div class="form-group">
                                 {{-- <div class="col-sm-12"> --}}
-                                    <button type="submit" class="ladda-button btn btn-primary hvr-float-shadow" data-style="expand-right"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+                                    <button @click.prevent="save" type="button" class="ladda-button btn btn-primary hvr-float-shadow" data-style="expand-right"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
                                     <a href="{{ url('clases') }}" class="btn btn-white hvr-float-shadow"><i class="fa fa-times fa-fw"></i> Cancelar</a>
                                 {{-- </div> --}}
                             </div>
