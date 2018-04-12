@@ -4,14 +4,14 @@
 <div class="container-fluid" id="clases">
     <div class="row">
         <div class="col-lg-12">
+            <h3>NOMBRE DEL GRUPO</h3> 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
                     <h5><i class="fa fa-calendar"></i> Módulos programados</h5>
-                    <div class="ibox-tools">
-                        @can('crear_clase')
-                        <a href="{{ route('clases.create') }}" class="btn btn-success btn-sm"><i class="fa fa-calendar-plus-o"></i> Programar módulo</a>
-                        @endcan
-                    </div>
                 </div>
                 <div class="ibox-content">
                     <div class="project-list">

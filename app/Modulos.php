@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modulos extends Model
 {
-    protected $fillable = ['nombre', 'duracion'];
+    protected $fillable = ['nombre', 'duracion', 'color'];
 }

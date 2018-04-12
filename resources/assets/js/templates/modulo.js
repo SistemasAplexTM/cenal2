@@ -28,6 +28,11 @@ function getTable(on_delete) {
             { data: "nombre", name: 'nombre'},
             { data: "duracion", name: 'duracion'},
             {
+                "render": function (data, type, full, meta) {
+                    return "<div width='10px' style='background-color: "+ full.color+"'></div>";
+                }
+            },
+            {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     return imp_btn(on_delete, full.id);
@@ -72,6 +77,7 @@ var objVue = new Vue({
     data:{
         nombre:'',
         duracion:'',
+        color:'',
         editar: 0,
         formErrors: {}
     },
@@ -82,6 +88,7 @@ var objVue = new Vue({
         resetForm: function(){
             this.nombre = '';
             this.duracion = '';
+            this.color = '';
             this.editar = 0;
             $(".input-search").val('');
             this.formErrors = {};
@@ -105,7 +112,8 @@ var objVue = new Vue({
             }
             axios.post('modulo/store',{
                 'nombre': nombre,
-                'duracion': duracion
+                'duracion': duracion,
+                'color': color
             })
             .then(function (response){
                 toastr.success('Registrado con éxito');

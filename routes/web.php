@@ -65,6 +65,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/restaurar/{id}' , 'ProgramasController@restaurar');
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
+	/*-- Grupos --*/
+	Route::get('grupos/all', 'Clases\GrupoController@getAll');
+	Route::get('grupos', 'Clases\GrupoController@index');
 
 	Route::get('clases/profesor/{profesor_id}', 'Profesor\ClasesController@getAll');
 
@@ -81,7 +84,8 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('clases/getFin/{id_clase}', 'Clases\ClasesController@getFin');
 	Route::get('clases/day', 'Clases\ClasesController@programarClases');
 	// Route::get('clases/{clase_id}', 'Clases\ClasesController@getAll');
-	Route::get('clases/all', 'Clases\ClasesController@getAll');
+	Route::get('clases/{grupo}/grupo', 'Clases\ClasesController@index');
+	Route::get('clases/{grupo}/all', 'Clases\ClasesController@getAll');
 	Route::get('clases/restaurar/{id}' , 'Clases\ClasesController@restaurar');
 	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
 	Route::resource('clases', 'Clases\ClasesController');
