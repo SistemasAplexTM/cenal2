@@ -1,4 +1,5 @@
 $(function () {
+    $('.color').colorpicker();
     $('body').tooltip({
         selector: 'a[rel="tooltip"], [data-toggle="tooltip"]'
     });
@@ -12,7 +13,8 @@ function getTable(on_delete) {
         $('#tbl-modulos tfoot th ').each( function (key, value) {
             $(this).show();
             $(this).html( '<input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Buscar o  Registrar" />' );
-            $('.none').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+            $('.save').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+            // $('.none').html('<input class="form-control input-sm color" id="input'+key+'" type="text" placeholder="Color" value="#5367ce" />');
         });
     }else{
         $('#tbl-modulos tfoot th').each( function (key, value) {
@@ -27,11 +29,6 @@ function getTable(on_delete) {
         columns: [
             { data: "nombre", name: 'nombre'},
             { data: "duracion", name: 'duracion'},
-            {
-                "render": function (data, type, full, meta) {
-                    return "<div width='10px' style='background-color: "+ full.color+"'></div>";
-                }
-            },
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {

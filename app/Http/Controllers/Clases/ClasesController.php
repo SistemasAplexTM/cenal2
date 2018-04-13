@@ -65,11 +65,11 @@ class ClasesController extends Controller
             ->get();
         return view('templates.clases.create', compact('modulos', 'salones', 'jornadas', 'sedes'));
     }
-    public function validarSalon(Request $request){
-        $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
+
+    public function validarSalon($fechas_clase, $hora_inicio, $salon_id){
         $new_f = array();
         foreach ($fechas_clase as $key => $value) {
-            array_push($new_f, $value.' '.$request->hora_inicio_jornada);
+            array_push($new_f, $value.' '.$hora_inicio);
         }
 
         $valid_salon = DB::table('clases_detalle AS a')
@@ -80,7 +80,7 @@ class ClasesController extends Controller
             'b.codigo'
         )
         ->where([
-            ['a.salon_id', $request->salon_id],
+            ['a.salon_id', $salon_id],
             ['a.estado_id', '<>', 3 ],
             ['a.deleted_at', NULL]
         ])
@@ -105,8 +105,11 @@ class ClasesController extends Controller
      */
     public function store(Request $request)
     {
-        // return $this->validarSalon($request);
-        return DB::transaction(function () use ($request) {
+        $success = true;
+        $fechas_error = null;
+        DB::beginTransaction();
+
+        try {
             $grupo = DB::table('grupo')->insertGetId(['nombre' => $request->grupo]);
 
             $hora_inicio = $request->hora_inicio_jornada;
@@ -133,6 +136,13 @@ class ClasesController extends Controller
                 $nombres_modulo[] = $value['name'];
                 $fechas_clase[] = $this->programarClases($fecha_inicio, $value['duracion'], $request->semana);
             }
+            foreach ($fechas_clase as $value) {
+                $result = $this->validarSalon($value, $hora_inicio, $request->salon['id']);
+                if ($result['errorSalon']) {
+                    $fechas_error = $result['fechas'];
+                    throw new \Exception("something happened");
+                }
+            }
             foreach ($fechas_clase as $clave => $arr) {
                 foreach ($arr as $key => $value) {
                     DB::table('clases_detalle')->insert([
@@ -140,24 +150,25 @@ class ClasesController extends Controller
                     ]);
                 }
             }
-            return $fechas_clase;
-        });
-
-        // $fechas_clase = $this->programarClases($request->fecha_inicio, $request->duracion, $request->semana);
-        
-        // Guardar en tabla clases
-        // $clases_id = Clases::create($request->all())->id;
-
-        // Guardar en tabla clases_detalle
-        // $hora_inicio = $request->hora_inicio_jornada;
-        // $hora_fin = $request->hora_fin_jornada;
-        // foreach ($fechas_clase as $key => $value) {
-        //     DB::table('clases_detalle')->insert([
-        //         ['title' => 'clase de ' . $modulo[0]->nombre, 'clases_id' => $clases_id, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon_id],
-        //     ]);
-        // }
-
-        // return redirect('clases');
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $success = false;
+            $exception = $e;
+        }
+        if($success){
+            return array(
+                'code' => 200,
+                'errorSalon' => false
+            );
+        }else{
+            return array(
+                'code' => 600,
+                'errorSalon' => true,
+                'fechas' => $fechas_error,
+                'exception' => $exception
+            );
+        }
     }
 
     /**
@@ -238,29 +249,6 @@ class ClasesController extends Controller
         $porcentaje = $data->completadas / $data->total * 100;
 
         return view('templates.clases.detail', compact('data', 'porcentaje'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function getAll($grupo)
@@ -422,63 +410,37 @@ class ClasesController extends Controller
                 'a.num_documento',
                 DB::raw("concat_ws(' ', a.primer_apellido, a.segundo_apellido, a.nombres) AS nombre")
             )
-            ->where([['a.deleted_at', '=', null], ['a.consecutivo', '=', $dato]])
+            ->where([
+                ['a.consecutivo', '=', $dato],
+                ['a.estudiante_status_id', '=', 1], 
+                ['a.deleted_at', '=', null]
+            ])
             ->orWhere('a.num_documento', '=', $dato)
             ->get();
         return $data;
     }
 
-    public function agregar_estudiante($clases_id, $estudiante_id)
+    public function agregar_estudiante($grupo_id, $estudiante_id)
     {
-        $exist = DB::table('clases_estudiante AS a')
-            ->join('clases AS b', 'a.clases_id', 'b.id')
-            ->join('jornadas AS c', 'b.jornada_id', 'c.id')
-            ->join('sede AS d', 'b.sede_id', 'd.id')
-            ->select(
-                'b.id',
-                'd.nombre AS sede',
-                'c.jornada'
-            )
-            ->where([
-                ['a.estudiante_id', '=', $estudiante_id],
-                ['a.clases_id', '=', $clases_id],
-                ['b.estado_id', '<>', 3],
-            ])
-            ->get();
-
-        $cupos_usados = DB::table('clases_estudiante AS a')
+        $exist = DB::table('estudiante AS a')
             ->select(
                 DB::raw("count(a.estudiante_id) AS cant")
             )
             ->where([
-                ['a.clases_id', '=', $clases_id],
+                ['a.estudiante_id', '=', $estudiante_id],
+                ['a.grupo_id', '=', $grupo_id]
             ])
             ->get();
-
-        $salon = DB::table('salones AS a')
-            ->join('clases_detalle AS b', 'a.id', 'b.salon_id')
-            ->select(
-                'a.capacidad'
-            )
-            ->where([['b.clases_id', '=', $clases_id]])
-            ->get();
-        if ($salon[0]->capacidad == $cupos_usados[0]->cant) {
-            $answer = array(
-                'code' => 601,
-            );
+        if (count($exist) <= 0) {
+            DB::table('estudiante_id')
+                ->update([
+                    ['grupo_id' => $grupo_id]
+                ]);
+            $answer = array('code' => 200);
         } else {
-            if (count($exist) <= 0) {
-                DB::table('clases_estudiante')
-                    ->insert([
-                        ['clases_id' => $clases_id, 'estudiante_id' => $estudiante_id],
-                    ]);
-                $answer = array('code' => 200);
-            } else {
-                $answer = array(
-                    'code' => 600,
-                    'data' => $exist[0],
-                );
-            }
+            $answer = array(
+                'code' => 600
+            );
         }
         return $answer;
     }

@@ -28,7 +28,7 @@ class GrupoController extends Controller
 				'd.jornada',
 				'e.descripcion AS estado',
                 'e.clase AS clase_estado',
-                DB::raw('IFNULL(( SELECT Count(b.id) FROM grupo AS e INNER JOIN estudiante AS f ON f.grupo_id = e.id WHERE f.grupo_id = a.id ),0) AS cantidad'),
+                DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN estudiante AS x ON x.grupo_id = z.id WHERE z.id = a.id AND estudiante_status_id = 1 AND x.deleted_at IS NULL) AS cantidad'),
                 'f.nombre AS sede'
             )
             ->groupBy(

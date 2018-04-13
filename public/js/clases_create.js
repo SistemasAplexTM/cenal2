@@ -40,7 +40,12 @@ var objVue = new Vue({
         fechasError: [],
         cargando: 0,
         cargandoModulos: 0,
-        formErrors: {}
+        formErrors: {},
+        list:[
+                {name:"John"}, 
+                {name:"Joao"}, 
+                {name:"Jean"} 
+            ]
     },
     created(){
         this.setProgramas();
@@ -48,6 +53,8 @@ var objVue = new Vue({
     },
     methods:{
         resetForm: function(){
+            this.errorSalon = false;
+            this.fechasError = [];
             this.grupo = '',
             this.salon = null,
             this.color = '',
@@ -132,6 +139,33 @@ var objVue = new Vue({
             this.hora_inicio_jornada = moment(inicio, "HH:mm:ss").format('HH:mm');
             this.hora_fin_jornada = moment(fin, "HH:mm:ss").format('HH:mm');
         },
+        // validarSalon: function(){
+        //     axios.post('validarSalon',{
+        //         'grupo': this.grupo,
+        //         'salon': this.salon,
+        //         'color': this.color,
+        //         'jornada_id': this.jornada_id,
+        //         'duracion': this.duracion,
+        //         'jornada': this.jornada,
+        //         'sede': this.sede,
+        //         'modulos': this.modulos,
+        //         'salones': this.salones,
+        //         'semana': this.semana,
+        //         'hora_inicio_jornada': this.hora_inicio_jornada,
+        //         'hora_fin_jornada': this.hora_fin_jornada,
+        //         'fecha_inicio': $("#fecha_inicio").val(),
+        //     }).then(response => {
+        //         this.errorSalon = response.data.errorSalon;
+        //         this.fechasError = response.data.fechas;
+        //         if (!this.errorSalon) {
+        //             toastr.success('Registrado con éxito');
+        //             this.resetForm();
+        //         }
+        //     })
+        //     .catch(function(error){
+        //         alert('Error interno: ' + error);
+        //     }); 
+        // }
         save: function(){
             axios.post('../clases', {
                 'grupo': this.grupo,
@@ -148,22 +182,18 @@ var objVue = new Vue({
                 'hora_fin_jornada': this.hora_fin_jornada,
                 'fecha_inicio': $("#fecha_inicio").val(),
             }).then(response => {
-                // toastr.success('Registrado con éxito');
-                // this.resetForm();
+                if (response.data.code == 200) {
+                    toastr.success('Registrado con éxito');
+                    this.resetForm();
+                }else{
+                    this.errorSalon = response.data.errorSalon;
+                    this.fechasError = response.data.fechas;
+                }
             })
             .catch(function(error){
-                // alert('Error al consultar: ' + error);
+                alert('Error al consultar: ' + error);
             });
             ;
-            // var formData = new FormData($('#create_clase_form')[0]);
-            // const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-            // axios.post('validarSalon',formData, config).then(response => {
-            //     this.errorSalon = response.data.errorSalon;
-            //     this.fechasError = response.data.fechas;
-            //     if (!this.errorSalon) {
-            //         this.$refs.form.submit();
-            //     }
-            // });
         }
     }
     

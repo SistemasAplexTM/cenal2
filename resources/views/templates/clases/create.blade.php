@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Programar módulo')
 @section('content')
-<div class="container" id="clases">
+<div class="container-fluid" id="clases">
     <div class="row">
         <div class="ibox">
             <div class="ibox-title">
@@ -266,19 +266,41 @@
                                             <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="4" value="4"> Jueves </label>
                                             <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="5" value="5"> Viernes </label>
                                             <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="6" value="6"> Sábado </label>
-                                            <label class="checkbox-inline i-checks"> <input v-model="semana" type="checkbox" id="7" value="7"> Domingo </label>
+                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="7" value="7"> Domingo </label>
                                         </div>
                                     </div> 
                                 </div>
                             </div>
+                            {{-- <hr>
+                            <div class="row">
+                                <div class="col-lg-12 b-r">
+                                   <div class="form-group">
+                                        <div class="col-sm-12">
+                                        <label for="observacion" >Obseración: </label>
+                                            <textarea class="form-control" name="observacion" id="observacion" cols="30" rows="2"></textarea> 
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div> --}}
                         </div>
                         <div class="col-lg-3">
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                <label for="observacion" >Obseración: </label>
-                                    <textarea class="form-control" name="observacion" id="observacion" cols="30" rows="6"></textarea> 
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <li class="list-group-item active">Módulos</li>
+                                    <li class="list-group-item" v-if="modulos.length<=0">
+                                        <div class="alert alert-success" >
+                                            <i class="fa fa-exclamation"></i> No hay módulos disponibles
+                                        </div>
+                                    </li>
+                                    <draggable :list="modulos" class="list-group">
+                                        <li v-for="modulo in modulos" class="list-group-item">
+                                            <i class="fa fa-arrows"></i>
+                                            <small class="label label-success pull-right"><i class="fa fa-clock-o"></i> @{{ modulo.duracion }} clases</small>
+                                            <span class="m-l-xs">@{{ modulo.name }}</span>
+                                        </li>
+                                    </draggable> 
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -307,12 +329,13 @@
                 <div class="alert alert-success" v-if="modulos.length<=0">
                     No hay módulos disponibles
                 </div>
-                <ul class="todo-list m-t">
-                    <li v-for="modulo in modulos">
+                <draggable :list="modulos" class="list-group">
+                    <li v-for="modulo in modulos" class="list-group-item">
+                        <i class="fa fa-arrows"></i>
                         <small class="label label-success pull-right"><i class="fa fa-clock-o"></i> @{{ modulo.duracion }} clases</small>
                         <span class="m-l-xs">@{{ modulo.name }}</span>
                     </li>
-                </ul>
+                </draggable>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
