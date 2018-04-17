@@ -14307,3 +14307,6 @@ body { padding-top: 50px; }
 .checkbox label::after{
     padding-left: 4.3px;
 }
+.active-student{
+    background-color: #ccd3d6 !important;
+}

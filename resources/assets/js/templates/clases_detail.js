@@ -88,46 +88,9 @@ var objVue = new Vue({
                }
             });
         },
-        buscar_estudiante: function(){
-            if (!$("#right-sidebar").hasClass('sidebar-open')) {
-                $("#right-sidebar").addClass('sidebar-open');
-            }
-            var dato = this.dato_estudiante;
-            this.repeatInscrito = false;
-            this.repeatInscritoMessage = 'Agregar';
-            axios.get('../buscar_estudiante/' + dato).then(response => {
-                this.estudiantes = response.data; 
-                this.verSidebar = 1; 
-            });
-        },
         get_clases: function(){
             axios.get('./').then(response => {
                 this.clases = response.data; 
-            });
-        },
-        agregar_estudiante: function(id){
-            axios.get('agregar_estudiante/' + id).then(response => {
-                this.verSidebar = 1; 
-                this.dato_estudiante = '';
-                if (response.data.code == 600) {
-                    this.repeatObj = response.data.data;
-                    this.repeatInscrito = true;
-                    this.repeatInscritoMessage = 'El estudiante ya está inscrito';
-                }
-                if (response.data.code == 601) {
-                    swal({
-                        type: 'error',
-                        // title: 'Espera...',
-                        text: "El salón está lleno!"
-                    });
-                }
-                if (response.data.code == 200) {
-                    this.verSidebar = 0; 
-                    this.repeatInscrito = false;
-                    this.repeatObj = {};
-                    this.repeatInscritoMessage = 'Agregar';
-                    this.get_estudiantes_inscritos();
-                }
             });
         },
         buscar_profesor: function(){
@@ -178,11 +141,6 @@ var objVue = new Vue({
                     //     }
                     // });
                 // }
-            });
-        },
-        get_estudiantes_inscritos: function(){
-            axios.get('estudiantes_inscritos').then(response => {
-                this.estudiantes_inscritos = response.data;   
             });
         },
         get_profesor_asignado: function(){

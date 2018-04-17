@@ -16,7 +16,7 @@ $(document).ready(function () {
                 searchable: true,
                 className: 'project-title',
                 "render": function (data, type, full, meta) {
-                    return  "<h2><a href='clases/" + full.id +"/grupo'> "+full.nombre+"</a></h2>";
+                    return  "<h2><a onclick='setGrupo("+full.id+", \""+full.nombre+"\")'> "+full.nombre+"</a></h2>";
                 }
             },
             { data: "fecha_inicio", name: 'fecha_inicio'},
@@ -28,31 +28,29 @@ $(document).ready(function () {
             { data: "sede", name: 'sede'},
             { data: "cantidad", name: 'cantidad'},
             { data: "jornada", name: 'jornada'}
-        ]
+        ],
+        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+            $(nRow).attr('id', aData['id']);
+        }
     });
 });
+
+function setGrupo(id, grupo){
+    objVue.setGrupo(id, grupo);
+}
 
 var objVue = new Vue({
     el: '#grupos',
     data:{
-        salon:'',
-        programa:'',
-        capacidad:'',
-        ubicacion:'',
-        duracion:'',
-        jornada:'',
-        sede:'',
-        dato_profesor: '',
-        profesor_asignado: '',
         dato_estudiante: '',
         estudiantes_inscritos: {},
-        programas: {},
-        hora_inicio_jornada: '',
-        hora_fin_jornada: '',
-        cargando_programa: 0,
-        estudiantes: {},
-        profesores: {},
-        formErrors: {}
+        view: '',
+        grupo: '',
+        isActiveStudent: false,
+        btn_confirm:true,
+        btn_retirar:false,
+        grupo_exist: {},
+        estudiantes: {}
     },
     methods:{
         get_profesor_asignado: function(){
@@ -61,7 +59,72 @@ var objVue = new Vue({
                     this.profesor_asignado = response.data[0].profesor;   
                 }
             });
-        }
+        },
+        buscar_estudiante: function(){
+            this.btn_confirm = true;
+            this.btn_retirar = false;
+            if (this.dato_estudiante.length <= 0) {
+                return false;
+            }
+            if (this.grupo.length <= 0) {
+                alert('Debe seleccionar un grupo para asignar un estudiante');
+                return false;
+            }
+            var dato = this.dato_estudiante;
+            this.view = 'buscar';
+            axios.get('buscar_estudiante/' + dato).then(response => {
+                this.estudiantes = response.data;
+            });
+        },
+        agregar_estudiante: function(grupo_id, id){
+            axios.get('grupo/'+grupo_id+'/agregar_estudiante/' + id).then(response => {
+                this.dato_estudiante = '';
+                this.grupo_exist = {};
+                if (response.data.code == 600) {
+                    alert('Repetido');
+                    return;
+                }
+                if (response.data.code == 601) {
+                    this.grupo_exist = response.data.data[0];
+                }
+                if (response.data.code == 200) {
+                    this.get_estudiantes_inscritos(grupo_id);
+                }
+            });
+        },
+        retirar_estudiante: function(id){
+            axios.get('retirar_estudiante/' + id).then(response => {
+                if (response.data.code == 200) {
+                    this.get_estudiantes_inscritos();
+                    this.btn_confirm = true;
+                    this.btn_retirar = false;
+                }
+            });
+        },
+        get_estudiantes_inscritos: function(){
+            this.dato_estudiante '';
+            this.view = 'inscritos';
+            axios.get('estudiantes_inscritos/' + this.grupo.id).then(response => {
+                this.estudiantes_inscritos = response.data;   
+            });
+        },
+        resaltarBuscar: function(){
+            $('#buscar_estudiante').focus();
+            $('#buscar_estudiante').effect("highlight", {color:"#aadeff"}, 2000);
+        },
+        setGrupo: function(id, grupo, estudiante_id){
+            this.dato_estudiante = '';
+            this.grupo = {id: id, nombre: grupo};
+            this.get_estudiantes_inscritos(id);
+            $('tr').removeClass('active');
+            $('#' + id).addClass('active');
+            if (estudiante_id != 'undefinde') {
+                this.isActiveStudent = estudiante_id;
+            }
+        },
+        updateTable: function(){
+            recargarTabla('tbl-grupos');
+        },
     }
     
 });

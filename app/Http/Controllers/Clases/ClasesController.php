@@ -401,50 +401,6 @@ class ClasesController extends Controller
         echo $fecha;
     }
 
-    public function buscar_estudiante($dato)
-    {
-        $data = DB::table('estudiante As a')
-            ->select(
-                'a.id',
-                'a.consecutivo AS codigo',
-                'a.num_documento',
-                DB::raw("concat_ws(' ', a.primer_apellido, a.segundo_apellido, a.nombres) AS nombre")
-            )
-            ->where([
-                ['a.consecutivo', '=', $dato],
-                ['a.estudiante_status_id', '=', 1], 
-                ['a.deleted_at', '=', null]
-            ])
-            ->orWhere('a.num_documento', '=', $dato)
-            ->get();
-        return $data;
-    }
-
-    public function agregar_estudiante($grupo_id, $estudiante_id)
-    {
-        $exist = DB::table('estudiante AS a')
-            ->select(
-                DB::raw("count(a.estudiante_id) AS cant")
-            )
-            ->where([
-                ['a.estudiante_id', '=', $estudiante_id],
-                ['a.grupo_id', '=', $grupo_id]
-            ])
-            ->get();
-        if (count($exist) <= 0) {
-            DB::table('estudiante_id')
-                ->update([
-                    ['grupo_id' => $grupo_id]
-                ]);
-            $answer = array('code' => 200);
-        } else {
-            $answer = array(
-                'code' => 600
-            );
-        }
-        return $answer;
-    }
-
     public function set_estudiante_asistencia(Request $request)
     {
         try {
@@ -573,25 +529,6 @@ class ClasesController extends Controller
         return $data;
     }
 
-    public function estudiantes_inscritos($clases_id)
-    {
-        $data = DB::table('clases_estudiante AS a')
-            ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
-            ->join('programas AS c', 'b.programas_id', 'c.id')
-            ->select(
-                DB::raw("concat_ws(' ', primer_apellido, segundo_apellido, nombres) AS nombre"),
-                'programa',
-                'b.consecutivo AS codigo',
-                'b.correo',
-                'b.id'
-            )
-            ->where('a.clases_id', '=', $clases_id)
-            ->orderBy('nombre')
-            ->get();
-
-        return $data;
-    }
-
     public function getFestivos($ano = '')
     {
         $this->festivos($ano);
@@ -705,24 +642,6 @@ class ClasesController extends Controller
             return false;
         }
 
-    }
-
-    public function removeStudentClass($clase_id, $estudiante_id)
-    {
-        try {
-            DB::table('clases_estudiante')
-            ->where([
-                ['clases_id', $clase_id],
-                ['estudiante_id', $estudiante_id],
-            ])
-            ->delete();
-            $answer = array(
-                'code' => 200,
-            );
-            return $answer;
-        } catch (Exception $e) {
-            return $e;
-        }
     }
 
 }

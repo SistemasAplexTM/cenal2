@@ -139,33 +139,6 @@ var objVue = new Vue({
             this.hora_inicio_jornada = moment(inicio, "HH:mm:ss").format('HH:mm');
             this.hora_fin_jornada = moment(fin, "HH:mm:ss").format('HH:mm');
         },
-        // validarSalon: function(){
-        //     axios.post('validarSalon',{
-        //         'grupo': this.grupo,
-        //         'salon': this.salon,
-        //         'color': this.color,
-        //         'jornada_id': this.jornada_id,
-        //         'duracion': this.duracion,
-        //         'jornada': this.jornada,
-        //         'sede': this.sede,
-        //         'modulos': this.modulos,
-        //         'salones': this.salones,
-        //         'semana': this.semana,
-        //         'hora_inicio_jornada': this.hora_inicio_jornada,
-        //         'hora_fin_jornada': this.hora_fin_jornada,
-        //         'fecha_inicio': $("#fecha_inicio").val(),
-        //     }).then(response => {
-        //         this.errorSalon = response.data.errorSalon;
-        //         this.fechasError = response.data.fechas;
-        //         if (!this.errorSalon) {
-        //             toastr.success('Registrado con éxito');
-        //             this.resetForm();
-        //         }
-        //     })
-        //     .catch(function(error){
-        //         alert('Error interno: ' + error);
-        //     }); 
-        // }
         save: function(){
             axios.post('../clases', {
                 'grupo': this.grupo,

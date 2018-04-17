@@ -1,9 +1,3 @@
-$(function () {
-    $('.color').colorpicker();
-    $('body').tooltip({
-        selector: 'a[rel="tooltip"], [data-toggle="tooltip"]'
-    });
-});
 $(document).ready(function(){
    getTable('a'); 
 });

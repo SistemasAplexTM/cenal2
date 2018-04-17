@@ -2416,6 +2416,10 @@ function WinMove() {
 }
 
 $(document).ready(function () {
+    $('.color').colorpicker();
+    $('body').tooltip({
+        selector: 'a[rel="tooltip"], [data-toggle="tooltip"]'
+    });
     $('.i-checks').iCheck({
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
