@@ -5,7 +5,7 @@
     <div class="row">
         <div class="ibox">
             <div class="ibox-title">
-                <h5><i class="fa fa-calendar-plus-o"></i> Programar grupo</h5>
+                <h5><i class="fa fa-calendar-plus-o"></i> Programar grupo - SEDE</h5>
             </div>
             <div class="ibox-content">
                 <form action="{{ url('clases') }}" method="POST" id="create_clase_form" enctype="multipart/form-data" ref="form">

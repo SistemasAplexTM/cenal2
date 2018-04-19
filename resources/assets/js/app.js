@@ -23,12 +23,19 @@ Vue.component('v-select', vSelect)
 import draggable from 'vuedraggable';
 Vue.component('draggable', draggable)
 
+import VTooltip from 'v-tooltip';
+Vue.use(VTooltip);
+
+// import vueConfirmationButton from 'vue-confirmation-button';
+// Vue.component('vue-confirmation-button', vueConfirmationButton);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('confirm-button', require('./components/Confirm_button.vue'));
 Vue.component('example', require('./components/Example.vue'));
 
 Vue.component(

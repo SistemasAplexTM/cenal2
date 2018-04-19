@@ -15,7 +15,6 @@ $(document).ready(function () {
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    //var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
                     var btn_edit =  "<a href='../" + full.id + "/edit' class='btn btn-warning btn-sm'><i class='fa fa-folder'></i> Detalles </a> ";
                     return btn_edit ;
                 }
@@ -29,13 +28,6 @@ $(document).ready(function () {
                     return  "<a href='../" + full.id + "/edit'>Múdolo "+full.modulo+"</a><br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small>";
                 }
             },
-            { 
-                "render": function (data, type, full, meta) {
-                    return "<span class='label label-"+full.clase_estado+"'>"+ full.estado+"</span>";                    
-                }
-            },
-            { data: "sede", name: 'sede'},
-            { data: "cant", name: 'cant'},
             {
                 className: 'project-title',
                 sortable: false,
@@ -44,7 +36,6 @@ $(document).ready(function () {
                     return salones;
                 }
             },
-            { data: "jornada", name: 'jornada'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
@@ -94,6 +85,9 @@ var objVue = new Vue({
         profesores: {},
         formErrors: {}
     },
+    created(){
+        this.get_estudiantes_inscritos();
+    },
     methods:{
         get_profesor_asignado: function(){
             axios.get('profesor_asignado').then(response => {
@@ -101,7 +95,12 @@ var objVue = new Vue({
                     this.profesor_asignado = response.data[0].profesor;   
                 }
             });
-        }
+        },
+        get_estudiantes_inscritos: function(){
+            axios.get('../../estudiantes_inscritos/' + grupo_id).then(response => {
+                this.estudiantes_inscritos = response.data;   
+            });
+        },
     }
     
 });

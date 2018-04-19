@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Session;
+use Javascript;
 
 class ClasesController extends Controller
 {
@@ -26,10 +27,37 @@ class ClasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($grupo)
     {
+
         $this->info_user();
-        return view('templates.clases.index');
+        Javascript::put([
+            'grupo_id' => $grupo
+        ]);
+        $data = DB::table('grupo As a')
+        ->join('clases AS b', 'b.grupo_id', 'a.id')
+        ->leftJoin('jornadas AS d', 'b.jornada_id', 'd.id')
+        ->leftJoin('estado AS e', 'a.estado_id', 'e.id')
+        ->join('sede AS f', 'b.sede_id', 'f.id')
+        ->select(
+            'a.id',
+            'a.nombre',
+            'd.jornada',
+            'e.descripcion AS estado',
+            'e.clase AS clase_estado',
+            DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN estudiante AS x ON x.grupo_id = z.id WHERE z.id = a.id AND estudiante_status_id = 1 AND x.deleted_at IS NULL) AS cantidad'),
+            'f.nombre AS sede'
+        )
+        ->where('a.id', $grupo)
+         ->groupBy(
+                'a.id',
+                'a.nombre',
+                'd.jornada',
+                'f.nombre'
+            )
+        ->get();
+        $data = $data[0];
+        return view('templates.clases.index', compact('data'));
     }
 
     /**
