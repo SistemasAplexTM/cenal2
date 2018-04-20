@@ -32,11 +32,9 @@ var objVue = new Vue({
     data:{
         ver_listado: false,
         cambiar_salon: false,
-        repeatInscrito: false,
         btnTerminarClase: true,
         verSidebar: 0,
         clases_detalle_id:'',
-        repeatInscritoMessage: 'Agregar',
         salon:'',
         salon_id:'',
         sede_id: '',
@@ -55,15 +53,12 @@ var objVue = new Vue({
         dato_buscar: '',
         cargando_programa: 0,
         editar_salon: 0,
-        programas: {},
         salones: {},
         clases: {},
         estudiantes: {},
         estudiantes_asistencia: [],
         estudiantes_inscritos: {},
-        repeatObj: {},
-        profesores: {},
-        formErrors: {}
+        profesores: {}
     },
     created(){
         this.get_clases();
@@ -77,15 +72,11 @@ var objVue = new Vue({
             this.estudiantes = {};
             this.profesores = [];
         },
-        /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
-        deleteError: function(element){
-            let me = this;
-            $.each(me.formErrors, function (key, value) {
-                if(key !== element){
-                   me.formErrors[key] = value; 
-               }else{
-                me.formErrors[key] = false; 
-               }
+        get_estudiantes_inscritos: function(){
+            this.dato_estudiante = '';
+            this.view = 'inscritos';
+            axios.get('../../estudiantes_inscritos/' + grupo_id).then(response => {
+                this.estudiantes_inscritos = response.data;   
             });
         },
         get_clases: function(){
@@ -127,20 +118,6 @@ var objVue = new Vue({
                 for (var i = response.data.length - 1; i >= 0; i--) {
                     this.estudiantes_asistencia.push(response.data[i].estudiante_id);
                 }
-                // if (response.data.length > 0) {
-                    // var id_est_list = [];
-                    // $(".estudiante_list").each(function(){
-                    //     id_est_list.push($(this).children('label').children('div').children('input').val());
-                    // });
-                    // $(response.data).each(function(key, value){
-                    //     if(id_est_list.includes(value.estudiante_id.toString())){
-                    //         $('#input-asistencia'+value.estudiante_id).iCheck('check');
-                    //         $('#input-asistencia'+value.estudiante_id).iCheck('disable');
-                    //     }else{
-                    //         $('#input-asistencia'+value.estudiante_id).iCheck('uncheck');
-                    //     }
-                    // });
-                // }
             });
         },
         get_profesor_asignado: function(){
@@ -162,7 +139,8 @@ var objVue = new Vue({
                 l.ladda( 'start' );
             axios.post('set_estudiante_asistencia', {
                 'estudiantes_id': this.estudiantes_asistencia,
-                'clases_detalle_id': this.clases_detalle_id
+                'clases_detalle_id': this.clases_detalle_id,
+                'clases_id': clase_id
             }).then(response => {
                 if (response.data.code == 200) {
                     l.ladda('stop');
@@ -217,7 +195,6 @@ var objVue = new Vue({
                 this.ver_listado = true;
                 this.cambiar_salon = false;
             }
-            // $('#mdl_clase').modal('show');
         }
     }
     

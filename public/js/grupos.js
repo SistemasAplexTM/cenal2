@@ -48,8 +48,6 @@ var objVue = new Vue({
         show: true,
         grupo: '',
         isActiveStudent: false,
-        btn_confirm:true,
-        btn_retirar:false,
         grupo_exist: {},
         estudiantes: {}
     },

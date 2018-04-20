@@ -4,6 +4,12 @@
 <div class="container-fluid" id="clases">
     <div class="row animated fadeInDown">
         <div class="col-lg-4">
+            <div class="row">
+                <div class="col-lg-4">
+                    <a href="{{ url()->previous() }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
+                </div>
+            </div>
+            <br>
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     {!! "<span class='label label-".$data->clase_estado." pull-right'>".$data->estado."</span>" !!}
@@ -15,7 +21,7 @@
                     <div class="row">
                         <div class="col-xs-4">
                             <small class="stats-label">
-                               <i class="fa fa-calendar"></i> Fecha de inicio
+                               <i class="fa fa-calendar"></i> Primera clase
                             </small>
                             <h4>
                                 {{ date("d-m-Y", strtotime($data->fecha_inicio)) }}
@@ -23,7 +29,7 @@
                         </div>
                         <div class="col-xs-4">
                             <small class="stats-label">
-                                <i class="fa fa-calendar"></i> Fecha de fin
+                                <i class="fa fa-calendar"></i> última clase
                             </small>
                             <h4>
                                 {{ date("d-m-Y", strtotime($data->fecha_fin)) }}
@@ -69,7 +75,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-xs-5">
+                        <div class="col-xs-7">
                             <small class="stats-label">
                                <i class="fa fa-home"></i> Salón &nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;<i class="fa fa-group"></i> Capacidad
                             </small>
@@ -77,15 +83,7 @@
                                 {!! str_replace(',', '<br>', $data->salon) !!}
                             </h4>
                         </div>
-                        <div class="col-xs-3">
-                            <small class="stats-label">
-                               <i class="fa fa-group"></i> Cupos usados
-                            </small>
-                            <h4>
-                                @{{ estudiantes_inscritos.length }}
-                            </h4>
-                        </div>
-                        <div class="col-xs-4">
+                        <div class="col-xs-5">
                             <small class="stats-label">
                                <i class="fa fa-map-marker"></i> Sede
                             </small>
@@ -95,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-                @role('Administrador')
+                @role('Administrador|Coordinador')
                 <div class="ibox-content">
                     <div class="row">
                         <div class="form-group">
@@ -103,8 +101,6 @@
                                 <small class="stats-label">
                                     <i class="fa fa-user-circle-o"></i> Profesor
                                 </small>
-                                {{-- <a href="" class="btn pull-right" title="Cambiar profesor"><i class="fa fa-refresh"></i></a> --}}
-
                                 <div class="input-group"  v-if="profesor_asignado.length <= 0">
                                     <span class="input-group-addon">
                                         <i class="fa fa-user-plus">
@@ -119,9 +115,7 @@
                                 <dd class="project-people" v-if="profesor_asignado.length > 0">
                                     <a href="#">
                                         <h3>
-                                            <img alt="image" width='60px' class='img-circle' src="{{ $data->perfil_profesor }}">
-                                                @{{ profesor_asignado }}
-                                            </img>
+                                            @{{ profesor_asignado }}
                                         </h3>
                                     </a>
                                 </dd>
@@ -146,18 +140,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <span class="stats-label">
-                               <i class="fa fa-comments"></i> Observación:
-                            </span>
-                            <p>
-                                {{ $data->observacion }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </div>   
         </div>
         <div class="col-lg-4">
@@ -175,23 +157,6 @@
                 </div>
                 <div class="ibox-content">
                     <div class="feed-activity-list">
-                        @role('Administrador')
-                        <div class="feed-element">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-user-plus">
-                                        </i>
-                                    </span>
-                                    <input class="form-control" id="burcar_estudiante" name="burcar_estudiante" placeholder="Agregar estudiante - Código o Documento" type="text" v-model="dato_estudiante">
-                                        <a @click.prevent="buscar_estudiante()" class="input-group-addon btn btn-primary" type="button">
-                                            Buscar
-                                        </a>
-                                    </input>
-                                </div>
-                            </div>
-                        </div>
-                        @endrole
                         <div class="feed-element text-center">
                             <a class="btn btn-block btn-warning right-sidebar-toggle" @click="verSidebar=0">
                                 <i class="fa fa-group"></i> Estudiantes inscritos - @{{ estudiantes_inscritos.length }}

@@ -28,8 +28,7 @@ class ClasesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index($grupo)
-    {
-
+    {   
         $this->info_user();
         Javascript::put([
             'grupo_id' => $grupo
@@ -45,7 +44,7 @@ class ClasesController extends Controller
             'd.jornada',
             'e.descripcion AS estado',
             'e.clase AS clase_estado',
-            DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN estudiante AS x ON x.grupo_id = z.id WHERE z.id = a.id AND estudiante_status_id = 1 AND x.deleted_at IS NULL) AS cantidad'),
+            DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN clases AS v ON v.grupo_id = z.id INNER JOIN clases_estudiante AS x ON x.clases_id = v.id WHERE z.id = a.id) AS cantidad'),    
             'f.nombre AS sede'
         )
         ->where('a.id', $grupo)
@@ -237,8 +236,16 @@ class ClasesController extends Controller
     public function edit($id)
     {
         $this->info_user();
+        $grupo = DB::table('grupo AS a')
+        ->join('clases AS b', 'a.id', 'b.grupo_id')
+        ->select('a.id')
+        ->where('b.id', $id)
+        ->first();
+        Javascript::put([
+            'clase_id' => $id,
+            'grupo_id' => $grupo->id,
+        ]);
         $data = DB::table('clases As a')
-        // ->join('salones AS b', 'a.salon_id', 'b.id')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
             ->join('jornadas AS d', 'a.jornada_id', 'd.id')
             ->join('estado AS e', 'a.estado_id', 'e.id')
@@ -246,13 +253,11 @@ class ClasesController extends Controller
             ->leftJoin('users AS g', 'a.profesor_id', 'g.id')
             ->select(
                 'a.id',
+                DB::raw('(select min(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_inicio'),
                 DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
                 DB::raw('(select count(estado_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id and`g`.`estado_id` = 3)) AS completadas'),
                 DB::raw('(select count(id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS total'),
-                // DB::raw('(select count(id) from `clases_estudiante` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS cupos_usados'),
                 DB::raw('(SELECT GROUP_CONCAT(DISTINCT s.codigo,"    /    ", s.capacidad SEPARATOR ", ") AS salon FROM clases_detalle AS j INNER JOIN salones AS s ON j.salon_id = s.id WHERE j.clases_id = a.id ) AS salon'),
-
-                'a.fecha_inicio',
                 'a.observacion',
                 'a.estado_id',
                 'a.cant_estudiantes',
@@ -304,7 +309,6 @@ class ClasesController extends Controller
 
         }
         $data = DB::table('clases As a')
-        // ->join('salones AS b', 'k.salon_id', 'b.id')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
             ->join('jornadas AS d', 'a.jornada_id', 'd.id')
             ->join('estado AS e', 'a.estado_id', 'e.id')
@@ -312,12 +316,13 @@ class ClasesController extends Controller
             ->leftJoin('users AS i', 'a.profesor_id', 'i.id')
             ->select(
                 'a.id',
+                DB::raw('(select min(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_inicio'),
                 DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
                 DB::raw('(select count(estado_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id and`g`.`estado_id` = 3)) AS completadas'),
                 DB::raw('(select count(id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS total'),
-                DB::raw('(select count(g.id) from `estudiante` as `g` where (`g`.`grupo_id` = a.id )) AS cant'),
-                DB::raw('(SELECT GROUP_CONCAT(DISTINCT s.codigo,"    /    ", s.capacidad SEPARATOR ", ") AS salon FROM clases_detalle AS j INNER JOIN salones AS s ON j.salon_id = s.id WHERE j.clases_id = a.id ) AS salon'),
-                'a.fecha_inicio',
+                // DB::raw('(select count(g.id) from `estudiante` as `g` where (`g`.`grupo_id` = a.id )) AS cant'),
+                DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN clases AS v ON v.grupo_id = z.id INNER JOIN clases_estudiante AS x ON x.clases_id = v.id WHERE z.id = a.id) AS cant'),
+                DB::raw("(IFNULL(( SELECT CONCAT_WS('/',s.codigo,s.capacidad) FROM clases_detalle AS j INNER JOIN salones AS s ON j.salon_id = s.id WHERE j.clases_id = a.id AND j.estado_id = 3 ORDER BY j.id DESC LIMIT 1 ), ( SELECT CONCAT_WS('/',s.codigo,s.capacidad) FROM clases_detalle AS j INNER JOIN salones AS s ON  j.salon_id = s.id WHERE j.clases_id = a.id ORDER BY j.id ASC LIMIT 1 ) )) AS salon"),
                 'a.observacion',
                 'a.estado_id',
                 'c.nombre AS modulo',
@@ -442,6 +447,18 @@ class ClasesController extends Controller
                 ->where('id', '=', $request->clases_detalle_id)
                 ->update(
                     ['estado_id' => 3, 'color' => '#999da3']
+                );
+
+            $grupo = DB::table('grupo AS a')
+                ->join('clases AS b', 'a.id', 'b.grupo_id')
+                ->select('a.id')
+                ->where('b.id', $request->clases_id)
+                ->first();
+
+            DB::table('grupo AS a')
+                ->where('a.id', '=', $grupo->id)
+                ->update(
+                    ['a.estado_id' => 2]
                 );
 
             DB::table('clases_profesor_asistencia')

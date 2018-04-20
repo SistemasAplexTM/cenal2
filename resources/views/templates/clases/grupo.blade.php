@@ -106,18 +106,18 @@
                             </li>
                         </ul>
                         <ul class="todo-list m-t" v-show="view=='inscritos'">
-                            <div class="alert alert-primary text-center" v-show="estudiantes_inscritos.length<=0">No hay estudiantes inscritos en este grupo
-                                <br><br>
-                                @role('Administrador')
-                                <a class="btn btn-xs btn-default" @click.prevent="resaltarBuscar">Inscribir</a>
-                            </div>
-                                @endrole
                             <li :class="[isActiveStudent == estudiante.id ? 'active-student' : '']" v-for="estudiante in estudiantes_inscritos" v-show="estudiantes_inscritos.length>0">
                                 <span class="m-l-xs">
                                     <confirm-button v-on:confirmation-success="retirar_estudiante(estudiante.id)"></confirm-button>
                                     <strong>@{{ estudiante.codigo }}</strong> - @{{ estudiante.nombre }}
                                 </span>
                             </li>
+                            <div class="alert alert-primary text-center" v-show="estudiantes_inscritos.length<=0">No hay estudiantes inscritos en este grupo
+                                <br><br>
+                                @role('Administrador')
+                                <a class="btn btn-xs btn-default" @click.prevent="resaltarBuscar">Inscribir</a>
+                            </div>
+                                @endrole
                         </ul>
                     </div>
                 </div>

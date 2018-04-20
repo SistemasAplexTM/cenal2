@@ -4,6 +4,12 @@
 <div class="container-fluid" id="clases">
     <div class="row">
         <div class="col-lg-4">
+            <div class="row">
+                <div class="col-lg-4">
+                    <a href="{{ url('grupos') }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
+                </div>
+            </div>
+            <br>
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <div class="row">
@@ -29,9 +35,6 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <p>Estudiantes inscritos: <strong>{{ $data->cantidad }}</strong></p>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <p>Estado: {!! "<span class='label label-".$data->clase_estado." pull-right'>".$data->estado."</span>" !!}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -75,6 +78,7 @@
                                     <th>Acciones</th>
                                     <th>Módulo</th>
                                     <th><small>Salón/Capacidad</small></th>
+                                    <th>Estado</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
                                     <th></th>
@@ -90,6 +94,7 @@
                                     <th>Acciones</th>
                                     <th>Módulo</th>
                                     <th><small>Salón/Capacidad</small></th>
+                                    <th>Estado</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
                                     <th></th>

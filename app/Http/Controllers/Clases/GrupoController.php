@@ -16,6 +16,14 @@ class GrupoController extends Controller
     public function getAll()
     {
         $user = $this->get_user();
+        $where = array(
+                ['b.deleted_at', NULL]
+            );
+        if ($user->hasRole('Profesor')) {
+            $where = array(
+                ['b.profesor_id', $user->id]
+            );
+        }
         $data = DB::table('grupo As a')
             ->join('clases AS b', 'b.grupo_id', 'a.id')
             ->leftJoin('jornadas AS d', 'b.jornada_id', 'd.id')
@@ -28,7 +36,7 @@ class GrupoController extends Controller
                 'd.jornada',
                 'e.descripcion AS estado',
                 'e.clase AS clase_estado',
-                DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN estudiante AS x ON x.grupo_id = z.id WHERE z.id = a.id AND estudiante_status_id = 1 AND x.deleted_at IS NULL) AS cantidad'),
+                DB::raw('(SELECT Count(x.id) FROM grupo AS z INNER JOIN clases AS v ON v.grupo_id = z.id INNER JOIN clases_estudiante AS x ON x.clases_id = v.id WHERE z.id = a.id) AS cantidad'),
                 'f.nombre AS sede'
             )
             ->groupBy(
@@ -39,6 +47,7 @@ class GrupoController extends Controller
                 'd.jornada',
                 'f.nombre'
             )
+            ->where($where)
             ->get();
         return Datatables::of($data)->make(true);
     }
@@ -102,19 +111,18 @@ class GrupoController extends Controller
 
     public function estudiantes_inscritos($grupo_id)
     {
-        $data = DB::table('estudiante AS a')
-            ->join('programas AS c', 'a.programas_id', 'c.id')
+        $data = DB::table('grupo AS a')
+            ->join('clases AS b', 'b.grupo_id', 'a.id')
+            ->join('clases_estudiante AS c', 'c.clases_id', 'b.id')
+            ->join('estudiante AS d', 'c.estudiante_id', 'd.id')
             ->select(
-                'a.id',
-                'a.consecutivo AS codigo',
-                'a.correo',
-                'c.programa',
-                DB::raw("concat_ws(' ', primer_apellido, segundo_apellido, nombres) AS nombre")
+                'd.id',
+                'd.consecutivo AS codigo',
+                'd.correo',
+                DB::raw("concat_ws(' ', d.primer_apellido, d.segundo_apellido, d.nombres) AS nombre")
             )
             ->where([
-                ['a.grupo_id', $grupo_id],
-                ['a.estudiante_status_id', '=', 1],
-                ['a.deleted_at', '=', null]
+                ['a.id', $grupo_id]
             ])
             ->orderBy('nombre')
             ->get();

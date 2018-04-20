@@ -36,6 +36,11 @@ $(document).ready(function () {
                     return salones;
                 }
             },
+            { 
+                "render": function (data, type, full, meta) {
+                    return "<span class='label label-"+full.clase_estado+"'>"+ full.estado+"</span>";                    
+                }
+            },
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
