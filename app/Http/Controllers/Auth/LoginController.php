@@ -39,6 +39,6 @@ class LoginController extends Controller
         if ($user->hasRole('Estudiante')) {
             return 'estudiante/perfil';   
         }
-        return '/clases';
+        return '/grupos';
     }
 }

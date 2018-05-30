@@ -32,6 +32,8 @@
     </div>
 <!-- Scripts -->
     <script src="{{ asset('js/plantilla.js') }}"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.min.js"></script>
+    <script src="https://cdn.rawgit.com/David-Desmaisons/Vue.Draggable/master/dist/vuedraggable.min.js"></script> --}}
     <script src="https://cdn.datatables.net/keytable/2.3.2/js/dataTables.keyTable.min.js"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.16/api/fnFilterClear.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>

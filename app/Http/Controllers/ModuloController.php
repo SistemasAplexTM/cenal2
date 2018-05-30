@@ -24,6 +24,7 @@ class ModuloController extends Controller
             'a.id',
             'a.nombre',
             'a.duracion',
+            'a.color',
             'a.created_at',
             'a.updated_at'
         )

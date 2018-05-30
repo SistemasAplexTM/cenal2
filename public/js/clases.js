@@ -7,16 +7,15 @@ $(document).ready(function () {
         autoclose: true,
     });
 
-    $('#tbl-clases').DataTable({
+    var table = $('#tbl-clases').DataTable({
         processing: true,
         serverSide: true,
-        ajax: 'clases/all',
+        ajax: './all',
         columns: [
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    //var btn_delete = " <a onclick=\"eliminar(" + full.id + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    var btn_edit =  "<a href='clases/" + full.id + "/edit' class='btn btn-warning btn-sm'><i class='fa fa-folder'></i> Detalles </a> ";
+                    var btn_edit =  "<a href='../" + full.id + "/edit' class='btn btn-warning btn-sm'><i class='fa fa-folder'></i> Detalles </a> ";
                     return btn_edit ;
                 }
             },
@@ -26,7 +25,14 @@ $(document).ready(function () {
                 "render": function (data, type, full, meta) {
                     var inicio = moment(full.fecha_inicio).format('DD-MM-YYYY')
                     var fin = moment(full.fecha_fin).format('DD-MM-YYYY')
-                    return  "<a href='clases/" + full.id + "/edit'>Múdolo "+full.modulo+"</a><br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small>";
+                    return  "<a href='../" + full.id + "/edit'>Múdolo "+full.modulo+"</a><br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small>";
+                }
+            },
+            {
+                className: 'project-title',
+                sortable: false,
+                "render": function (data, type, full, meta) {
+                    return full.salon;
                 }
             },
             { 
@@ -34,17 +40,6 @@ $(document).ready(function () {
                     return "<span class='label label-"+full.clase_estado+"'>"+ full.estado+"</span>";                    
                 }
             },
-            { data: "sede", name: 'sede'},
-            { data: "cant", name: 'cant'},
-            {
-                className: 'project-title',
-                sortable: false,
-                "render": function (data, type, full, meta) {
-                    var salones = full.salon.replace(',', '<br>');
-                    return salones;
-                }
-            },
-            { data: "jornada", name: 'jornada'},
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
@@ -57,9 +52,9 @@ $(document).ready(function () {
                 "render": function (data, type, full, meta) {
                     if (roles.includes('Administrador') || roles.includes('Coordinador')) {
                         if (full.profesor_id == 'null' || full.profesor_id == null || full.profesor_id == 'NULL' ) {
-                            return  "Sin asignar";
+                            return "Sin asignar";
                         }else{
-                            return  "<img alt='image' width='60px' class='img-circle' src='"+full.profesor_img+"'> "+full.profesor;                        
+                            return full.profesor;                        
                         }
                     }
                     if (roles.includes('Profesor')) {
@@ -94,11 +89,34 @@ var objVue = new Vue({
         profesores: {},
         formErrors: {}
     },
+    created(){
+        this.get_estudiantes_inscritos();
+    },
     methods:{
         get_profesor_asignado: function(){
             axios.get('profesor_asignado').then(response => {
                 if (response.data[0].profesor.length > 0) {
                     this.profesor_asignado = response.data[0].profesor;   
+                }
+            });
+        },
+        get_estudiantes_inscritos: function(){
+            axios.get('../../estudiantes_inscritos/' + grupo_id).then(response => {
+                this.estudiantes_inscritos = response.data;   
+            });
+        },
+        programar_sgte_modulo: function(){
+            axios.get('../../programar_modulo/' + grupo_id).then(response => {
+                if (response.data['code'] == 200) {
+                    toastr.success('Registrado con éxito');
+                    toastr.options.closeButton = true;
+                    recargarTabla('tbl-clases');
+                }else if(response.data['code'] == 300){
+                    toastr.warning('No hay más módulos');
+                }
+                else{
+                    toastr.error('Error al registrar');
+                    alert(response.data);
                 }
             });
         }

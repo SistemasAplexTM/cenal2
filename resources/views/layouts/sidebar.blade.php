@@ -8,10 +8,6 @@
         <div>
             <div class="sidebar-message" v-if="verSidebar===0">
                 <div class="feed-element" v-for="estudiante in estudiantes_inscritos">
-                    <a class="pull-left" href="#">
-                        <img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}">
-                        </img>
-                    </a>
                     <div class="media-body ">
                         <strong>
                             @{{ estudiante.codigo }} - @{{ estudiante.nombre }}
@@ -27,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            <div class="sidebar-message" v-if="verSidebar===1">
+            {{-- <div class="sidebar-message" v-if="verSidebar===1">
                 <div class="alert alert-primary text-center" v-show="estudiantes.length<=0">No hay datos disponibles</div>
                 <div class="feed-element" v-for="value in estudiantes">
                     <a class="pull-left" href="#">
@@ -77,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="sidebar-message" v-if="verSidebar===2">
                 @role('Profesor')    
                     <button id="guardar_asistencia" class="ladda-button btn btn-block btn-primary" data-style="slide-down" type="button" @click.prevent="set_estudiante_asistencia()" :disabled="btnTerminarClase == true ? true : false">
@@ -165,10 +161,6 @@
             <div class="sidebar-message" v-if="verSidebar===3">
                 <div class="alert alert-primary text-center" v-show="profesores.length<=0">No hay datos disponibles</div>
                 <div class="feed-element" v-for="profesor in profesores" v-if="profesores.length > 0">
-                    <a class="pull-left" href="#">
-                        <img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}">
-                        </img>
-                    </a>
                     <div class="media-body ">
                         <button @click.prevent="asignar_profesor(profesor.id)"  class="btn btn-primary btn-xs pull-right" data-loading-text="Agregando..." id="agregar" type="button" >
                             <i class="fa fa-plus">
@@ -176,7 +168,7 @@
                             Asignar
                         </button>
                         <strong>
-                            @{{ profesor.name }} - @{{ profesor.last_name }}
+                            @{{ profesor.name }} @{{ profesor.last_name }}
                         </strong>
                         <br>
                         <p class="text-muted">

@@ -15,7 +15,7 @@
                 @endrole
                 @role('Administrador|Coordinador|Profesor')
                 <li>
-                    <a href="{{ url('/clases') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Módulos programados</span> </a>
+                    <a href="{{ url('/grupos') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Grupos</span> </a>
                 </li>
                 @endrole
                 @role('Administrador')
