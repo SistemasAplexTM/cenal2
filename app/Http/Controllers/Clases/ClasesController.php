@@ -54,7 +54,7 @@ class ClasesController extends Controller
                 'd.jornada',
                 'f.nombre',
                 'e.descripcion',
-                'f.clase'
+                'e.clase'
             )
         ->get();
         $data = $data[0];
