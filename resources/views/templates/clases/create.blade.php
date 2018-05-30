@@ -35,7 +35,6 @@
                                 <div class="col-lg-8">
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                        <a href="#" data-toggle="modal" data-target="#mdl-modulos" class="pull-right"><small>Ver módulos</small></a>
                                             <br v-show="cargando==1">
                                             <div class="sk-spinner sk-spinner-fading-circle text-center" v-show="cargando==1">
                                                 <div class="sk-circle1 sk-circle"></div>

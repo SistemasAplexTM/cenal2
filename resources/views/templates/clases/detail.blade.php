@@ -17,6 +17,37 @@
                         <i class="fa fa-puzzle-piece"></i> Módulo {{ $data->modulo }}
                     </h5>
                 </div>
+                @role('Administrador|Coordinador')
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <small class="stats-label">
+                                    <i class="fa fa-user-circle-o"></i> Profesor
+                                </small>
+                                <div class="input-group"  v-if="profesor_asignado.length <= 0">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-user-plus">
+                                        </i>
+                                    </span>
+                                    <input class="form-control" id="burcar_profesor" name="burcar_profesor" placeholder="Asignar profesor" type="text" v-model="dato_profesor">
+                                        <a @click.prevent="buscar_profesor()" class="input-group-addon btn btn-primary" type="button">
+                                            Buscar
+                                        </a>
+                                    </input>
+                                </div>
+                                <dd class="project-people" v-if="profesor_asignado.length > 0">
+                                    <a href="#">
+                                        <h3>
+                                            @{{ profesor_asignado }}
+                                        </h3>
+                                    </a>
+                                </dd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endrole
                 <div class="ibox-content text-center">
                     <div class="row">
                         <div class="col-xs-4">
@@ -93,37 +124,6 @@
                         </div>
                     </div>
                 </div>
-                @role('Administrador|Coordinador')
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="col-lg-12">
-                                <small class="stats-label">
-                                    <i class="fa fa-user-circle-o"></i> Profesor
-                                </small>
-                                <div class="input-group"  v-if="profesor_asignado.length <= 0">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-user-plus">
-                                        </i>
-                                    </span>
-                                    <input class="form-control" id="burcar_profesor" name="burcar_profesor" placeholder="Asignar profesor" type="text" v-model="dato_profesor">
-                                        <a @click.prevent="buscar_profesor()" class="input-group-addon btn btn-primary" type="button">
-                                            Buscar
-                                        </a>
-                                    </input>
-                                </div>
-                                <dd class="project-people" v-if="profesor_asignado.length > 0">
-                                    <a href="#">
-                                        <h3>
-                                            @{{ profesor_asignado }}
-                                        </h3>
-                                    </a>
-                                </dd>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endrole
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-xs-12">
@@ -190,7 +190,9 @@
                                         @{{ clase.salon }}
                                     </td>
                                     <td class="text-right">
-                                        <a class="btn btn-default right-sidebar-toggle" @click="verSidebar=2;verClase(clase)"> Ver</a>
+                                        <a class="btn right-sidebar-toggle" :class="clase.estado=='Terminado' ? 'btn-primary' : 'btn-success'" @click="verSidebar=2;verClase(clase)"> 
+                                            @{{ (clase.estado == 'Terminado') ? 'Ver' : 'Asistencia' }}
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
