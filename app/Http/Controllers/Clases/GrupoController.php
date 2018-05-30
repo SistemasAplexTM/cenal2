@@ -45,7 +45,9 @@ class GrupoController extends Controller
                 'b.fecha_inicio',
                 'd.jornada',
                 'd.jornada',
-                'f.nombre'
+                'f.nombre',
+                'e.descripcion',
+                'e.clase'
             )
             ->where($where)
             ->get();
