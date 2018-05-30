@@ -91,16 +91,40 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Acciones</th>
-                                    <th>Módulo</th>
-                                    <th><small>Salón/Capacidad</small></th>
-                                    <th>Estado</th>
-                                    <th>Progreso</th>
-                                    @role('Profesor')
-                                    <th></th>
-                                    @else
-                                    <th>Profesor</th>
-                                    @endrole
+                                    <th colspan="6" class=" active">
+                                        Excepto - 
+                                        <div class="form-group">
+                                            <label for="">Desde: </label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                <input type="date" placeholder="dd/mm/aaaa" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Hasta: </label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                <input type="date" placeholder="dd/mm/aaaa" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Salón: </label>
+                                            <select type="date" class="form-control">
+                                                <option value="">Seleccione</option>
+                                            </select>
+                                        </div>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="6" class="text-center active">
+                                        <button @click.prevent="programar_sgte_modulo()" class="btn" data-toggle="tooltip" title="Programar siguiente módulo">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </th>
                                 </tr>
                             </tfoot>
                         </table>

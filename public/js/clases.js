@@ -7,7 +7,7 @@ $(document).ready(function () {
         autoclose: true,
     });
 
-    $('#tbl-clases').DataTable({
+    var table = $('#tbl-clases').DataTable({
         processing: true,
         serverSide: true,
         ajax: './all',
@@ -32,8 +32,7 @@ $(document).ready(function () {
                 className: 'project-title',
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    var salones = full.salon.replace(',', '<br>');
-                    return salones;
+                    return full.salon;
                 }
             },
             { 
@@ -106,6 +105,21 @@ var objVue = new Vue({
                 this.estudiantes_inscritos = response.data;   
             });
         },
+        programar_sgte_modulo: function(){
+            axios.get('../../programar_modulo/' + grupo_id).then(response => {
+                if (response.data['code'] == 200) {
+                    toastr.success('Registrado con éxito');
+                    toastr.options.closeButton = true;
+                    recargarTabla('tbl-clases');
+                }else if(response.data['code'] == 300){
+                    toastr.warning('No hay más módulos');
+                }
+                else{
+                    toastr.error('Error al registrar');
+                    alert(response.data);
+                }
+            });
+        }
     }
     
 });
