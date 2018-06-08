@@ -32,7 +32,8 @@ class GrupoController extends Controller
             ->select(
                 'a.id',
                 'a.nombre',
-                DB::raw('DATE_FORMAT(b.fecha_inicio, "%Y-%m-%d") fecha_inicio'),
+                DB::raw("'fecha_inicio'"),
+                // DB::raw('DATE_FORMAT(b.fecha_inicio, "%Y-%m-%d") fecha_inicio'),
                 'd.jornada',
                 'e.descripcion AS estado',
                 'e.clase AS clase_estado',
@@ -42,7 +43,7 @@ class GrupoController extends Controller
             ->groupBy(
                 'a.id',
                 'a.nombre',
-                'b.fecha_inicio',
+                // 'b.fecha_inicio',
                 'd.jornada',
                 'd.jornada',
                 'f.nombre',
