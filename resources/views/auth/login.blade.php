@@ -87,7 +87,7 @@
             </span>
             <br>
             <span class="text-center">
-                pass: 123456
+                pass: admin
             </span>
             <br>
             <span class="text-center">

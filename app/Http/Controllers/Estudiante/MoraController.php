@@ -49,6 +49,36 @@ class MoraController extends Controller
         return $mora;
     }
 
+    public function costos_certificado() 
+    {
+        $data = array(
+            'nombre_full' => 'nombre completo',
+            'cedula' => '1112230018',
+            'cedula' => '1112230018',
+            'codigo' => '565621',
+            'programa' => 'Programa'
+        );
+        $view =  \View::make('templates.estudiante.pdf-costos', compact('data'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('costos.pdf');
+    }
+
+    public function eps_certificado() 
+    {
+        $data = array(
+            'nombre_full' => 'nombre completo',
+            'cedula' => '1112230018',
+            'cedula' => '1112230018',
+            'codigo' => '565621',
+            'programa' => 'Programa'
+        );
+        $view =  \View::make('templates.estudiante.pdf-eps', compact('data'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('eps.pdf');
+    }
+
     public function baloto() 
     {
         $mora = $this->mora();
@@ -57,4 +87,5 @@ class MoraController extends Controller
         $pdf->loadHTML($view);
         return $pdf->download('baloto.pdf');
     }
+
 }

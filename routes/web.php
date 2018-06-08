@@ -16,6 +16,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/mora','MoraController@index')->name('mora');
 	Route::get('/baloto', 'MoraController@baloto')->name('baloto');
+	Route::get('/costos', 'Estudiante\MoraController@costos_certificado')->name('costos');
+	Route::get('/eps', 'Estudiante\MoraController@eps_certificado')->name('eps');
+	Route::get('/notas', 'Estudiante\MoraController@notas_certificado')->name('notas');
 	Route::get('/clients', 'Api\ClientsController@index')->name('clients');
 	Route::get('/clients/getAll', 'Api\ClientsController@getAll');
 	
@@ -76,6 +79,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programar_modulo/{grupo_id}', 'Clases\ClasesController@programar_modulo');
 
 	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
+	Route::get('clases/{grupo_id}/getModulos', 'Clases\GrupoController@getModulosByGrupo');
 	Route::get('clases/{clase_id}/getAll_estudiantes_asistencia/{clases_detalle_id}', 'Clases\ClasesController@getAll_estudiantes_asistencia');
 	Route::get('clases/{clase_id}/get_estudiante_asistencia', 'Clases\ClasesController@get_estudiante_asistencia');
 	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');

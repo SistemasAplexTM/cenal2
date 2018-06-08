@@ -44,7 +44,7 @@ $(document).ready(function () {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     var porcentaje = full.completadas/full.total*100;
-                    var btn_progreso =  "<small>Conpletadas: "+full.completadas+" de "+full.total+"</small><div class='progress progress-mini'><div style='width: "+porcentaje+"%;background-color: #1c84c6' class='progress-bar'></div></div>";
+                    var btn_progreso =  "<small>Completadas: "+full.completadas+" de "+full.total+"</small><div class='progress progress-mini'><div style='width: "+porcentaje+"%;background-color: #1c84c6' class='progress-bar'></div></div>";
                     return btn_progreso;
                 }
             },
@@ -81,6 +81,8 @@ var objVue = new Vue({
         profesor_asignado: '',
         dato_estudiante: '',
         estudiantes_inscritos: {},
+        modulos: {},
+        terminados: {},
         programas: {},
         hora_inicio_jornada: '',
         hora_fin_jornada: '',
@@ -91,6 +93,7 @@ var objVue = new Vue({
     },
     created(){
         this.get_estudiantes_inscritos();
+        this.get_modulos();
     },
     methods:{
         get_profesor_asignado: function(){
@@ -117,6 +120,14 @@ var objVue = new Vue({
                 else{
                     toastr.error('Error al registrar');
                     alert(response.data);
+                }
+            });
+        },
+        get_modulos: function(){
+            axios.get('./getModulos').then(response => {
+                if (response.data['code'] == 200) {
+                    this.modulos = response.data['data'];
+                    this.terminados = response.data['terminados'];
                 }
             });
         }

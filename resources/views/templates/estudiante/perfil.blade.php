@@ -14,58 +14,79 @@
     @endif --}}
     <div class="col-md-4">
         <div class="ibox float-e-margins">
-            <div class="ibox-title">
+            {{-- <div class="ibox-title">
                 <h5>
                     <i class="fa fa-user-circle"></i> Perfil
                 </h5>
                 <div class="ibox-tools">
                     <a data-toggle="modal" title="Actualizar datos" data-target="#modal-edit" class="">Editar <i class="fa fa-edit"></i></a>
                 </div>
-            </div>
-            <div class="ibox-content no-padding border-left-right">
-                @if($data->genero_id == 1)
-                    <a type="button" data-toggle="modal" data-target="#modal-img">
-                        <img alt="image" class="img-responsive " src="{{ asset('img/user-default.png') }}">
-                    </a>
-                @elseif($data->genero_id == 1)
-                    <img alt="image" class="img-responsive" src="{{ asset('img/user-default-f.png') }}">
-                @else
-                    <img alt="image" class="img-responsive" src="{{ asset('img/user-update.png') }}">
-                @endif
-            </div>
-            <div class="ibox-content profile-content">
-                <div class="col-lg-12">
-                    <div class="widget style1 blue-bg">
-                        <div class="row vertical-align">
-                            <div class="col-xs-3">
-                                <i class="fa fa-barcode fa-3x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <h2 class="font-bold">{{ $data->consecutivo }}</h2>
-                            </div>
+            </div> --}}
+            <div class="ibox-content">
+                <div class="widget style1 blue-bg">
+                    <div class="row vertical-align">
+                        <div class="col-xs-3">
+                            <i class="fa fa-barcode fa-3x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <h2>{{ $data->consecutivo }}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12">
-                    <h4>
-                        <strong>{{ $data->nombres . ' ' .$data->primer_apellido . ' ' . $data->segundo_apellido  }}</strong>&nbsp;
-                        <span class="badge badge-success pull-right"> {{ $data->sede }} &nbsp;
-                            <i class="fa fa-map-marker"></i>
-                        </span>
-                    </h4>
+                <br>
+                <h2>
+                     <strong>{{ $data->segundo_apellido . ' ' . $data->primer_apellido }}</strong> {{ $data->nombres  }}&nbsp;
+                </h2>
+                <br>
+                {{-- <span class="badge badge-success pull-right"> {{ $data->sede }} &nbsp;
+                    <i class="fa fa-map-marker"></i>
+                </span> --}}
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        {{-- <span class="badge badge-primary"> --}}
+                        {{-- </span> --}}
+                        <h3>
+                            <i class="fa fa-id-card-o icon-separed"></i>
+                            {{ $data->num_documento }}
+                        </h3>
+                    </li>
+                    <li class="list-group-item">
+                        <h3>
+                            <i class="fa fa-envelope icon-separed"></i> 
+                            {{ $data->correo }}
+                        </h3>
+                    </li>
+                    {{-- <li class="list-group-item ">
+                        <span class="badge badge-info">12</span>
+                        How all this mistaken
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge badge-danger">10</span>
+                        But because occasionally
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge badge-success">10</span>
+                        But who has any right
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge badge-warning">7</span>
+                        On the other hand
+                    </li> --}}
+                </ul>
+                {{-- <div class="well">
                     <p><i class="fa fa-id-card-o icon-separed" ></i>{{ $data->num_documento }}</p>
                     <p><i class="fa fa-envelope icon-separed" ></i>{{ $data->correo }}</p>
-                    <div class="user-button">
-                        <div class="btn-group">
-                            <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Certificado 01</a></li>
-                                <li><a href="#">Certificado 02</a></li>
-                                <li><a href="#">Certificado 03</a></li>
-                            </ul>
-                        </div>
-                        <hr>
+                </div> --}}
+                <div class="user-button">
+                    <div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('costos') }}">Costos</a></li>
+                            <li><a href="{{ route('eps') }}">EPS</a></li>
+                            <li><a href="{{ route('notas') }}">Notas</a></li>
+                        </ul>
                     </div>
+                    <hr>
                 </div>
                 {{--<div>
                     <div class="feed-activity-list disabled">
@@ -126,12 +147,13 @@
             </div>
         </div>
     </div>
+
     <div class="col-lg-8">
         <div class="tabs-container">
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-money"></i>Financiero</a></li>
+                <li class="active"><a data-toggle="tab" href="#tab-1"><h3><i class="fa fa-money"></i> Financiero</h3></a></li>
                 {{-- <li><a data-toggle="tab" href="#" ><i class="fa fa-clock-o"></i>Calificaciones</a></li> --}}
-                <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-calendar"></i>Asistencia</a></li>
+                <li><a data-toggle="tab" href="#tab-2" ><h3><i class="fa fa-calendar"></i> Asistencia</h3></a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane active">
@@ -180,7 +202,7 @@
                     <div class="panel-body">
                         <div class="col-md-4">
                             <a href="#" class="list-group-item active" style="text-align: center;">
-                                Modulos
+                                Módulos
                             </a>
                             <div class="alert alert-success text-center" v-if="modulos.length <= 0">No se encuentra inscrito a nungún módulo actualmente</div>
                             <div class="btn-group-vertical" id="listaModulos" style="width: 100%;" v-if="modulos.length > 0">
@@ -212,29 +234,6 @@
             </div>
         </div>
     </div>
-</div>
-<!-- Modal de imagen-->
-<div id="modal-img" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Imágen de perfil</h4>
-      </div>
-      <div class="modal-body">
-        <img alt="image" class="img-responsive" src="{{ asset('img/user-default.png') }}">
-        <div class="row">
-            <input type="file" class="form-control">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">cerrar</button>
-      </div>
-    </div>
-
-  </div>
 </div>
 <!-- Modal de editar-->
 <div id="modal-edit" class="modal fade" role="dialog">

@@ -21,7 +21,10 @@ class VerifyifActive
                 Auth::logout();
                 return redirect('login')->with('notification', 'Debe activar su cuenta para poder acceder.');
             }
-            
+            if (Auth::user()->activo != 0) {
+                Auth::logout();
+                return redirect('login')->with('notification', 'Su cuenta se encuentra incativa, contacte a un administrador.');
+            }
         }
         return $next($request);
     }

@@ -146,4 +146,42 @@ class GrupoController extends Controller
             return $e;
         }
     }
+
+    public function getModulosByGrupo($grupo_id){
+        try {
+            $data = DB::table('grupo AS a')
+                ->select('a.orden_modulos')
+                ->where('a.id', $grupo_id)
+                ->first();
+            $programados = DB::table('clases AS a')
+                ->select('a.modulo_id')
+                ->where('a.grupo_id', $grupo_id)
+                ->get();
+            $orden = explode(',', $data->orden_modulos);
+            $result = array();
+            foreach ($orden as $key => $value) {
+                $result[] = DB::table('modulos AS a')
+                ->select('a.id', 'a.nombre', 'a.duracion')
+                ->where('a.id', $value)
+                ->first();
+            }
+            foreach ($programados as $key => $value) {
+                $program[] = $value->modulo_id;
+            }
+            foreach ($result as $key => $value) {
+                $result_ids[] = $value->id;
+            }
+            
+            // $diff = array_diff($result_ids, $program );
+
+            $answer = array(
+                'code' => 200,
+                'data' => $result,
+                'terminados' => $program
+            );
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }    
+    }
 }

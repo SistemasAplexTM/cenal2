@@ -40,6 +40,17 @@
                                 </div>
                             </div>
                             <br>
+                            <ul class="list-group">
+                                <li class="list-group-item active">
+                                    Módulos
+                                </li>
+                              <li v-for="modulo in modulos" class="list-group-item">
+                                   <span class="badge" data-toggle='tooltip' title='Clases'>@{{ modulo.duracion }}</span>
+                                   <i class="fa fa-check" v-if="terminados.includes(modulo.id)"></i>
+                                   {{-- <i class="fa fa-times" v-else></i> --}}
+                                    @{{ modulo.nombre }}
+                              </li>
+                            </ul>
                             <div class="feed-activity-list">
                                 <div class="feed-element">
                                     <div class="row">
