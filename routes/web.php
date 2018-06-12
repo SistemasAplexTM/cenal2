@@ -26,7 +26,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 
 	Route::put('/modulo/updateCell', 'ModuloController@updateCell');
 	Route::get('/modulo/getAllForSelect', 'ModuloController@getAllForSelect');
-	Route::get('/modulo/getByPrograma/{programa}', 'ModuloController@getByPrograma');
+	Route::get('/modulo/getByPrograma/{programa}/{jornada}', 'ModuloController@getByPrograma');
 	Route::get('/modulo', 'ModuloController@index')->name('modulo');
 	Route::get('/modulo/all/{type}', 'ModuloController@getAll');
 	Route::post('/modulo/store', 'ModuloController@store');
@@ -76,7 +76,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 
 	Route::get('clases/profesor/{profesor_id}', 'Profesor\ClasesController@getAll');
 
-	Route::get('programar_modulo/{grupo_id}', 'Clases\ClasesController@programar_modulo');
+	Route::post('programar_modulo/{grupo_id}', 'Clases\ClasesController@programar_modulo');
 
 	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
 	Route::get('clases/{grupo_id}/getModulos', 'Clases\GrupoController@getModulosByGrupo');

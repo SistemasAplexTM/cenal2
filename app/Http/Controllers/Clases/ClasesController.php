@@ -163,7 +163,7 @@ class ClasesController extends Controller
             ])->id;
 
             $fechas_clase = $this->programarClases($request->fecha_inicio, $request->modulos[0]['duracion'], $request->semana);
-            $result = $this->validarSalon($fechas_clase, $hora_inicio, $request->salon['id']);
+            $result = $this->validarSalon($fechas_clase, $hora_inicio, $request->salon);
             if ($result['errorSalon']) {
                 $fechas_error = $result['fechas'];
                 throw new \Exception("something happened");
@@ -171,7 +171,7 @@ class ClasesController extends Controller
 
             foreach ($fechas_clase as $clave => $value) {
                 DB::table('clases_detalle')->insert([
-                    ['title' => 'clase de '. $request->modulos[0]['name'], 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon['id']],
+                    ['title' => 'clase de '. $request->modulos[0]['name'], 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon],
                 ]);
             }
 
@@ -239,8 +239,10 @@ class ClasesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function programar_modulo($grupo_id)
+    public function programar_modulo(Request $request, $grupo_id)
     {
+        // return $request->all();
+        // exit();
         $grupo = DB::table('grupo AS a')
         ->select('a.orden_modulos', 'a.dias_clase')
         ->where('a.id', $grupo_id)
@@ -249,23 +251,26 @@ class ClasesController extends Controller
         ->join('modulos AS b', 'a.modulo_id', 'b.id')
         ->join('jornadas AS c', 'a.jornada_id', 'c.id')
         ->select('a.sede_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
-            DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin')
+            DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
+            DB::raw('(select max(salon_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS salon_id')
         )
         ->where('a.grupo_id', $grupo_id)
         ->orderby('a.created_at','DESC')
         ->take(1)->first();
+        
         $fecha = new DateTime($modulo->fecha_fin);
         $fecha = $fecha->add(new DateInterval('P1D'));
         $fecha_inicio = $fecha->format('Y-m-d');
-        // return response()->json($modulo->fecha_fin);
+        
+        
         $orden_modulos = explode(',', $grupo->orden_modulos);
         $dias_clase = explode(',', $grupo->dias_clase);
         $clave = array_search($modulo->id, $orden_modulos);
-        // return $orden_modulos[$clave + 1];
+
         if (array_key_exists($clave + 1, $orden_modulos)) {
             $sgte_modulo = $orden_modulos[$clave + 1];
             $nombre_modulo = DB::table('modulos')
-            ->select('nombre')
+            ->select('nombre', 'duracion')
             ->where('id', $sgte_modulo)
             ->first();
         }else{
@@ -282,8 +287,32 @@ class ClasesController extends Controller
             $hora_inicio = $modulo->hora_inicio;
             $hora_fin = $modulo->hora_fin;
 
+            // Obtener el salón del select para cambiar o del módulo anterior si no seleccinó salón
+            $salon = $modulo->salon_id;
+            $rango = array();
+            if (isset($request->salon) && $request->salon != null && $request->salon != 'null') {
+                $salon = $request->salon;
+            }
+            if (isset($request->desde) && $request->desde != null && $request->desde != 'null') {
+                if ($fecha_inicio == $request->desde) {
+                    // echo 'Las fechas son iguales';
+                    $fecha_inicio = $request->hasta;
+                }
+                // if ($fecha_inicio > $request->desde) {
+                //     echo 'La fecha de inicio es mayor a "desde"';
+                // }
+                if ($fecha_inicio < $request->desde) {
+                    $fechaInicio = strtotime($request->desde);
+                    $fechaFin = strtotime($request->hasta);
+                    for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+                        $rango[] = date("Y-m-d", $i);
+                    }
+                    // echo 'La fecha de inicio es menor a "desde"';
+                }
+            }
+            
             $id_class = Clases::create([
-                'modulo_id' => $orden_modulos[$clave + 1],
+                'modulo_id' => $sgte_modulo,
                 'fecha_inicio' => $fecha_inicio,
                 'sede_id' => $modulo->sede_id,
                 'jornada_id' => $modulo->jornada_id,
@@ -291,8 +320,9 @@ class ClasesController extends Controller
                 'grupo_id' => $grupo_id
             ])->id;
 
-            $fechas_clase = $this->programarClases($fecha_inicio, $modulo->duracion, $dias_clase);
-            $result = $this->validarSalon($fechas_clase, $hora_inicio, 8);
+            $fechas_clase = $this->programarClases($fecha_inicio, $nombre_modulo->duracion, $dias_clase, $rango);
+            
+            $result = $this->validarSalon($fechas_clase, $hora_inicio, $salon);
             if (isset($result['errorSalon']) && $result['errorSalon']) {
                 $fechas_error = $result['fechas'];
                 throw new \Exception("El salón no está disponible");
@@ -300,7 +330,7 @@ class ClasesController extends Controller
 
             foreach ($fechas_clase as $clave => $value) {
                 DB::table('clases_detalle')->insert([
-                    ['title' => 'clase de '. $nombre_modulo->nombre, 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'salon_id' => 8],
+                    ['title' => 'clase de '. $nombre_modulo->nombre, 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'salon_id' => $salon]
                 ]);
             }
             DB::commit();
@@ -508,7 +538,7 @@ class ClasesController extends Controller
         return $data;
     }
 
-    public function programarClases($fecha_inicio, $duracion, $dias_clase)
+    public function programarClases($fecha_inicio, $duracion, $dias_clase, $rango = null)
     {
 
         $fechas_clase = array();
@@ -531,12 +561,14 @@ class ClasesController extends Controller
             if (in_array($numero_dia, $dias_clase)) {
                 // si hay clase ese día, se agrega al arreglo de de sgte fecha
                 if (!$this->esFestivo($sgte_dia)) {
-                    array_push($fechas_clase, $sgte_dia);
+                    // Si hay fechas para exceptuar se ignoran
+                    if (!in_array($sgte_dia, $rango)) {
+                        array_push($fechas_clase, $sgte_dia);    
+                    }    
                 }
                 // echo "El día ".$numero_dia." SÍ hay clase. fecha: ".$sgte_dia."<br>";
             }
         }
-
         return $fechas_clase;
     }
 

@@ -87,6 +87,7 @@ var objVue = new Vue({
             this.capacidad = '';
             this.ubicacion = '';
             if (val) {
+                this.salon = val.id;
                 this.capacidad = val.capacidad;
                 this.ubicacion = val.ubicacion;
             }
@@ -115,7 +116,8 @@ var objVue = new Vue({
             this.duracion = '';
             if (val != null) {
                 this.cargandoModulos = 1;
-                axios.get('../modulo/getByPrograma/' + val.id).then(response => {
+                axios.get('../modulo/getByPrograma/' + val.id + '/' + this.jornada).then(response => {
+                    console.log(response);
                     if(response.data.length > 0){
                         this.modulos = response.data 
                     }else{
@@ -139,6 +141,7 @@ var objVue = new Vue({
             // }
         },
         setInicioJornada: function(){
+            this.setModulos();
             var inicio = $("#jornada").find(':selected').data("hora_inicio");
             var fin = $("#jornada").find(':selected').data("hora_fin");
             this.hora_inicio_jornada = moment(inicio, "HH:mm:ss").format('HH:mm');
@@ -166,6 +169,7 @@ var objVue = new Vue({
                         if (response.data.code == 200) {
                             toastr.success('Registrado con éxito');
                             this.resetForm();
+                            location.reload();
                         }else{
                             this.errorSalon = response.data.errorSalon;
                             this.fechasError = response.data.fechas;

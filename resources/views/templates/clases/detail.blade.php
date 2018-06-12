@@ -8,14 +8,19 @@
                 <div class="col-lg-4">
                     <a href="{{ url()->previous() }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
                 </div>
+                <div class="col-lg-8">
+                    <a class="btn btn-block btn-warning right-sidebar-toggle" @click="verSidebar=0">
+                        <i class="fa fa-group"></i> Ver estudiantes inscritos - @{{ estudiantes_inscritos.length }}
+                    </a>
+                </div>
             </div>
             <br>
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    {!! "<span class='label label-".$data->clase_estado." pull-right'>".$data->estado."</span>" !!}
-                    <h5>
-                        <i class="fa fa-puzzle-piece"></i> Módulo {{ $data->modulo }}
-                    </h5>
+                    <h2>
+                        {!! "<span class='label label-".$data->clase_estado." pull-right'>".$data->estado."</span>" !!}
+                        Módulo {{ $data->modulo }}
+                    </h2>
                 </div>
                 @role('Administrador|Coordinador')
                 <div class="ibox-content">
@@ -30,7 +35,7 @@
                                         <i class="fa fa-user-plus">
                                         </i>
                                     </span>
-                                    <input class="form-control" id="burcar_profesor" name="burcar_profesor" placeholder="Asignar profesor" type="text" v-model="dato_profesor">
+                                    <input class="form-control" id="burcar_profesor" name="burcar_profesor" placeholder="Asignar profesor" type="text" v-model="dato_profesor" @keyup.enter="buscar_profesor()">
                                         <a @click.prevent="buscar_profesor()" class="input-group-addon btn btn-primary" type="button">
                                             Buscar
                                         </a>
@@ -76,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content text-center">
                     <div class="row">
                         <div class="col-xs-4">
                             <small class="stats-label">
@@ -104,7 +109,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content text-center">
                     <div class="row">
                         <div class="col-xs-7">
                             <small class="stats-label">
@@ -145,27 +150,30 @@
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>
-                        Clases
-                    </h5>
+                    <h5>Listado de clases</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
-                            <i class="fa fa-chevron-up">
-                            </i>
+                            <i class="fa fa-chevron-up"></i>
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="feed-activity-list">
-                        <div class="feed-element text-center">
-                            <a class="btn btn-block btn-warning right-sidebar-toggle" @click="verSidebar=0">
-                                <i class="fa fa-group"></i> Estudiantes inscritos - @{{ estudiantes_inscritos.length }}
+                <div class="ibox-content no-padding">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="clase in clases">
+                            {{-- <span class="badge badge-primary">16</span> --}}
+                            <a class="btn btn-sm right-sidebar-toggle pull-right" :class="clase.estado=='Terminado' ? 'btn-primary' : 'btn-success'" @click="verSidebar=2;verClase(clase)"> 
+                                <i v-if="clase.estado == 'Terminado'" class="fa fa-eye" data-toggle="tooltip" title="Ver clase"></i>
+                                <i v-else class="fa fa-list" data-toggle="tooltip" title="Asistencia"></i>
+                                {{-- @{{ (clase.estado == 'Terminado') ? '<i class='fa fa-eye'></i>' : '<i class='fa fa-list'></i>' }} --}}
                             </a>
-                        </div>
-                    </div>
+                            <h3>@{{ clase.start }}</h3>
+                            <p>Salón: @{{ clase.salon }}</p>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="ibox">
+
+            {{-- <div class="ibox">
                 <div class="ibox-title">
                     <h5>Listado de clases</h5>
                     <div class="ibox-tools">
@@ -176,7 +184,6 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-
                     <div class="table-responsive">
                         <table class="table table-hover issue-tracker">
                             <tbody>
@@ -199,8 +206,8 @@
                         </table>
                     </div>
                 </div>
+            </div> --}}
 
-            </div>
         </div>
         <div class="col-lg-4">
             <div class="ibox float-e-margins">

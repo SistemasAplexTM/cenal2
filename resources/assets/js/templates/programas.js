@@ -148,7 +148,7 @@ var objVue = new Vue({
         },
         create: function(){
             let me = this;
-            me.modulos = $('#modulos').select2('data');
+            // me.modulos = $('#modulos').select2('data');
             // console.log(me.modulos);
             axios.post('programas',{
                 'nombre' : this.nombre,

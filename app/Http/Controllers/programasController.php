@@ -163,16 +163,18 @@ class ProgramasController extends Controller
         return Datatables::of($data)->make(true);
     }
     public function geAllBySede($sede){
-        $data = DB::table('programas As a')
+        $data = DB::table('programas_unicos AS a')
+        ->join('pivot_programas_unicos_programas AS b', 'b.id_prog_unicos', 'a.id')
+        ->join('programas AS c', 'b.id_programa', 'c.id')
         ->select(
             'a.id',
-            'a.programa'
+            'a.nombre'
         )
         ->where([
-            ['a.sede_id', '=', $sede],
+            ['c.sede_id', '=', $sede],
             ['a.deleted_at', '=', NULL]
         ])
-        ->orderBy('a.programa')
+        ->orderBy('a.nombre')
         ->get();
         return $data;
     }

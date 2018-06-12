@@ -24,12 +24,12 @@
             </div> --}}
             <div class="ibox-content">
                 <div class="widget style1 blue-bg">
-                    <div class="row vertical-align">
-                        <div class="col-xs-3">
-                            <i class="fa fa-barcode fa-3x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <h2>{{ $data->consecutivo }}</h2>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <i class="fa fa-barcode fa-4x"></i>
+                            <h2 class="pull-right">
+                                {{ $data->consecutivo }}
+                            </h2>
                         </div>
                     </div>
                 </div>
@@ -43,8 +43,6 @@
                 </span> --}}
                 <ul class="list-group">
                     <li class="list-group-item">
-                        {{-- <span class="badge badge-primary"> --}}
-                        {{-- </span> --}}
                         <h3>
                             <i class="fa fa-id-card-o icon-separed"></i>
                             {{ $data->num_documento }}
@@ -56,27 +54,7 @@
                             {{ $data->correo }}
                         </h3>
                     </li>
-                    {{-- <li class="list-group-item ">
-                        <span class="badge badge-info">12</span>
-                        How all this mistaken
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge badge-danger">10</span>
-                        But because occasionally
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge badge-success">10</span>
-                        But who has any right
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge badge-warning">7</span>
-                        On the other hand
-                    </li> --}}
                 </ul>
-                {{-- <div class="well">
-                    <p><i class="fa fa-id-card-o icon-separed" ></i>{{ $data->num_documento }}</p>
-                    <p><i class="fa fa-envelope icon-separed" ></i>{{ $data->correo }}</p>
-                </div> --}}
                 <div class="user-button">
                     <div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
@@ -86,6 +64,7 @@
                             <li><a href="{{ route('notas') }}">Notas</a></li>
                         </ul>
                     </div>
+                    <a data-toggle="modal" title="Actualizar datos" data-target="#modal-edit" class="btn btn-success pull-right"> <i class="fa fa-edit"></i></a>
                     <hr>
                 </div>
                 {{--<div>
@@ -206,7 +185,7 @@
                             </a>
                             <div class="alert alert-success text-center" v-if="modulos.length <= 0">No se encuentra inscrito a nungún módulo actualmente</div>
                             <div class="btn-group-vertical" id="listaModulos" style="width: 100%;" v-if="modulos.length > 0">
-                                <button v-for="modulo in modulos" type="button" @click.prevent="get_asistencia(modulo.id)" class="btn btn-default btn-block" style="text-align:left;"> 
+                                <button v-for="modulo in modulos" type="button" @click.prevent="get_asistencia(modulo.id,modulo.nombre)" class="btn btn-default btn-block" style="text-align:left;"> 
                                     @{{ modulo.nombre }}
                                 </button>
                             </div>
@@ -215,7 +194,7 @@
                             <table class="table table-striped table-bordered" id="tbl-finanzas" width="200px">
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Módulo</th>
+                                        <th colspan="2">Asistencia módulo @{{ modulo_actual }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -377,33 +377,6 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -507,6 +480,33 @@ module.exports = function normalizeComponent (
     options: options
   }
 }
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -739,17 +739,13 @@ var singletonElement = null
 var singletonCounter = 0
 var isProduction = false
 var noop = function () {}
-var options = null
-var ssrIdKey = 'data-vue-ssr-id'
 
 // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
 // tags it will allow on a page
 var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
 
-module.exports = function (parentId, list, _isProduction, _options) {
+module.exports = function (parentId, list, _isProduction) {
   isProduction = _isProduction
-
-  options = _options || {}
 
   var styles = listToStyles(parentId, list)
   addStylesToDom(styles)
@@ -814,7 +810,7 @@ function createStyleElement () {
 
 function addStyle (obj /* StyleObjectPart */) {
   var update, remove
-  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
 
   if (styleElement) {
     if (isProduction) {
@@ -895,9 +891,6 @@ function applyToTag (styleElement, obj) {
 
   if (media) {
     styleElement.setAttribute('media', media)
-  }
-  if (options.ssrId) {
-    styleElement.setAttribute(ssrIdKey, obj.id)
   }
 
   if (sourceMap) {
@@ -18621,7 +18614,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(16)(module)))
 
 /***/ }),
 /* 16 */
@@ -30489,13 +30482,13 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(37).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(37).setImmediate))
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var apply = Function.prototype.apply;
+var apply = Function.prototype.apply;
 
 // DOM APIs, for completeness
 
@@ -30546,17 +30539,9 @@ exports._unrefActive = exports.active = function(item) {
 
 // setimmediate attaches itself to the global object
 __webpack_require__(38);
-// On some exotic environments, it's not clear which object `setimmeidate` was
-// able to install onto.  Search each possibility in the same order as the
-// `setimmediate` library.
-exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
-                       (typeof global !== "undefined" && global.setImmediate) ||
-                       (this && this.setImmediate);
-exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
-                         (typeof global !== "undefined" && global.clearImmediate) ||
-                         (this && this.clearImmediate);
+exports.setImmediate = setImmediate;
+exports.clearImmediate = clearImmediate;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 38 */
@@ -30749,14 +30734,14 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(7)))
 
 /***/ }),
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
-* sweetalert2 v7.21.1
+* sweetalert2 v7.22.0
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -31015,7 +31000,7 @@ var DismissReason = Object.freeze({
   timer: 'timer'
 });
 
-var version = "7.21.1";
+var version = "7.22.0";
 
 var argsToParams = function argsToParams(args) {
   var params = {};
@@ -31315,13 +31300,13 @@ var init = function init(params) {
   checkbox.onchange = resetValidationError;
   textarea.oninput = resetValidationError;
 
-  range.oninput = function () {
-    resetValidationError();
+  range.oninput = function (e) {
+    resetValidationError(e);
     rangeOutput.value = range.value;
   };
 
-  range.onchange = function () {
-    resetValidationError();
+  range.onchange = function (e) {
+    resetValidationError(e);
     range.nextSibling.value = range.value;
   };
 
@@ -31519,6 +31504,16 @@ var clickConfirm = function clickConfirm() {
 var clickCancel = function clickCancel() {
   return getCancelButton().click();
 };
+
+function fire() {
+  var Swal = this;
+
+  for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  return new (Function.prototype.bind.apply(Swal, [null].concat(args)))();
+}
 
 /**
  * Extends a Swal class making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
@@ -31822,15 +31817,12 @@ var showLoading = function showLoading() {
   popup.focus();
 };
 
-function fire() {
-  var Swal = this;
-
-  for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-
-  return new (Function.prototype.bind.apply(Swal, [null].concat(args)))();
-}
+/**
+ * Show spinner instead of Confirm button and disable Cancel button
+ */
+var getTimerLeft = function getTimerLeft() {
+  return globalState.timeout && globalState.timeout.getTimerLeft();
+};
 
 
 
@@ -31856,6 +31848,7 @@ var staticMethods = Object.freeze({
 	getCancelButton: getCancelButton,
 	getFooter: getFooter,
 	isLoading: isLoading,
+	fire: fire,
 	mixin: mixin,
 	queue: queue,
 	getQueueStep: getQueueStep,
@@ -31863,7 +31856,7 @@ var staticMethods = Object.freeze({
 	deleteQueueStep: deleteQueueStep,
 	showLoading: showLoading,
 	enableLoading: showLoading,
-	fire: fire
+	getTimerLeft: getTimerLeft
 });
 
 /**
@@ -32044,6 +32037,34 @@ function resetValidationError() {
     removeClass(input, swalClasses.inputerror);
   }
 }
+
+var Timer = function Timer(callback, delay) {
+  classCallCheck(this, Timer);
+
+  var id, started, running;
+  var remaining = delay;
+  this.start = function () {
+    running = true;
+    started = new Date();
+    id = setTimeout(callback, remaining);
+  };
+  this.stop = function () {
+    running = false;
+    clearTimeout(id);
+    remaining -= new Date() - started;
+  };
+  this.getTimerLeft = function () {
+    if (running) {
+      this.stop();
+      this.start();
+    }
+    return remaining;
+  };
+  this.getStateRunning = function () {
+    return running;
+  };
+  this.start();
+};
 
 var defaultInputValidators = {
   email: function email(string, extraParams) {
@@ -32406,7 +32427,10 @@ function _main(userParams) {
   privateProps.innerParams.set(this, innerParams);
 
   // clear the previous timer
-  clearTimeout(globalState.timeout);
+  if (globalState.timeout) {
+    globalState.timeout.stop();
+    delete globalState.timeout;
+  }
 
   var domCache = {
     popup: getPopup(),
@@ -32448,8 +32472,9 @@ function _main(userParams) {
 
     // Close on timer
     if (innerParams.timer) {
-      globalState.timeout = setTimeout(function () {
-        return dismissWith('timer');
+      globalState.timeout = new Timer(function () {
+        dismissWith('timer');
+        delete globalState.timeout;
       }, innerParams.timer);
     }
 
@@ -53421,7 +53446,7 @@ if (GlobalVue) {
 
 /* harmony default export */ __webpack_exports__["a"] = (plugin);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
 /* 47 */
@@ -58541,7 +58566,7 @@ var index_esm = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(50)
 /* template */
@@ -58702,7 +58727,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(53)
 /* template */
@@ -58801,7 +58826,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(56)
 }
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(59)
 /* template */
@@ -58854,7 +58879,7 @@ var content = __webpack_require__(57);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("a44a1dd2", content, false, {});
+var update = __webpack_require__(5)("3348d9d8", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -58873,7 +58898,7 @@ if(false) {
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(4)(undefined);
 // imports
 
 
@@ -59864,7 +59889,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(62)
 }
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(64)
 /* template */
@@ -59917,7 +59942,7 @@ var content = __webpack_require__(63);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("437dd684", content, false, {});
+var update = __webpack_require__(5)("7410cd5c", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -59936,7 +59961,7 @@ if(false) {
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(4)(undefined);
 // imports
 
 
@@ -60188,7 +60213,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(67)
 }
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(69)
 /* template */
@@ -60241,7 +60266,7 @@ var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("174f2f0a", content, false, {});
+var update = __webpack_require__(5)("6e87175f", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -60260,7 +60285,7 @@ if(false) {
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(4)(undefined);
 // imports
 
 

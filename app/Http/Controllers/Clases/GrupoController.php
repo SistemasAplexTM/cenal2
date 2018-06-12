@@ -151,13 +151,14 @@ class GrupoController extends Controller
     public function getModulosByGrupo($grupo_id){
         try {
             $data = DB::table('grupo AS a')
-                ->select('a.orden_modulos')
+                ->select('a.orden_modulos', 'a.dias_clase')
                 ->where('a.id', $grupo_id)
                 ->first();
             $programados = DB::table('clases AS a')
                 ->select('a.modulo_id')
                 ->where('a.grupo_id', $grupo_id)
                 ->get();
+            $dias_clase = explode(',', $data->dias_clase);
             $orden = explode(',', $data->orden_modulos);
             $result = array();
             foreach ($orden as $key => $value) {
@@ -178,7 +179,8 @@ class GrupoController extends Controller
             $answer = array(
                 'code' => 200,
                 'data' => $result,
-                'terminados' => $program
+                'terminados' => $program,
+                'dias_clase' => $dias_clase
             );
             return $answer;
         } catch (Exception $e) {

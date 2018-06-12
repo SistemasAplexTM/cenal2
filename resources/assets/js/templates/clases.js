@@ -25,7 +25,7 @@ $(document).ready(function () {
                 "render": function (data, type, full, meta) {
                     var inicio = moment(full.fecha_inicio).format('DD-MM-YYYY')
                     var fin = moment(full.fecha_fin).format('DD-MM-YYYY')
-                    return  "<a href='../" + full.id + "/edit'>Múdolo "+full.modulo+"</a><br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small>";
+                    return  "<a href='../" + full.id + "/edit'><h2>Múdolo "+full.modulo+"<br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small></h2></a>";
                 }
             },
             {
@@ -70,7 +70,10 @@ $(document).ready(function () {
 var objVue = new Vue({
     el: '#clases',
     data:{
+        salones: [],
         salon:'',
+        desde:'',
+        hasta:'',
         programa:'',
         capacidad:'',
         ubicacion:'',
@@ -89,11 +92,13 @@ var objVue = new Vue({
         cargando_programa: 0,
         estudiantes: {},
         profesores: {},
+        semana: [],
         formErrors: {}
     },
     created(){
         this.get_estudiantes_inscritos();
         this.get_modulos();
+        this.getSalonesBySede();
     },
     methods:{
         get_profesor_asignado: function(){
@@ -109,17 +114,22 @@ var objVue = new Vue({
             });
         },
         programar_sgte_modulo: function(){
-            axios.get('../../programar_modulo/' + grupo_id).then(response => {
+            axios.post('../../programar_modulo/' + grupo_id, {
+                'desde': this.desde,
+                'hasta': this.hasta,
+                'salon': this.salon
+            }).then(response => {
                 if (response.data['code'] == 200) {
                     toastr.success('Registrado con éxito');
                     toastr.options.closeButton = true;
                     recargarTabla('tbl-clases');
+                    this.salon = '';
+                    this.get_modulos();
                 }else if(response.data['code'] == 300){
-                    toastr.warning('No hay más módulos');
+                    toastr.warning('Ya se han programado todos los módulos para este programa');
                 }
                 else{
                     toastr.error('Error al registrar');
-                    alert(response.data);
                 }
             });
         },
@@ -128,9 +138,17 @@ var objVue = new Vue({
                 if (response.data['code'] == 200) {
                     this.modulos = response.data['data'];
                     this.terminados = response.data['terminados'];
+                    this.semana = response.data['dias_clase'];
                 }
             });
-        }
+        },
+        getSalonesBySede: function(){
+            axios.get('../../salon/getBySede/' + user.sede_id).then(response => {
+                if (response.data.length > 0) {
+                    this.salones = response.data;   
+                }
+            });
+        },
     }
     
 });

@@ -33,32 +33,38 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-8">
-                                    <div class="form-group" :class="{'has-error': errors.has('programa') }">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
                                         <div class="col-sm-12">
-                                            <br v-show="cargando==1">
-                                            <div class="sk-spinner sk-spinner-fading-circle text-center" v-show="cargando==1">
-                                                <div class="sk-circle1 sk-circle"></div>
-                                                <div class="sk-circle2 sk-circle"></div>
-                                                <div class="sk-circle3 sk-circle"></div>
-                                                <div class="sk-circle4 sk-circle"></div>
-                                                <div class="sk-circle5 sk-circle"></div>
-                                                <div class="sk-circle6 sk-circle"></div>
-                                                <div class="sk-circle7 sk-circle"></div>
-                                                <div class="sk-circle8 sk-circle"></div>
-                                                <div class="sk-circle9 sk-circle"></div>
-                                                <div class="sk-circle10 sk-circle"></div>
-                                                <div class="sk-circle11 sk-circle"></div>
-                                                <div class="sk-circle12 sk-circle"></div>
+                                            <div class="form-group" :class="{'has-error': errors.has('jornada') }">
+                                                <label for="jornada">Jornada:</label> 
+                                                <select v-validate="'required'" v-model="jornada" name="jornada" id="jornada" class="form-control" @change="setInicioJornada()" @click="deleteError('modulo')" required="">
+                                                    <option value="">Seleccione</option>
+                                                    @foreach($jornadas as $jornada)
+                                                    <option  data-hora_inicio="{{ $jornada->hora_inicio }}" data-hora_fin="{{ $jornada->hora_fin }}"  value="{{ $jornada->id }}">{{ $jornada->jornada }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <small v-show="errors.has('jornada')" class="text-danger">@{{ errors.first('jornada') }}</small>    
                                             </div>
-                                            <div v-show="cargando==0">
-                                                <label for="programa">Programa:</label>
-                                                <v-select v-model="programa" name="programa" label="programa" :options="programas" :on-change="setModulos">
-                                                    <span slot="no-options">
-                                                      No hay datos
-                                                    </span>
-                                                </v-select>
-                                                <small v-show="errors.has('programa')" class="text-danger">@{{ errors.first('programa') }}</small>    
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="hora_inicio_jornada">Hora inicio:</label> 
+                                                <input v-model="hora_inicio_jornada" name="hora_inicio_jornada" id="hora_inicio_jornada" type="text" class="form-control"  readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 b-r">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="hora_fin_jornada">Hora fin:</label> 
+                                                <input v-model="hora_fin_jornada" name="hora_fin_jornada" id="hora_fin_jornada" type="text" class="form-control"  readonly="">
                                             </div>
                                         </div>
                                     </div>
@@ -161,65 +167,30 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
+                                <div class="col-lg-8">
+                                    <div class="form-group" :class="{'has-error': errors.has('programa') }">
                                         <div class="col-sm-12">
-                                            <div class="form-group" :class="{'has-error': errors.has('jornada') }">
-                                                <label for="jornada">Jornada:</label> 
-                                                <select v-validate="'required'" v-model="jornada" name="jornada" id="jornada" class="form-control" @change="setInicioJornada()" @click="deleteError('modulo')" required="">
-                                                    <option value="">Seleccione</option>
-                                                    @foreach($jornadas as $jornada)
-                                                    <option  data-hora_inicio="{{ $jornada->hora_inicio }}" data-hora_fin="{{ $jornada->hora_fin }}"  value="{{ $jornada->id }}">{{ $jornada->jornada }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <small v-show="errors.has('jornada')" class="text-danger">@{{ errors.first('jornada') }}</small>    
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label for="hora_inicio_jornada">Hora inicio:</label> 
-                                                <input v-model="hora_inicio_jornada" name="hora_inicio_jornada" id="hora_inicio_jornada" type="text" class="form-control"  readonly="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 b-r">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label for="hora_fin_jornada">Hora fin:</label> 
-                                                <input v-model="hora_fin_jornada" name="hora_fin_jornada" id="hora_fin_jornada" type="text" class="form-control"  readonly="">
+                                            <div>
+                                                <label for="programa">Programa: @{{ (jornada.length == 0) ? 'Debe seleccionar una jornada'  : ''}}</label>
+                                                <v-select v-model="programa" name="programa" label="nombre" :options="programas" :on-change="setModulos" :disabled="jornada.length == 0">
+                                                    <span slot="no-options">
+                                                      No hay datos
+                                                    </span>
+                                                </v-select>
+                                                <small v-show="errors.has('programa')" class="text-danger">@{{ errors.first('programa') }}</small>    
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <br>
                             <div class="row">
                                 <div class="col-lg-4 b-r">
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                            <br v-show="cargando==1">
-                                                <div class="sk-spinner sk-spinner-fading-circle text-center" v-show="cargando==1">
-                                                    <div class="sk-circle1 sk-circle"></div>
-                                                    <div class="sk-circle2 sk-circle"></div>
-                                                    <div class="sk-circle3 sk-circle"></div>
-                                                    <div class="sk-circle4 sk-circle"></div>
-                                                    <div class="sk-circle5 sk-circle"></div>
-                                                    <div class="sk-circle6 sk-circle"></div>
-                                                    <div class="sk-circle7 sk-circle"></div>
-                                                    <div class="sk-circle8 sk-circle"></div>
-                                                    <div class="sk-circle9 sk-circle"></div>
-                                                    <div class="sk-circle10 sk-circle"></div>
-                                                    <div class="sk-circle11 sk-circle"></div>
-                                                    <div class="sk-circle12 sk-circle"></div>
-                                                </div>
-                                            <div class="form-group" v-show="cargando==0">
+                                            <div class="form-group">
                                                 <label for="salon_id" class="control-label gcore-label-top">Salón:</label>
-                                                <v-select :class="{'danger': errors.has('salon') }" name="salon" id="salon" v-model="salon" label="codigo" :options="salones" :on-change="setCapacidad">
+                                                <v-select :class="{'danger': errors.has('salon') }" name="salon" id="salon" label="codigo" :options="salones" :on-change="setCapacidad">
                                                     <span slot="no-options">
                                                       No hay datos
                                                     </span>
@@ -300,7 +271,7 @@
                                         <li v-for="modulo in modulos" class="list-group-item">
                                             <i class="fa fa-arrows"></i>
                                             <small class="label label-success pull-right"><i class="fa fa-clock-o"></i> @{{ modulo.duracion }} clases</small>
-                                            <span class="m-l-xs">@{{ modulo.name }}</span>
+                                            <span class="m-l-xs">@{{ modulo.nombre }}</span>
                                         </li>
                                     </draggable> 
                                 </div>

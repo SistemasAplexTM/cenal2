@@ -10,6 +10,16 @@ Notas para cenal2 30 de Mayo del 2018
 8. Opción de exportar asistencia por módulo programado
 10. Campo ciclo en la tabla grupo y en la tabla clases
 5. (mejora) Notificaciones: módulos asignados 
+11. Columna de decreto en la sede para los certificados
 
 TENER EN CUENTA
 1.La hora de inicio y final de las jornadas no debe faltar
+
+========PARA CENAL=========
+1. Pivote Módulo - Jornada (En esta es que debe estar el # de clases)
+2. En la creación del grupo se debe seleccionar antes del programa la jornada
+3. El profesor debe marcar los estudiantes que pasan al siguiente modulo.
+Los que pierden pasan al siguiente modulo también pero le marcaos ese modulo como no aprobado.
+Jhonny debe cambiar en la creación del estudiante la fecha de inicio, por los módulos disponibles para iniciar.
+
+(Programa, Jornada nos va a dar los módulos disponibles para iniciar)

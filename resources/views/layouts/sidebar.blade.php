@@ -160,23 +160,23 @@
             </div>
             <div class="sidebar-message" v-if="verSidebar===3">
                 <div class="alert alert-primary text-center" v-show="profesores.length<=0">No hay datos disponibles</div>
-                <div class="feed-element" v-for="profesor in profesores" v-if="profesores.length > 0">
-                    <div class="media-body ">
-                        <button @click.prevent="asignar_profesor(profesor.id)"  class="btn btn-primary btn-xs pull-right" data-loading-text="Agregando..." id="agregar" type="button" >
-                            <i class="fa fa-plus">
-                            </i>
-                            Asignar
-                        </button>
-                        <strong>
+                <div class="" v-for="profesor in profesores" v-if="profesores.length > 0">
+                    <div class="media-body">
+                        <h2>
                             @{{ profesor.name }} @{{ profesor.last_name }}
-                        </strong>
-                        <br>
+                            <button @click.prevent="asignar_profesor(profesor.id)"  class="btn btn-primary btn-xs pull-right" data-loading-text="Agregando..." id="agregar" type="button" >
+                                <i class="fa fa-plus">
+                                </i>
+                                Asignar
+                            </button>
+                        </h2>
                         <p class="text-muted">
                             <strong>
                                 @{{ profesor.email }}
                             </strong>
                         </p>
                     </div>
+                    <hr>
                 </div>
             </div>
         </div>
