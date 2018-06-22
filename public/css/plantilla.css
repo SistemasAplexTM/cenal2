@@ -14253,6 +14253,15 @@ input[type="radio"] .styled:checked + label::after {
     top: 0;
     width: 30px;
 }
+/*!
+ * Bootstrap Colorpicker
+ * http://mjolnic.github.io/bootstrap-colorpicker/
+ *
+ * Originally written by (c) 2012 Stefan Petre
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ */.colorpicker-saturation{float:left;width:100px;height:100px;cursor:crosshair;background-image:url("../images/bootstrap-colorpicker/saturation.png")}.colorpicker-saturation i{position:absolute;top:0;left:0;display:block;width:5px;height:5px;margin:-4px 0 0 -4px;border:1px solid #000;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px}.colorpicker-saturation i b{display:block;width:5px;height:5px;border:1px solid #fff;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px}.colorpicker-hue,.colorpicker-alpha{float:left;width:15px;height:100px;margin-bottom:4px;margin-left:4px;cursor:row-resize}.colorpicker-hue i,.colorpicker-alpha i{position:absolute;top:0;left:0;display:block;width:100%;height:1px;margin-top:-1px;background:#000;border-top:1px solid #fff}.colorpicker-hue{background-image:url("../images/bootstrap-colorpicker/hue.png")}.colorpicker-alpha{display:none;background-image:url("../images/bootstrap-colorpicker/alpha.png")}.colorpicker{top:0;left:0;z-index:2500;min-width:130px;padding:4px;margin-top:1px;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;*zoom:1}.colorpicker:before,.colorpicker:after{display:table;line-height:0;content:""}.colorpicker:after{clear:both}.colorpicker:before{position:absolute;top:-7px;left:6px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,0.2);content:''}.colorpicker:after{position:absolute;top:-6px;left:7px;display:inline-block;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent;content:''}.colorpicker div{position:relative}.colorpicker.colorpicker-with-alpha{min-width:140px}.colorpicker.colorpicker-with-alpha .colorpicker-alpha{display:block}.colorpicker-color{height:10px;margin-top:5px;clear:both;background-image:url("../images/bootstrap-colorpicker/alpha.png");background-position:0 100%}.colorpicker-color div{height:10px}.colorpicker-element .input-group-addon i,.colorpicker-element .add-on i{display:inline-block;width:16px;height:16px;vertical-align:text-top;cursor:pointer}.colorpicker.colorpicker-inline{position:relative;z-index:auto;display:inline-block;float:none}.colorpicker.colorpicker-horizontal{width:110px;height:auto;min-width:110px}.colorpicker.colorpicker-horizontal .colorpicker-saturation{margin-bottom:4px}.colorpicker.colorpicker-horizontal .colorpicker-color{width:100px}.colorpicker.colorpicker-horizontal .colorpicker-hue,.colorpicker.colorpicker-horizontal .colorpicker-alpha{float:left;width:100px;height:15px;margin-bottom:4px;margin-left:0;cursor:col-resize}.colorpicker.colorpicker-horizontal .colorpicker-hue i,.colorpicker.colorpicker-horizontal .colorpicker-alpha i{position:absolute;top:0;left:0;display:block;width:1px;height:15px;margin-top:0;background:#fff;border:0}.colorpicker.colorpicker-horizontal .colorpicker-hue{background-image:url("../images/bootstrap-colorpicker/hue-horizontal.png")}.colorpicker.colorpicker-horizontal .colorpicker-alpha{background-image:url("../images/bootstrap-colorpicker/alpha-horizontal.png")}.colorpicker.colorpicker-hidden{display:none}.colorpicker.colorpicker-visible{display:block}.colorpicker-inline.colorpicker-visible{display:inline-block}
 .icon-separed{
 	width: 20px !important;
 }
@@ -14297,4 +14306,120 @@ body { padding-top: 50px; }
 }
 .checkbox label::after{
     padding-left: 4.3px;
+}
+.active-student{
+    background-color: #ccd3d6 !important;
+}
+
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
+
+.tooltip .tooltip-inner {
+  background: black;
+  color: white;
+  border-radius: 16px;
+  padding: 5px 10px 4px;
+}
+
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+  border-color: black;
+  z-index: 1;
+}
+
+.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+
+.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+
+.tooltip[x-placement^="bottom"] .tooltip-arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip[x-placement^="right"] {
+  margin-left: 5px;
+}
+
+.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
+
+.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.tooltip.popover .popover-inner {
+  background: #f9f9f9;
+  color: black;
+  padding: 24px;
+  border-radius: 5px;
+  box-shadow: 0 5px 30px rgba(black, .1);
+}
+
+.tooltip.popover .popover-arrow {
+  border-color: #f9f9f9;
+}
+
+.tooltip[aria-hidden='true'] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s, visibility .15s;
+}
+
+.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s
+}
+.fade-enter, .fade-leave /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
 }

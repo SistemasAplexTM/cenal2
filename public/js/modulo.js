@@ -1,8 +1,3 @@
-$(function () {
-    $('body').tooltip({
-        selector: 'a[rel="tooltip"], [data-toggle="tooltip"]'
-    });
-});
 $(document).ready(function(){
    getTable('a'); 
 });
@@ -12,7 +7,8 @@ function getTable(on_delete) {
         $('#tbl-modulos tfoot th ').each( function (key, value) {
             $(this).show();
             $(this).html( '<input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Buscar o  Registrar" />' );
-            $('.none').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+            $('.save').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+            // $('.none').html('<input class="form-control input-sm color" id="input'+key+'" type="text" placeholder="Color" value="#5367ce" />');
         });
     }else{
         $('#tbl-modulos tfoot th').each( function (key, value) {
@@ -72,6 +68,7 @@ var objVue = new Vue({
     data:{
         nombre:'',
         duracion:'',
+        color:'',
         editar: 0,
         formErrors: {}
     },
@@ -82,6 +79,7 @@ var objVue = new Vue({
         resetForm: function(){
             this.nombre = '';
             this.duracion = '';
+            this.color = '';
             this.editar = 0;
             $(".input-search").val('');
             this.formErrors = {};
@@ -105,7 +103,8 @@ var objVue = new Vue({
             }
             axios.post('modulo/store',{
                 'nombre': nombre,
-                'duracion': duracion
+                'duracion': duracion,
+                'color': color
             })
             .then(function (response){
                 toastr.success('Registrado con éxito');

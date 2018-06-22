@@ -3,15 +3,72 @@
 @section('content')
 <div class="container-fluid" id="clases">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-4">
+            <div class="row">
+                <div class="col-lg-4">
+                    <a href="{{ url('grupos') }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
+                </div>
+            </div>
+            <br>
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div class="media-body text-center">
+                                        <h3>{{ $data->nombre }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <p>Sede: <strong>{{ $data->sede }}</strong></p>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>Jornada: <strong>{{ $data->jornada }}</strong></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <p>Estudiantes inscritos: <strong>{{ $data->cantidad }}</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h4 class="text-center">Estudiantes inscritos</h4>
+                                            <ul class="todo-list m-t">
+                                                <div class="alert alert-primary text-center" v-show="Object.keys(estudiantes_inscritos).length == 0">
+                                                    No hay estudiantes inscritos en este grupo
+                                                </div>
+                                                <li v-for="estudiante in estudiantes_inscritos" v-show="estudiantes_inscritos.length>0">
+                                                    <span class="m-l-xs">
+                                                        <strong>@{{ estudiante.codigo }}</strong> - @{{ estudiante.nombre }}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
             <div class="ibox">
                 <div class="ibox-title">
                     <h5><i class="fa fa-calendar"></i> Módulos programados</h5>
-                    <div class="ibox-tools">
-                        @can('crear_clase')
-                        <a href="{{ route('clases.create') }}" class="btn btn-success btn-sm"><i class="fa fa-calendar-plus-o"></i> Programar módulo</a>
-                        @endcan
-                    </div>
                 </div>
                 <div class="ibox-content">
                     <div class="project-list">
@@ -20,13 +77,8 @@
                                 <tr>
                                     <th>Acciones</th>
                                     <th>Módulo</th>
-                                    <th>Estado</th>
-                                    {{-- @role('Administrador') --}}
-                                    <th>Sede</th>
-                                    <th><i title="Estudiantes inscritos" class="fa fa-group"></i></th>
-                                    {{-- @endrole --}}
                                     <th><small>Salón/Capacidad</small></th>
-                                    <th>Jornada</th>
+                                    <th>Estado</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
                                     <th></th>
@@ -41,13 +93,8 @@
                                 <tr>
                                     <th>Acciones</th>
                                     <th>Módulo</th>
-                                    <th>Estado</th>
-                                    {{-- @role('Administrador') --}}
-                                    <th>Sede</th>
-                                    <th><i title="Estudiantes inscritos" class="fa fa-group"></i></th>
-                                    {{-- @endrole --}}
                                     <th><small>Salón/Capacidad</small></th>
-                                    <th>Jornada</th>
+                                    <th>Estado</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
                                     <th></th>
@@ -62,33 +109,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="mdl-agregar-estudiante" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Agregar estudiante a la clase</h4>
-      </div>
-      <div class="modal-body">
-        <div class="ibox">
-            <div class="ibox-title">
-                <h5><i class="fa fa-calendar-plus-o"></i> Clases</h5>
-            </div>
-            <div class="ibox-content">
-                <h3>Módulo Office</h3>
-                <small>Inicio: 01 enero 2018 - fin: 05 junio 2018</small>
-            </di>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Agregar</button>
-      </div>
-    </div>
-  </div>
 </div>
 @endsection
 @push('scripts')

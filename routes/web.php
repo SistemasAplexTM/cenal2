@@ -65,29 +65,31 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/restaurar/{id}' , 'ProgramasController@restaurar');
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
+	/*-- Grupos --*/
+	Route::get('estudiantes_inscritos/{grupo_id}', 'Clases\GrupoController@estudiantes_inscritos');
+	Route::get('buscar_estudiante/{dato}', 'Clases\GrupoController@buscar_estudiante');
+	Route::get('grupos/all', 'Clases\GrupoController@getAll');
+	Route::get('grupos', 'Clases\GrupoController@index');
 
 	Route::get('clases/profesor/{profesor_id}', 'Profesor\ClasesController@getAll');
 
 	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
-	Route::post('clases/validarSalon', 'Clases\ClasesController@validarSalon');
 	Route::get('clases/{clase_id}/getAll_estudiantes_asistencia/{clases_detalle_id}', 'Clases\ClasesController@getAll_estudiantes_asistencia');
 	Route::get('clases/{clase_id}/get_estudiante_asistencia', 'Clases\ClasesController@get_estudiante_asistencia');
 	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');
 	Route::get('clases/{clase_id}/profesor_asignado', 'Clases\ClasesController@profesor_asignado');
-	Route::get('clases/{clase_id}/estudiantes_inscritos', 'Clases\ClasesController@estudiantes_inscritos');
-	Route::get('clases/buscar_estudiante/{dato}', 'Clases\ClasesController@buscar_estudiante');
 	Route::get('clases/{clase_id}/asignar_profesor/{profesor_id}', 'Clases\ClasesController@asignar_profesor');
 	Route::get('clases/{clase_id}/buscar_profesor/{dato}', 'Clases\ClasesController@buscar_profesor');
 	Route::get('clases/getFin/{id_clase}', 'Clases\ClasesController@getFin');
 	Route::get('clases/day', 'Clases\ClasesController@programarClases');
-	// Route::get('clases/{clase_id}', 'Clases\ClasesController@getAll');
-	Route::get('clases/all', 'Clases\ClasesController@getAll');
+	Route::get('clases/{grupo?}/grupo', 'Clases\ClasesController@index');
+	Route::get('clases/{grupo}/all', 'Clases\ClasesController@getAll');
 	Route::get('clases/restaurar/{id}' , 'Clases\ClasesController@restaurar');
 	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
 	Route::resource('clases', 'Clases\ClasesController');
 });
-	Route::get('clases/{clase_id}/agregar_estudiante/{estudiante_id}', 'Clases\ClasesController@agregar_estudiante');
-	Route::get('clases/{clase_id}/retirar_estudiante/{estudiante_id}', 'Clases\ClasesController@removeStudentClass');
+	Route::get('grupo/{grupo_id}/agregar_estudiante/{estudiante_id}', 'Clases\GrupoController@agregar_estudiante');
+	Route::get('retirar_estudiante/{estudiante_id}', 'Clases\GrupoController@removeStudent');
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){
 	Route::get('/estudiante/asistencia/{estudiante_id}/{modulo_id}', 'Estudiante\PerfilController@asistenciaEstudiente');

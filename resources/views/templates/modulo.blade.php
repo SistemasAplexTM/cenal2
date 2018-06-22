@@ -29,26 +29,26 @@
                 		</ul>
 					</div>
 					<p>Haga click en el registro para activar la edición y presione la tecla <strong>Enter</strong> para actualizar.</p>
-                    <div class="table-responsive">
-                        <table id="tbl-modulos" class="table table-striped table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Duración <small>(clases)</small></th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tfoot class="table-foot">
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th class="none"></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table id="tbl-modulos" class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Duración <small>(clases)</small></th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tfoot class="table-foot">
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th class="save"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
+        </div>
 		</div>
 	</div>
 </div>
