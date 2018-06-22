@@ -61,6 +61,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 
 	Route::get('getAllSedesForSelect', 'ProgramasController@getAllSedesForSelect');
 
+	Route::get('programas/getJornadasAsignadas/{programa}/{modulo}', 'ProgramasController@getJornadasAsignadas');
+	Route::post('programas/setJornadas', 'ProgramasController@setJornadas');
+	Route::get('programas/getAllJornadas', 'ProgramasController@getAllJornadas');
 	Route::get('programas/getAllProgramasBySede/{sede}', 'ProgramasController@geAllBySede');
 	Route::post('programas/add_modules/{id}', 'ProgramasController@addModules');
 	Route::get('programas/getDataModulosByPrograma/{id_programa}', 'ProgramasController@getDataModulosByPrograma');
@@ -69,7 +72,6 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
 	/*-- Grupos --*/
-	Route::get('estudiantes_inscritos/{grupo_id}', 'Clases\GrupoController@estudiantes_inscritos');
 	Route::get('buscar_estudiante/{dato}', 'Clases\GrupoController@buscar_estudiante');
 	Route::get('grupos/all', 'Clases\GrupoController@getAll');
 	Route::get('grupos', 'Clases\GrupoController@index');
@@ -78,8 +80,15 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 
 	Route::post('programar_modulo/{grupo_id}', 'Clases\ClasesController@programar_modulo');
 
+	Route::get('clases/{clase_id}/allAsistencia', 'Clases\AsistenciaController@getAll');
+	Route::get('clases/{clase_id}/asistencia', 'Clases\AsistenciaController@index');
+	
 	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
+	Route::post('clases/{clase_id}/terminar_modulo', 'Clases\ClasesController@terminar_modulo');
 	Route::get('clases/{grupo_id}/getModulos', 'Clases\GrupoController@getModulosByGrupo');
+	Route::get('clases/{clase_id}/get_clases_terminadas', 'Clases\ClasesController@get_clases_terminadas');
+	Route::get('clases/{clase_id}/estudiantes_reprobados', 'Clases\GrupoController@estudiantes_reprobados');
+	Route::get('clases/{clase_id}/estudiantes_inscritos', 'Clases\GrupoController@estudiantes_inscritos');
 	Route::get('clases/{clase_id}/getAll_estudiantes_asistencia/{clases_detalle_id}', 'Clases\ClasesController@getAll_estudiantes_asistencia');
 	Route::get('clases/{clase_id}/get_estudiante_asistencia', 'Clases\ClasesController@get_estudiante_asistencia');
 	Route::post('clases/{clase_id}/set_estudiante_asistencia', 'Clases\ClasesController@set_estudiante_asistencia');

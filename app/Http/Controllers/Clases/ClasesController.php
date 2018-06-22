@@ -163,15 +163,17 @@ class ClasesController extends Controller
             ])->id;
 
             $fechas_clase = $this->programarClases($request->fecha_inicio, $request->modulos[0]['duracion'], $request->semana);
-            $result = $this->validarSalon($fechas_clase, $hora_inicio, $request->salon);
-            if ($result['errorSalon']) {
-                $fechas_error = $result['fechas'];
-                throw new \Exception("something happened");
+            if (!$request->omitirSalon) {
+                $result = $this->validarSalon($fechas_clase, $hora_inicio, $request->salon);
+                if ($result['errorSalon']) {
+                    $fechas_error = $result['fechas'];
+                    throw new \Exception("Error de salón");
+                }
             }
 
             foreach ($fechas_clase as $clave => $value) {
                 DB::table('clases_detalle')->insert([
-                    ['title' => 'clase de '. $request->modulos[0]['name'], 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon],
+                    ['title' => 'clase de '. $request->modulos[0]['nombre'], 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon],
                 ]);
             }
 
@@ -217,7 +219,6 @@ class ClasesController extends Controller
             DB::rollback();
             $success = false;
             $exception = $e;
-            return $e;
         }
         if($success){
             return array(
@@ -241,8 +242,6 @@ class ClasesController extends Controller
      */
     public function programar_modulo(Request $request, $grupo_id)
     {
-        // return $request->all();
-        // exit();
         $grupo = DB::table('grupo AS a')
         ->select('a.orden_modulos', 'a.dias_clase')
         ->where('a.id', $grupo_id)
@@ -250,7 +249,7 @@ class ClasesController extends Controller
         $modulo = DB::table('clases AS a')
         ->join('modulos AS b', 'a.modulo_id', 'b.id')
         ->join('jornadas AS c', 'a.jornada_id', 'c.id')
-        ->select('a.sede_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
+        ->select('a.id AS clase_id', 'a.sede_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
             DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
             DB::raw('(select max(salon_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS salon_id')
         )
@@ -266,6 +265,11 @@ class ClasesController extends Controller
         $orden_modulos = explode(',', $grupo->orden_modulos);
         $dias_clase = explode(',', $grupo->dias_clase);
         $clave = array_search($modulo->id, $orden_modulos);
+
+        $estudiantes = DB::table('clases_estudiante AS a')
+        ->select('a.estudiante_id')
+        ->where('a.clases_id', $modulo->clase_id)
+        ->get();
 
         if (array_key_exists($clave + 1, $orden_modulos)) {
             $sgte_modulo = $orden_modulos[$clave + 1];
@@ -321,11 +325,12 @@ class ClasesController extends Controller
             ])->id;
 
             $fechas_clase = $this->programarClases($fecha_inicio, $nombre_modulo->duracion, $dias_clase, $rango);
-            
-            $result = $this->validarSalon($fechas_clase, $hora_inicio, $salon);
-            if (isset($result['errorSalon']) && $result['errorSalon']) {
-                $fechas_error = $result['fechas'];
-                throw new \Exception("El salón no está disponible");
+            if (!$request->omitirErrores) {
+                $result = $this->validarSalon($fechas_clase, $hora_inicio, $salon);
+                if (isset($result['errorSalon']) && $result['errorSalon']) {
+                    $fechas_error = $result['fechas'];
+                    throw new \Exception("El salón no está disponible");
+                }
             }
 
             foreach ($fechas_clase as $clave => $value) {
@@ -333,12 +338,18 @@ class ClasesController extends Controller
                     ['title' => 'clase de '. $nombre_modulo->nombre, 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'salon_id' => $salon]
                 ]);
             }
+
+            foreach ($estudiantes as $clave => $value) {
+                DB::table('clases_estudiante')->insert([
+                    ['estudiante_id' => $value->estudiante_id, 'clases_id' => $id_class]
+                ]);
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             $success = false;
             $exception = $e;
-            return $e;
         }
         if($success){
             return array(
@@ -562,9 +573,13 @@ class ClasesController extends Controller
                 // si hay clase ese día, se agrega al arreglo de de sgte fecha
                 if (!$this->esFestivo($sgte_dia)) {
                     // Si hay fechas para exceptuar se ignoran
-                    if (!in_array($sgte_dia, $rango)) {
-                        array_push($fechas_clase, $sgte_dia);    
-                    }    
+                    if (!$rango) {
+                        array_push($fechas_clase, $sgte_dia);
+                    }else{
+                        if (!in_array($sgte_dia, $rango)){
+                            array_push($fechas_clase, $sgte_dia);
+                        }
+                    }
                 }
                 // echo "El día ".$numero_dia." SÍ hay clase. fecha: ".$sgte_dia."<br>";
             }
@@ -630,6 +645,61 @@ class ClasesController extends Controller
         } catch (Exception $e) {
 
         }
+    }
+
+    public function terminar_modulo(Request $request)
+    {
+        try {
+            foreach ($request->estudiantes_id as $value) {
+                // Acá se registran lo que no aprobaron
+                DB::table('clases_estudiante AS a')
+                ->where([
+                    ['a.clases_id', '=', $request->clases_id],
+                    ['a.estudiante_id', '=', $value],
+                ])
+                ->update(
+                    ['a.aprobado' => 0]
+                );
+            }
+
+            $grupo = DB::table('grupo AS a')
+                ->join('clases AS b', 'a.id', 'b.grupo_id')
+                ->select('a.id')
+                ->where('b.id', $request->clases_id)
+                ->first();
+
+            DB::table('clases AS a')
+                ->where('a.id', '=', $request->clases_id)
+                ->update(
+                    ['a.estado_id' => 3]
+                );
+
+            DB::table('grupo AS a')
+                ->where('a.id', '=', $grupo->id)
+                ->update(
+                    ['a.estado_id' => 2]
+                );
+
+            $answer = array('code' => 200);
+
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function get_clases_Terminadas($clases_id){
+        $cant = DB::table('clases_detalle AS a')
+        ->join('clases AS b', 'a.clases_id', 'b.id')
+        ->select(
+            DB::raw('count(a.id) AS cant')
+        )
+        ->where([
+            ['b.id', $clases_id],
+            ['a.estado_id', '<>', 3]
+        ])
+        ->first();
+        return array('cant' => $cant);
     }
 
     public function get_estudiante_asistencia($estudiante_id, $clases_detalle_id)

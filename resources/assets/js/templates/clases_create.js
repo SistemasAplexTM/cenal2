@@ -33,6 +33,7 @@ var objVue = new Vue({
         sede: user.sede_id,
         modulo:null,
         errorSalon:false,
+        omitirSalon:false,
         programas: [],
         modulos: [],
         salones: [],
@@ -54,6 +55,7 @@ var objVue = new Vue({
     methods:{
         resetForm: function(){
             this.errorSalon = false;
+            this.omitirSalon = false;
             this.fechasError = [];
             this.grupo = '',
             this.salon = null,
@@ -164,6 +166,7 @@ var objVue = new Vue({
                         'hora_inicio_jornada': this.hora_inicio_jornada,
                         'hora_fin_jornada': this.hora_fin_jornada,
                         'fecha_inicio': $("#fecha_inicio").val(),
+                        'omitirSalon': this.omitirSalon
                     }).then(response => {
                         if (response.data.code == 200) {
                             toastr.success('Registrado con éxito');

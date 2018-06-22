@@ -112,24 +112,44 @@ class GrupoController extends Controller
         return $answer;
     }
 
-    public function estudiantes_inscritos($grupo_id)
+    public function estudiantes_inscritos($clases_id)
     {
-        $data = DB::table('grupo AS a')
-            ->join('clases AS b', 'b.grupo_id', 'a.id')
-            ->join('clases_estudiante AS c', 'c.clases_id', 'b.id')
-            ->join('estudiante AS d', 'c.estudiante_id', 'd.id')
+        $data = DB::table('clases_estudiante AS a')
+            ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
+            ->join('programas AS c', 'b.programas_id', 'c.id')
             ->select(
-                'd.id',
-                'd.consecutivo AS codigo',
-                'd.correo',
-                DB::raw("concat_ws(' ', d.primer_apellido, d.segundo_apellido, d.nombres) AS nombre")
+                'a.aprobado',
+                'b.id',
+                'b.consecutivo AS codigo',
+                'b.correo',
+                DB::raw("concat_ws(' ', b.primer_apellido, b.segundo_apellido, b.nombres) AS nombre"),
+                'c.programa'
             )
             ->where([
-                ['a.id', $grupo_id]
+                ['a.clases_id', $clases_id]
             ])
             ->orderBy('nombre')
             ->get();
 
+        return $data;
+    }
+    
+    public function estudiantes_reprobados($clases_id)
+    {
+        $data = DB::table('clases_estudiante AS a')
+            ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
+            ->select(
+                'b.id',
+                'b.consecutivo AS codigo',
+                'b.correo',
+                DB::raw("concat_ws(' ', b.primer_apellido, b.segundo_apellido, b.nombres) AS nombre")
+            )
+            ->where([
+                ['a.aprobado', 1],
+                ['a.clases_id', $clases_id]
+            ])
+            ->orderBy('nombre')
+            ->get();
         return $data;
     }
 

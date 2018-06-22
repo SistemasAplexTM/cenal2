@@ -5,13 +5,24 @@
     <div class="row animated fadeInDown">
         <div class="col-lg-4">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <a href="{{ url()->previous() }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
                 </div>
-                <div class="col-lg-8">
+                <div class="col-lg-5">
                     <a class="btn btn-block btn-warning right-sidebar-toggle" @click="verSidebar=0">
                         <i class="fa fa-group"></i> Ver estudiantes inscritos - @{{ estudiantes_inscritos.length }}
                     </a>
+                </div>
+                <div class="col-lg-4">
+                    @if($data->estado != 'Terminado')
+                        <a class="btn btn-block btn-danger right-sidebar-toggle" @click="verSidebar=4">
+                            <i class="fa fa-step-forward"></i> Terminar módulo
+                        </a>
+                    @else
+                        <a class="btn btn-block btn-danger right-sidebar-toggle" @click="verSidebar=5">
+                            <i class="fa fa-eye"></i> Ver reprobados - @{{ estudiantes_reprobados.length }}
+                        </a>
+                    @endif
                 </div>
             </div>
             <br>
@@ -148,28 +159,38 @@
             </div>   
         </div>
         <div class="col-lg-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Listado de clases</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                    </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <a href="#" @click="asistenciaUrl" class="btn btn-block btn-success"><i class="fa fa-list"></i> Listado de asistencia</a>
                 </div>
-                <div class="ibox-content no-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="clase in clases">
-                            {{-- <span class="badge badge-primary">16</span> --}}
-                            <a class="btn btn-sm right-sidebar-toggle pull-right" :class="clase.estado=='Terminado' ? 'btn-primary' : 'btn-success'" @click="verSidebar=2;verClase(clase)"> 
-                                <i v-if="clase.estado == 'Terminado'" class="fa fa-eye" data-toggle="tooltip" title="Ver clase"></i>
-                                <i v-else class="fa fa-list" data-toggle="tooltip" title="Asistencia"></i>
-                                {{-- @{{ (clase.estado == 'Terminado') ? '<i class='fa fa-eye'></i>' : '<i class='fa fa-list'></i>' }} --}}
-                            </a>
-                            <h3>@{{ clase.start }}</h3>
-                            <p>Salón: @{{ clase.salon }}</p>
-                        </li>
-                    </ul>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Listado de clases</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content no-padding">
+                            <ul class="list-group">
+                                <li class="list-group-item" v-for="clase in clases">
+                                    {{-- <span class="badge badge-primary">16</span> --}}
+                                    <a class="btn btn-sm right-sidebar-toggle pull-right" :class="clase.estado=='Terminado' ? 'btn-primary' : 'btn-success'" @click="verSidebar=2;verClase(clase)"> 
+                                        <i v-if="clase.estado == 'Terminado'" class="fa fa-eye" data-toggle="tooltip" title="Ver clase"></i>
+                                        <i v-else class="fa fa-list" data-toggle="tooltip" title="Asistencia"></i>
+                                        {{-- @{{ (clase.estado == 'Terminado') ? '<i class='fa fa-eye'></i>' : '<i class='fa fa-list'></i>' }} --}}
+                                    </a>
+                                    <h3>@{{ clase.start }}</h3>
+                                    <p>Salón: @{{ clase.salon }}</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -223,8 +244,7 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <div id="calendar">
-                    </div>
+                    <div id="calendar"></div>
                 </div>
             </div>
         </div>

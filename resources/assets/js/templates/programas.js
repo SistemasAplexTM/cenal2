@@ -16,8 +16,9 @@ $(document).ready(function () {
                         "'" + full.modulos + "'"
                     ];
                     var btn_delete = " <a onclick=\"eliminar(" + full.id_prog_unicos + ","+true+")\" class='btn btn-outline btn-danger btn-xs' data-toggle='tooltip' data-placement='top' title='Eliminar'><i class='fa fa-trash'></i></a> ";
-                    var btn_add_module =  "<a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Agregar módulo'><i class='fa fa-edit'></i></a>";
-                    return btn_add_module + btn_delete;
+                    var btn_add_module =  " <a onclick=\"edit(" + params + ")\" class='btn btn-outline btn-success btn-xs' data-toggle='tooltip' data-placement='top' title='Agregar módulo'><i class='fa fa-edit'></i></a>";
+                    var btn_add_jornada =  " <a onclick=\"add_jornada(" + params + ")\" class='btn btn-outline btn-warning btn-xs' data-toggle='tooltip' data-placement='top' title='Asignar jornada'><i class='fa fa-plus-square'></i></a>";
+                    return btn_add_jornada + btn_add_module + btn_delete;
                 }
             }
         ],
@@ -105,6 +106,7 @@ function formatRepoSelection (repo) {
 
 function edit(id,nombre, sedes, modulos){
     objVue.resetForm();
+    objVue.editar = 1;
     var data ={
         id: id,
         nombre: nombre,
@@ -114,25 +116,47 @@ function edit(id,nombre, sedes, modulos){
     objVue.edit(data);
 }
 
+function add_jornada(id,nombre, sedes, modulos){
+    objVue.resetForm();
+    objVue.asignar_jornada = true;
+    var data ={
+        id: id,
+        nombre: nombre,
+        modulos: modulos
+    };
+    objVue.edit(data);
+}
+
 var objVue = new Vue({
     el: '#crud_programas',
     data:{
+        id:'',
         nombre:'',
         sedes: [],
+        jornadas: [],
+        jornadas_asignadas: [],
         modulos: [],
         modulos_selected: [],
+        modulo_j: null,
+        horas: [],
+        asignar_jornada: false,
         editar: 0,
         formErrors: {}
     },
     created(){
         this.getModulos();
+        this.getJornadas();
     },
     methods:{
         resetForm: function(){
             this.nombre = '';
             this.sedes = {};
+            this.horas = [];
+            this.modulo_j = null;
             this.modulos_selected = [];
+            this.jornadas_asignadas = [];
             this.editar = 0;
+            this.asignar_jornada = false;
             $("#sedes").trigger("change");
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
@@ -214,6 +238,12 @@ var objVue = new Vue({
                 this.modulos = response.data;
             });
         },
+        getJornadas: function(data){
+            var url = 'programas/getAllJornadas';
+            axios.get(url).then(response => {
+                this.jornadas = response.data;
+            });
+        },
         update: function update() {
             var urlUpdate = 'programas/' + this.id;
             var me = this;
@@ -240,10 +270,53 @@ var objVue = new Vue({
                 toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
         },
+        asignar_j: function() {
+            if (!this.modulo_j) {
+                alert('Debe seleccionar un módulo');
+                return false;
+            }
+            var url = 'programas/setJornadas';
+            var me = this;
+            axios.post(url, {
+                'datos': this.horas,
+                'modulo': this.modulo_j,
+                'programa': me.id
+            }).then(function (response) {
+                if (response.data['code'] == 200) {
+                    toastr.success('Registro actualizado correctamente');
+                    toastr.options.closeButton = true;
+                } else {
+                    toastr.warning(response.data['error']);
+                    toastr.options.closeButton = true;
+                }
+                me.resetForm();
+                recargarTabla('tbl-programas');
+            }).catch(function (error) {
+                if (error.response.status === 422) {
+                    me.formErrors = error.response.data.errors;
+                }
+                $.each(me.formErrors, function (key, value) {
+                    $('.result-' + key).html(value);
+                });
+                toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
+            });
+        },
+        getDuracion: function(val){
+            $(".jornadaClass").val('');
+            if (val) {
+                this.modulo_j = val.id;
+                var url = 'programas/getJornadasAsignadas/' + this.id + '/' + val.id;
+                axios.get(url).then(response => {
+                        this.jornadas_asignadas = response.data;
+                    // $.each( response.data, function( key, value ) {
+                    //     // $("#" + value.jornada_id).val(value.duracion);
+                    // });
+                });
+            }
+        },
         edit: function(data){
             this.id = data['id'];
             this.nombre = data['nombre'];
-            this.editar = 1;
             this.formErrors = {};
             /* ASIGNAR VALORES AL SELECT FUNCIONALIDADES */
             jsonModulos = JSON.parse(data['modulos']);

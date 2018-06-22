@@ -217,6 +217,49 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="mdl-error-salon" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Error al registrar</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <button type="button" class="btn btn-block btn-primary pull-right" data-dismiss="modal" v-if="!omitirErrores">Cerrar</button>
+                    <button type="button" class="btn btn-block btn-primary pull-right" data-dismiss="modal" v-else @click.prevent="programar_sgte_modulo()">Aceptar</button>
+                    <br>
+                    <br>
+                    <h3>El salón no está disponible en las siguientes fechas:</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="checkbox checkbox-primary">
+                                <input id="checkbox1" type="checkbox" v-model="omitirErrores">
+                                <label for="checkbox1">
+                                    Omitir errores
+                                </label>
+                            </div>
+                        </li>
+                        <li class="list-group-item" v-for="(value, index) in fechasError" v-if="index <= limit" :style="(index == limit) ? 'cursor: pointer;' : ''">
+                            <strong v-if="index == limit" @click.prevent="limit=fechasError.length">
+                                @{{ fechasError.length - limit + ' fechas más' }}
+                            </strong>
+                            <p v-else>
+                                @{{ value.start }}
+                            </p>
+                            <strong v-if="limit == fechasError.length && index == fechasError.length - 1" @click.prevent="limit=5" :style="(limit == fechasError.length && index == fechasError.length - 1) ? 'cursor: pointer;' : ''">
+                                @{{ 'Mostrar menos' }}
+                            </strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 @endsection
 @push('scripts')

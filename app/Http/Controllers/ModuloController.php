@@ -118,6 +118,7 @@ class ModuloController extends Controller
         $data = DB::table('pivot_promarma_modulos_jornada AS a')
         ->join('modulos AS b','b.id', 'a.modulo_id')
         ->select(
+            'b.id',
             'b.nombre',
             'a.duracion'
         )

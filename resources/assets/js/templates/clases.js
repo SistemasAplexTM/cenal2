@@ -70,6 +70,7 @@ $(document).ready(function () {
 var objVue = new Vue({
     el: '#clases',
     data:{
+        omitirErrores: false,
         salones: [],
         salon:'',
         desde:'',
@@ -90,13 +91,14 @@ var objVue = new Vue({
         hora_inicio_jornada: '',
         hora_fin_jornada: '',
         cargando_programa: 0,
+        limit: 5,
         estudiantes: {},
         profesores: {},
         semana: [],
+        fechasError: {},
         formErrors: {}
     },
     created(){
-        this.get_estudiantes_inscritos();
         this.get_modulos();
         this.getSalonesBySede();
     },
@@ -108,16 +110,12 @@ var objVue = new Vue({
                 }
             });
         },
-        get_estudiantes_inscritos: function(){
-            axios.get('../../estudiantes_inscritos/' + grupo_id).then(response => {
-                this.estudiantes_inscritos = response.data;   
-            });
-        },
         programar_sgte_modulo: function(){
             axios.post('../../programar_modulo/' + grupo_id, {
                 'desde': this.desde,
                 'hasta': this.hasta,
-                'salon': this.salon
+                'salon': this.salon,
+                'omitirErrores': this.omitirErrores
             }).then(response => {
                 if (response.data['code'] == 200) {
                     toastr.success('Registrado con éxito');
@@ -127,6 +125,9 @@ var objVue = new Vue({
                     this.get_modulos();
                 }else if(response.data['code'] == 300){
                     toastr.warning('Ya se han programado todos los módulos para este programa');
+                }else if(response.data['code'] == 600){
+                    this.fechasError = response.data.fechas;
+                    $('#mdl-error-salon').modal('show');
                 }
                 else{
                     toastr.error('Error al registrar');

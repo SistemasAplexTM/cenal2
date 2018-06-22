@@ -14,10 +14,17 @@
                         <div class="col-lg-2" v-if="errorSalon">
                             <div class="well">
                                 El salón no está disponible en las siguientes fechas:
+                                <div class="checkbox checkbox-primary">
+                                    <input v-model="omitirSalon" id="checkbox2" type="checkbox" checked="">
+                                    <label for="checkbox2">
+                                        Omitir errores
+                                    </label>
+                                </div>
+                                <br>
+                                {{-- <button class="btn btn-default btn-block" @click.prevent="errorSalon=false;fechasError=[];omitirSalon=true">Omitir</button> --}}
                                 <ul class="list-group">
                                   <li class="list-group-item" v-for="fecha in fechasError">@{{ fecha.start }}</li>
                                 </ul>
-                                <button class="btn btn-default btn-block" @click.prevent="errorSalon=false;fechasError=[]">Aceptar</button>
                             </div>
                         </div>
                         <div class="col-lg-9" :class="{'col-lg-7' : errorSalon}">
