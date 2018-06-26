@@ -33,6 +33,7 @@ var objVue = new Vue({
         ver_listado: false,
         cambiar_salon: false,
         btnTerminarClase: true,
+        edit_prof: false,
         verSidebar: 0,
         clases_detalle_id:'',
         salon:'',
@@ -62,6 +63,19 @@ var objVue = new Vue({
         estudiantes_inscritos: {},
         estudiantes_reprobados: {},
         profesores: {}
+    },
+    computed: {
+        // a computed getter
+        show_input_teacher: function () {
+          // `this` points to the vm instance
+          result = false;
+          if (this.profesor_asignado.length <= 0) {
+            result = true;
+          }if (this.edit_prof) {
+            result = true;
+          }
+          return result;
+        }
     },
     created(){
         this.get_clases();
@@ -227,6 +241,9 @@ var objVue = new Vue({
         },
         asistenciaUrl: function(){
             location.href = "asistencia";
+        },
+        formato_fecha: function(fecha){
+            return formato_fecha(fecha);
         }
     }
     

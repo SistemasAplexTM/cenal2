@@ -8,8 +8,17 @@
                 <div class="col-lg-4">
                     <a href="{{ url('grupos') }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
                 </div>
+                <div class="col-lg-4 col-lg-offset-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i>Ciclo</i></span>
+                            <select name="ciclo" id="" v-model="ciclo" class="form-control" @change="getByCiclo">
+                                <option v-for="ciclo in ciclos" :value="ciclo">@{{ ciclo.ciclo }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <br>
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <div class="row">
@@ -30,11 +39,6 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <p>Jornada: <strong>{{ $data->jornada }}</strong></p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <p>Estudiantes inscritos: <strong>{{ $data->cantidad }}</strong></p>
                                         </div>
                                     </div>
                                 </div>
@@ -157,9 +161,9 @@
                             <thead>
                                 <tr>
                                     <th>Acciones</th>
-                                    <th>Módulo</th>
+                                    <th width="25%">Módulo</th>
                                     <th><small>Salón/Capacidad</small></th>
-                                    <th>Estado</th>
+                                    <th width="6%">Estado</th>
                                     <th>Progreso</th>
                                     @role('Profesor')
                                     <th></th>
@@ -170,47 +174,49 @@
                             </thead>
                             <tbody>
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2" class="active">
-                                        <div class="form-group">
-                                            <label for="">Salón: </label>
-                                            <select v-model="salon" type="date" class="form-control">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="value in salones" :value="value.id">@{{ value.codigo }}</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <th colspan="4" class="active">
-                                        Excepto - 
-                                        <div class="form-group">
-                                            <label for="">Desde: </label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                                <input v-model="desde" type="date" placeholder="dd/mm/aaaa" class="form-control">
+                            @role('Administrador|Coordinador')
+                                <tfoot v-show="ciclo_actual === ciclo.ciclo">
+                                    <tr>
+                                        <td colspan="2" class="active">
+                                            <div class="form-group">
+                                                <label for="">Salón: </label>
+                                                <select v-model="salon" type="date" class="form-control">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="value in salones" :value="value.id">@{{ value.codigo }}</option>
+                                                </select>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Hasta: </label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                                <input v-model="hasta" type="date" placeholder="dd/mm/aaaa" class="form-control">
+                                        </td>
+                                        <th colspan="4" class="active">
+                                            Excepto - 
+                                            <div class="form-group">
+                                                <label for="">Desde: </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                    <input v-model="desde" type="date" placeholder="dd/mm/aaaa" class="form-control">
+                                                </div>
                                             </div>
-                                        </div>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th colspan="6" class="text-center active">
-                                        <button @click.prevent="programar_sgte_modulo()" class="btn btn-primary" data-toggle="tooltip" title="Programar siguiente módulo">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </th>
-                                </tr>
-                            </tfoot>
+                                            <div class="form-group">
+                                                <label for="">Hasta: </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                    <input v-model="hasta" type="date" placeholder="dd/mm/aaaa" class="form-control">
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="6" class="text-center active">
+                                            <button @click.prevent="programar_sgte_modulo()" class="btn btn-primary" data-toggle="tooltip" title="Programar siguiente módulo">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            @endrole
                         </table>
                     </div>
                 </div>

@@ -97,8 +97,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('clases/{clase_id}/buscar_profesor/{dato}', 'Clases\ClasesController@buscar_profesor');
 	Route::get('clases/getFin/{id_clase}', 'Clases\ClasesController@getFin');
 	Route::get('clases/day', 'Clases\ClasesController@programarClases');
+	Route::get('clases/{grupo?}/ciclos', 'Clases\GrupoController@getAllCiclos');
 	Route::get('clases/{grupo?}/grupo', 'Clases\ClasesController@index');
-	Route::get('clases/{grupo}/all', 'Clases\ClasesController@getAll');
+	Route::get('clases/{grupo}/all/{ciclo?}', 'Clases\ClasesController@getAll');
 	Route::get('clases/restaurar/{id}' , 'Clases\ClasesController@restaurar');
 	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
 	Route::resource('clases', 'Clases\ClasesController');

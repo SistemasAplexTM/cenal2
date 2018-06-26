@@ -122,3 +122,9 @@ function cancel(btn, id){
     $("#btn_confirm_" + id).removeClass('hide');
     $("#btn_confirm_" + id).addClass('show');
 }
+
+function formato_fecha(fecha){
+    var result = new Date(fecha);
+    var fecha = result.getFullYear() + '-' + result.getUTCMonth() + '-' + result.getUTCDate();
+    return fecha;
+}

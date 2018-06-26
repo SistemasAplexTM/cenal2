@@ -40,8 +40,9 @@
                             <div class="col-lg-12">
                                 <small class="stats-label">
                                     <i class="fa fa-user-circle-o"></i> Profesor
+                                    <button class="btn btn-sm pull-right" @click.prevent="edit_prof = !edit_prof"><i class="fa fa-edit"></i></button>
                                 </small>
-                                <div class="input-group"  v-if="profesor_asignado.length <= 0">
+                                <div class="input-group"  v-if="show_input_teacher">
                                     <span class="input-group-addon">
                                         <i class="fa fa-user-plus">
                                         </i>
@@ -52,12 +53,10 @@
                                         </a>
                                     </input>
                                 </div>
-                                <dd class="project-people" v-if="profesor_asignado.length > 0">
-                                    <a href="#">
-                                        <h3>
-                                            @{{ profesor_asignado }}
-                                        </h3>
-                                    </a>
+                                <dd class="project-people" v-if="!show_input_teacher">    
+                                    <h3>
+                                        @{{ profesor_asignado }}
+                                    </h3>
                                 </dd>
                             </div>
                         </div>
@@ -185,7 +184,7 @@
                                         <i v-else class="fa fa-list" data-toggle="tooltip" title="Asistencia"></i>
                                         {{-- @{{ (clase.estado == 'Terminado') ? '<i class='fa fa-eye'></i>' : '<i class='fa fa-list'></i>' }} --}}
                                     </a>
-                                    <h3>@{{ clase.start }}</h3>
+                                    <h3>@{{ formato_fecha(clase.start) }}</h3>
                                     <p>Salón: @{{ clase.salon }}</p>
                                 </li>
                             </ul>
