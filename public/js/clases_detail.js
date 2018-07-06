@@ -30,6 +30,7 @@ $(document).ready(function () {
 var objVue = new Vue({
     el: '#clases',
     data:{
+        open_sidebar: false,
         ver_listado: false,
         cambiar_salon: false,
         btnTerminarClase: true,
@@ -115,9 +116,7 @@ var objVue = new Vue({
             });
         },
         buscar_profesor: function(){
-            if (!$("#right-sidebar").hasClass('sidebar-open')) {
-                $("#right-sidebar").addClass('sidebar-open');
-            }
+            this.open_sidebar = true;
             var dato = this.dato_profesor;
             this.verSidebar = 3;
             this.profesores = '';
@@ -210,9 +209,7 @@ var objVue = new Vue({
             });
         },
         verClase: function(param){
-            if (!$("#right-sidebar").hasClass('sidebar-open')) {
-                $("#right-sidebar").addClass('sidebar-open');
-            }
+            this.open_sidebar = true;
             this.ver_listado = false;
             this.cambiar_salon = true;
             this.estado = param.estado;

@@ -9,17 +9,17 @@
                     <a href="{{ url()->previous() }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
                 </div>
                 <div class="col-lg-5">
-                    <a class="btn btn-block btn-warning right-sidebar-toggle" @click="verSidebar=0">
+                    <a class="btn btn-block btn-warning" @click="verSidebar=0;open_sidebar=true">
                         <i class="fa fa-group"></i> Ver estudiantes inscritos - @{{ estudiantes_inscritos.length }}
                     </a>
                 </div>
                 <div class="col-lg-4">
                     @if($data->estado != 'Terminado')
-                        <a class="btn btn-block btn-danger right-sidebar-toggle" @click="verSidebar=4">
+                        <a class="btn btn-block btn-danger" @click="verSidebar=4;open_sidebar=true">
                             <i class="fa fa-step-forward"></i> Terminar módulo
                         </a>
                     @else
-                        <a class="btn btn-block btn-danger right-sidebar-toggle" @click="verSidebar=5">
+                        <a class="btn btn-block btn-danger" @click="verSidebar=5;open_sidebar=true">
                             <i class="fa fa-eye"></i> Ver reprobados - @{{ estudiantes_reprobados.length }}
                         </a>
                     @endif

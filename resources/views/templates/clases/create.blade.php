@@ -5,7 +5,7 @@
     <div class="row">
         <div class="ibox">
             <div class="ibox-title">
-                <h5><i class="fa fa-calendar-plus-o"></i> Programar grupo - SEDE</h5>
+                <h5><i class="fa fa-calendar-plus-o"></i> Programar grupo</h5>
             </div>
             <div class="ibox-content">
                 <form action="{{ url('clases') }}" method="POST" id="create_clase_form" enctype="multipart/form-data" ref="form">
@@ -240,15 +240,34 @@
                                    <div class="form-group">
                                         <label class="col-sm-2 control-label">Días de clase: </label>
                                         <div class="col-sm-10">
-                                            <label class="checkbox-inline "> 
-                                                <input v-model="semana" type="checkbox" id="1" value="1"> Lunes 
-                                            </label>
-                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="2" value="2"> Martes </label>
-                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="3" value="3"> Miércoles </label>
-                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="4" value="4"> Jueves </label>
-                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="5" value="5"> Viernes </label>
-                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="6" value="6"> Sábado </label>
-                                            <label class="checkbox-inline"> <input v-model="semana" type="checkbox" id="7" value="7"> Domingo </label>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="1" value="1">
+                                                <label for="1"> Lunes </label>
+                                            </div>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="2" value="2">
+                                                <label for="2"> Martes </label>
+                                            </div>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="3" value="3">
+                                                <label for="3"> Miércoles </label>
+                                            </div>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="4" value="4">
+                                                <label for="4"> Jueves </label>
+                                            </div>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="5" value="5">
+                                                <label for="5"> Viernes </label>
+                                            </div>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="6" value="6">
+                                                <label for="6"> Sábado </label>
+                                            </div>
+                                            <div class="checkbox checkbox-success checkbox-inline">
+                                                <input v-model="semana" type="checkbox" id="7" value="7">
+                                                <label for="7"> Domingo </label>
+                                            </div>
                                         </div>
                                     </div> 
                                 </div>

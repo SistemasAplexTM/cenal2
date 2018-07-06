@@ -14,21 +14,16 @@ class ModuloController extends Controller
     	return view('templates.modulo');
     }
 
-    public function getAll($type){
-        $op = '=';
-        if ($type == 'b') {
-            $op = '<>';
-        }
+    public function getAll(){
         $data = DB::table('modulos As a')
         ->select(
             'a.id',
             'a.nombre',
-            'a.duracion',
             'a.color',
             'a.created_at',
             'a.updated_at'
         )
-        ->where('a.deleted_at',  $op , NULL)
+        ->where('a.deleted_at', NULL)
         ->get();
         return Datatables::of($data)->make(true);
     }
@@ -63,10 +58,10 @@ class ModuloController extends Controller
     }
 
     public function updateCell(Request $request){
-    	try {
-            $obj = $request->obj;
-            $data = Modulos::findOrFail($obj['id']);
-            $data->update($obj);
+        try {
+            $data = Modulos::findOrFail($request->pk);
+            $data->nombre = $request->value;
+            $data->save();
             $answer=array(
                 "code" => 200
             );
@@ -118,9 +113,9 @@ class ModuloController extends Controller
         $data = DB::table('pivot_promarma_modulos_jornada AS a')
         ->join('modulos AS b','b.id', 'a.modulo_id')
         ->select(
+            'a.duracion',
             'b.id',
-            'b.nombre',
-            'a.duracion'
+            'b.nombre'
         )
         ->where([
             ['a.programa_id', $programa],

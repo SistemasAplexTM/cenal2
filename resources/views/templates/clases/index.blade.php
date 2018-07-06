@@ -160,8 +160,8 @@
                         <table class="table table-hover" id="tbl-clases">
                             <thead>
                                 <tr>
-                                    <th>Acciones</th>
-                                    <th width="25%">Módulo</th>
+                                    <th width="80px">Acciones</th>
+                                    <th width="30%">Módulo</th>
                                     <th><small>Salón/Capacidad</small></th>
                                     <th width="6%">Estado</th>
                                     <th>Progreso</th>

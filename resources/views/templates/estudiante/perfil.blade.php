@@ -59,9 +59,9 @@
                     <div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-danger btn-sm dropdown-toggle">Certificados <span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ route('costos') }}">Costos</a></li>
-                            <li><a href="{{ route('eps') }}">EPS</a></li>
-                            <li><a href="{{ route('notas') }}">Notas</a></li>
+                            <li><a target="_blanck" href="{{ url('costos/'. $data->id) }}">Costos</a></li>
+                            <li><a target="_blanck" href="{{ url('eps/'. $data->id) }}">EPS</a></li>
+                            <li><a target="_blanck" href="{{ url('notas/'. $data->id) }}">Notas</a></li>
                         </ul>
                     </div>
                     <a data-toggle="modal" title="Actualizar datos" data-target="#modal-edit" class="btn btn-success pull-right"> <i class="fa fa-edit"></i></a>

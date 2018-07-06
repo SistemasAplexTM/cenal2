@@ -6,26 +6,13 @@
 		<div class="col-lg-6 col-lg-offset-3">
 			<div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5><i class="fa fa-puzzle-piece"></i> Módulos</h5>
-                    <div class="ibox-tools">
-                        @role('Administrador')
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
-                            <i class="fa fa-ellipsis-h"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#" onclick="getTable('a')"><i class="fa fa-list"></i> Ver</a>
-                            <li><a href="#" onclick="getTable('b')"><i class="fa fa-trash"></i> Ver eliminados</a>
-                            </li>
-                        </ul>
-                        @endrole
-                    </div>
+                    <h3>Módulos</h3>
                 </div>
                 <div class="ibox-content">
                     <!--***** contenido ******-->
                 	<div class="alert alert-danger" role="alert" v-show="JSON.stringify(formErrors)!='{}'">
                 		<ul>
                 			<li class="result-nombre"></li>
-                			<li class="result-duracion"></li>
                 		</ul>
 					</div>
 					<p>Haga click en el registro para activar la edición y presione la tecla <strong>Enter</strong> para actualizar.</p>
@@ -34,13 +21,11 @@
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Duración <small>(clases)</small></th>
-                                <th>Acciones</th>
+                                <th width="15%">Acciones</th>
                             </tr>
                         </thead>
                         <tfoot class="table-foot">
                             <tr>
-                                <th></th>
                                 <th></th>
                                 <th class="save"></th>
                             </tr>

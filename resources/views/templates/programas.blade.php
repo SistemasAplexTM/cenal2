@@ -70,7 +70,7 @@
                                                 <label for="" class="control-label gcore-label-top">Módulo:</label>
                                             </div>
                                             <div class="col-sm-8">
-                                                <v-select :options="modulos_selected" label="name" :on-change="getDuracion">
+                                                <v-select :options="modulos_selected" label="name" :on-change="getJornadas">
                                                 </v-select>
                                                 <small id="msn1" class="help-block result-modulos" v-show="formErrors.modulos"></small>
                                             </div>
@@ -88,52 +88,27 @@
                                                     <th width="50%">Duración</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                {{-- <template v-if="jornadas_asignadas">
-                                                    <tr v-for="(jornada, index) in jornadas_asignadas">
-                                                        <td>
-                                                            <h3>
-                                                                @{{ jornada.jornada }}
-                                                                <br>
-                                                                <small><i class="fa fa-clock-o"></i> <i>Hora de inicio: </i> <strong>@{{ jornada.hora_inicio }}</strong></small>
-                                                                <br>
-                                                                <small><i class="fa fa-clock-o"></i> <i>Hora de fin: </i> <strong>@{{ jornada.hora_fin }}</strong></small>
-                                                            </h3>
-                                                        </td>
-                                                        <td>
+                                            <tbody> 
+                                                <tr v-for="(jornada, index) in jornadas">
+                                                    <td>
+                                                        <h3>
+                                                            @{{ jornada.jornada }}
                                                             <br>
-                                                            <div class="input-group bootstrap-touchspin">
-                                                                <input v-model="jornada.duracion" class="form-control" type="number" min="0" style="display: block;">
-                                                                <span class="input-group-btn">
-                                                                    <span class="btn btn-white"><i>Clases</i></span>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </template> --}}
-                                                {{-- <template v-else> --}}
-                                                    <tr v-for="(jornada, index) in jornadas">
-                                                        <td>
-                                                            <h3>
-                                                                @{{ jornada.jornada }}
-                                                                <br>
-                                                                <small><i class="fa fa-clock-o"></i> <i>Hora de inicio: </i> <strong>@{{ jornada.hora_inicio }}</strong></small>
-                                                                <br>
-                                                                <small><i class="fa fa-clock-o"></i> <i>Hora de fin: </i> <strong>@{{ jornada.hora_fin }}</strong></small>
-                                                            </h3>
-                                                        </td>
-                                                        <td>
+                                                            <small><i class="fa fa-clock-o"></i> <i>Hora de inicio: </i> <strong>@{{ jornada.hora_inicio }}</strong></small>
                                                             <br>
-                                                            <div class="input-group bootstrap-touchspin">
-                                                                <input v-model="horas[jornada.id]" :id="jornada.id" class="form-control jornadaClass" type="number" min="0" style="display: block;">
-                                                                {{-- <input v-model="horas[jornada.id]" id="jornada.id" class="form-control" type="number" min="0" style="display: block;"> --}}
-                                                                <span class="input-group-btn">
-                                                                    <span class="btn btn-white"><i>Clases</i></span>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                {{-- </template> --}}
+                                                            <small><i class="fa fa-clock-o"></i> <i>Hora de fin: </i> <strong>@{{ jornada.hora_fin }}</strong></small>
+                                                        </h3>
+                                                    </td>
+                                                    <td>
+                                                        <br>
+                                                        <div class="input-group">
+                                                            <input :id="jornada.id" v-model="horas[jornada.id]" class="form-control" type="number" min="0" style="display: block;">
+                                                            <span class="input-group-btn">
+                                                                <span class="btn btn-white"><i>Clases</i></span>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>

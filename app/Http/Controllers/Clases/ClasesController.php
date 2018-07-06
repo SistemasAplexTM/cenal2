@@ -256,13 +256,21 @@ class ClasesController extends Controller
         $modulo = DB::table('clases AS a')
         ->join('modulos AS b', 'a.modulo_id', 'b.id')
         ->join('jornadas AS c', 'a.jornada_id', 'c.id')
-        ->select('a.id AS clase_id', 'a.sede_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
+        ->select('a.id AS clase_id', 'a.sede_id', 'a.estado_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
             DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
             DB::raw('(select max(salon_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS salon_id')
         )
         ->where('a.grupo_id', $grupo_id)
         ->orderby('a.created_at','DESC')
         ->take(1)->first();
+
+        if ($modulo->estado_id != 3) {
+            return array(
+                'code' => 700,
+                'error' => true,
+                'exception' => 'Debe terminar el módulo actual para programar el siguiente'
+            );
+        }
         
         $fecha = new DateTime($modulo->fecha_fin);
         $fecha = $fecha->add(new DateInterval('P1D'));
@@ -469,7 +477,6 @@ class ClasesController extends Controller
                 'e.clase AS clase_estado',
                 'f.nombre AS sede',
                 'a.profesor_id',
-                'g.img AS perfil_profesor',
                 DB::raw("concat_ws(' ', g.name,g.last_name) AS profesor")
             )
             ->where([
@@ -544,7 +551,6 @@ class ClasesController extends Controller
                 ['a.grupo_id', $grupo],
                 ['a.ciclo', $where_ciclo]
             ])
-            ->orderBy('estado')
             ->get();
         foreach ($data as $key => $value) {
             if ($value->completadas == $value->total) {

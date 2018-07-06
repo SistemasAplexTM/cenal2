@@ -135,10 +135,11 @@ var objVue = new Vue({
                     recargarTabla('tbl-clases');
                     this.salon = '';
                     this.get_modulos();
+                    this.get_ciclos();
                 }else if(response.data['code'] == 300){
                     swal({
                       title: 'Ops!',
-                      text: "Ya se han programado todos los módulos para este programa, ¿Desea crear el siguiente siclo?",
+                      text: "Ya se han completado todos los módulos para este programa, ¿Desea crear el siguiente ciclo?",
                       type: 'warning',
                       showCancelButton: true,
                       confirmButtonColor: '#3085d6',
@@ -152,6 +153,14 @@ var objVue = new Vue({
                 }else if(response.data['code'] == 600){
                     this.fechasError = response.data.fechas;
                     $('#mdl-error-salon').modal('show');
+                }else if(response.data['code'] == 700){
+                    swal({
+                      title: 'Ops!',
+                      text: response.data['exception'],
+                      type: 'warning',
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Aceptar'
+                    });
                 }
                 else{
                     toastr.error('Error al registrar');

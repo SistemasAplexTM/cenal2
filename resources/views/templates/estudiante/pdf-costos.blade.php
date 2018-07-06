@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>PDF</title>
+	<title>Certificado de costos | CENAL</title>
     <style>
 	    .container{
 	    	font-family: sans-serif;
@@ -38,13 +38,13 @@
     	<div class="container">
     		<p class="center">
         		<small>
-	        		El suscrito Asistente Administrativo del Centro Nacional de Capacitación Laboral- CENAL, en uso de las facultades legales que le confiere el capítulo V del Manual de Convivencia, expide la siguiente constancia, acogida a la resolución de aprobación  No. 6526 del 12 de agosto del 2009, emanada de la Secretaria de Educación Municipal, actuando en nombre del Ministerio de Educación Nacional.
+	        		El suscrito Asistente Administrativo del Centro Nacional de Capacitación Laboral- CENAL, en uso de las facultades legales que le confiere el capítulo V del Manual de Convivencia, expide la siguiente constancia, acogida a la resolución de aprobación  No. {{ $data->decreto }}, emanada de la Secretaria de Educación Municipal, actuando en nombre del Ministerio de Educación Nacional.
 	        	</small>
     		</p>
 			<br>
     		<h2 class="center">HACE CONSTAR QUE:</h2>
-    		<p class="center">
-    			El alumno {{ $data['nombre_full'] }}, identificado con cédula de ciudadanía No {{ $data['cedula'] }} y código de matrícula {{ $data['codigo'] }}; se encuentra cursando el ciclo II del programa técnico laboral por competencias en {{ $data['programa'] }}, aprobado según resolución No. 7630 de 2009 expedida por parte de la Secretaría de Educación Municipal, en jornada diurna, en el periodo de febrero a julio de 2018.
+    		<p class="center" style="text-align: justify-all !important;">
+    			El alumno {{ $data->nombre_full }}, identificado con cédula de ciudadanía No {{ $data->cedula }} y código de matrícula {{ $data->codigo }}; se encuentra cursando el *CICLO II* del programa técnico laboral por competencias en {{ $data->programa }}, aprobado según resolución No. 7630 de 2009 expedida por parte de la Secretaría de Educación Municipal, en jornada {{ $data->jornada }}, en el periodo de febrero a julio de 2018.
     		</p>
     		<br>
     		<p class="center">
@@ -58,7 +58,7 @@
     		</p>
     		<br>
     		<p>
-    			Para constancia se firma en Santiago de Cali a los veintisiete (27) días del mes de febrero de 2018
+    			Para constancia se firma en {{ $data->ciudad }} a los {{ $fecha_letras }} ({!! date('j') !!}) días del mes de {{ $mes }} de {!! date('Y') !!}
     		</p>
     		<p>
     			Atentamente,
