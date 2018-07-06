@@ -16,6 +16,7 @@ mix.styles([
 	'resources/assets/css/plugins/ladda/ladda-themeless.min.css',
 	'resources/assets/css/plugins/switchery/switchery.css',
 	'resources/assets/css/plugins/colorpicker/bootstrap-colorpicker.min.css',
+	'resources/assets/css/plugins/xeditable/bootstrap-editable.css',
 	'resources/assets/css/main.css'
 	], 'public/css/plantilla.css');
 mix.scripts([
@@ -40,6 +41,7 @@ mix.scripts([
 	'resources/assets/js/plugins/validate/jquery.validate.min.js',
 	'resources/assets/js/plugins/switchery/switchery.js',
 	'resources/assets/js/plugins/colorpicker/bootstrap-colorpicker.min.js',
+	'resources/assets/js/plugins/xeditable/bootstrap-editable.min.js',
 	/*-- Plantilla --*/
 	'resources/assets/js/inspinia.js',
 	'resources/assets/js/main.js',

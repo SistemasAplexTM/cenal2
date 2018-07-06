@@ -134,7 +134,6 @@ var objVue = new Vue({
         nombre:'',
         sedes: [],
         jornadas: [],
-        jornadas_asignadas: [],
         modulos: [],
         modulos_selected: [],
         modulo_j: null,
@@ -145,7 +144,6 @@ var objVue = new Vue({
     },
     created(){
         this.getModulos();
-        this.getJornadas();
     },
     methods:{
         resetForm: function(){
@@ -238,12 +236,6 @@ var objVue = new Vue({
                 this.modulos = response.data;
             });
         },
-        getJornadas: function(data){
-            var url = 'programas/getAllJornadas';
-            axios.get(url).then(response => {
-                this.jornadas = response.data;
-            });
-        },
         update: function update() {
             var urlUpdate = 'programas/' + this.id;
             var me = this;
@@ -301,16 +293,21 @@ var objVue = new Vue({
                 toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
         },
-        getDuracion: function(val){
+        getJornadas: function(val){
             $(".jornadaClass").val('');
             if (val) {
                 this.modulo_j = val.id;
-                var url = 'programas/getJornadasAsignadas/' + this.id + '/' + val.id;
+                var url = 'programas/getAllJornadas/' + this.id + '/' + val.id;
                 axios.get(url).then(response => {
-                        this.jornadas_asignadas = response.data;
-                    // $.each( response.data, function( key, value ) {
-                    //     // $("#" + value.jornada_id).val(value.duracion);
-                    // });
+                    this.jornadas = response.data; 
+                    var arreglo = [];
+                    $.each( response.data, function( key, value ) {
+                        // console.log(value.id);
+                        arreglo[value.id] = value.duracion;
+
+                    });
+                        console.log(arreglo);
+                    this.horas = arreglo;
                 });
             }
         },

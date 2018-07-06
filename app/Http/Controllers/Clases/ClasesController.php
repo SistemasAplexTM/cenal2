@@ -41,6 +41,7 @@ class ClasesController extends Controller
         ->select(
             'a.id',
             'a.nombre',
+            'a.ciclo',
             'd.jornada',
             'e.descripcion AS estado',
             'e.clase AS clase_estado',
@@ -132,25 +133,28 @@ class ClasesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $ciclo = null)
     {
         $success = true;
         $fechas_error = null;
         DB::beginTransaction();
 
         try {
-            $moduloOrden = array();
-            foreach ($request->modulos as $key => $value) {
-                array_push($moduloOrden, $value['id']);
-            }
-            $grupo = DB::table('grupo')->insertGetId([
-                'nombre' => $request->grupo,
-                'orden_modulos' => implode(",", $moduloOrden),
-                'dias_clase' => implode(",", $request->semana)
-            ]);
+            if (!$ciclo) {
+                $moduloOrden = array();
+                foreach ($request->modulos as $key => $value) {
+                    array_push($moduloOrden, $value['id']);
+                }
+                $grupo = DB::table('grupo')->insertGetId([
+                    'nombre' => $request->grupo,
+                    'ciclo' => 1,
+                    'orden_modulos' => implode(",", $moduloOrden),
+                    'dias_clase' => implode(",", $request->semana)
+                ]);
 
-            $hora_inicio = $request->hora_inicio_jornada;
-            $hora_fin = $request->hora_fin_jornada;
+                $hora_inicio = $request->hora_inicio_jornada;
+                $hora_fin = $request->hora_fin_jornada;
+            }
 
             $id_class = Clases::create([
                 'modulo_id' => $moduloOrden[0],
@@ -158,6 +162,7 @@ class ClasesController extends Controller
                 'sede_id' => $request->sede,
                 'jornada_id' => $request->jornada,
                 'observacion' => $request->observacion,
+                'ciclo' => 1,
                 'estado_id' => 1,
                 'grupo_id' => $grupo
             ])->id;
@@ -242,20 +247,30 @@ class ClasesController extends Controller
      */
     public function programar_modulo(Request $request, $grupo_id)
     {
+        
         $grupo = DB::table('grupo AS a')
         ->select('a.orden_modulos', 'a.dias_clase')
         ->where('a.id', $grupo_id)
         ->first();
+
         $modulo = DB::table('clases AS a')
         ->join('modulos AS b', 'a.modulo_id', 'b.id')
         ->join('jornadas AS c', 'a.jornada_id', 'c.id')
-        ->select('a.id AS clase_id', 'a.sede_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
+        ->select('a.id AS clase_id', 'a.sede_id', 'a.estado_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
             DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
             DB::raw('(select max(salon_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS salon_id')
         )
         ->where('a.grupo_id', $grupo_id)
         ->orderby('a.created_at','DESC')
         ->take(1)->first();
+
+        if ($modulo->estado_id != 3) {
+            return array(
+                'code' => 700,
+                'error' => true,
+                'exception' => 'Debe terminar el módulo actual para programar el siguiente'
+            );
+        }
         
         $fecha = new DateTime($modulo->fecha_fin);
         $fecha = $fecha->add(new DateInterval('P1D'));
@@ -267,21 +282,36 @@ class ClasesController extends Controller
         $clave = array_search($modulo->id, $orden_modulos);
 
         $estudiantes = DB::table('clases_estudiante AS a')
-        ->select('a.estudiante_id')
+        ->select('a.estudiante_id', 'a.modulo_ingreso')
         ->where('a.clases_id', $modulo->clase_id)
         ->get();
+       
 
         if (array_key_exists($clave + 1, $orden_modulos)) {
             $sgte_modulo = $orden_modulos[$clave + 1];
-            $nombre_modulo = DB::table('modulos')
-            ->select('nombre', 'duracion')
-            ->where('id', $sgte_modulo)
-            ->first();
         }else{
-            return array(
-                'code' => 300
-            );
+            if ($request->ciclo) {
+                $data =  DB::table('grupo AS a')
+                ->where('a.id', $grupo_id)
+                ->update(['a.ciclo' => DB::raw('a.ciclo + (1)')]);
+                $sgte_modulo = $orden_modulos[0];
+            }else{
+                return array(
+                    'code' => 300
+                );
+            }
         }
+
+        $grupo = DB::table('grupo AS a')
+        ->select('a.ciclo')
+        ->where('a.id', $grupo_id)
+        ->first();
+
+        $nombre_modulo = DB::table('modulos')
+        ->select('nombre', 'duracion')
+        ->where('id', $sgte_modulo)
+        ->first();
+
         $success = true;
         $fechas_error = null;
         DB::beginTransaction();
@@ -320,9 +350,11 @@ class ClasesController extends Controller
                 'fecha_inicio' => $fecha_inicio,
                 'sede_id' => $modulo->sede_id,
                 'jornada_id' => $modulo->jornada_id,
+                'ciclo' => $grupo->ciclo,
                 'estado_id' => 1,
                 'grupo_id' => $grupo_id
             ])->id;
+
 
             $fechas_clase = $this->programarClases($fecha_inicio, $nombre_modulo->duracion, $dias_clase, $rango);
             if (!$request->omitirErrores) {
@@ -338,11 +370,17 @@ class ClasesController extends Controller
                     ['title' => 'clase de '. $nombre_modulo->nombre, 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'salon_id' => $salon]
                 ]);
             }
-
-            foreach ($estudiantes as $clave => $value) {
-                DB::table('clases_estudiante')->insert([
-                    ['estudiante_id' => $value->estudiante_id, 'clases_id' => $id_class]
-                ]);
+            if (count($estudiantes) > 0) {
+                $posicion_sgte_modulo = array_search($sgte_modulo, $orden_modulos);
+                foreach ($estudiantes as $key => $value) {
+                    $posicion_ingreso = array_search($value->modulo_ingreso, $orden_modulos);
+                    $final = ($posicion_ingreso + ($posicion_sgte_modulo - $posicion_ingreso));
+                    if ($posicion_sgte_modulo != $posicion_ingreso) {
+                        DB::table('clases_estudiante')->insert([
+                            ['estudiante_id' => $value->estudiante_id, 'clases_id' => $id_class, 'modulo_ingreso' => $orden_modulos[$posicion_ingreso]]
+                        ]);
+                    }
+                }
             }
 
             DB::commit();
@@ -350,6 +388,7 @@ class ClasesController extends Controller
             DB::rollback();
             $success = false;
             $exception = $e;
+            return $e;
         }
         if($success){
             return array(
@@ -438,7 +477,6 @@ class ClasesController extends Controller
                 'e.clase AS clase_estado',
                 'f.nombre AS sede',
                 'a.profesor_id',
-                'g.img AS perfil_profesor',
                 DB::raw("concat_ws(' ', g.name,g.last_name) AS profesor")
             )
             ->where([
@@ -452,7 +490,7 @@ class ClasesController extends Controller
         return view('templates.clases.detail', compact('data', 'porcentaje'));
     }
 
-    public function getAll($grupo)
+    public function getAll($grupo, $ciclo = null)
     {
         $user = $this->get_user();
         if ($user->hasRole('Profesor')) {
@@ -475,6 +513,11 @@ class ClasesController extends Controller
                 ['a.deleted_at', '=', null],
             );
 
+        }
+        if ($ciclo) {
+            $where_ciclo = $ciclo;
+        }else{
+            $where_ciclo = DB::raw('(SELECT z.ciclo FROM grupo AS z WHERE z.id = '.$grupo.')');
         }
         $data = DB::table('clases As a')
             ->join('modulos AS c', 'a.modulo_id', 'c.id')
@@ -504,8 +547,10 @@ class ClasesController extends Controller
 
             )
             ->where($where)
-            ->where('a.grupo_id', $grupo)
-            ->orderBy('estado')
+            ->where([
+                ['a.grupo_id', $grupo],
+                ['a.ciclo', $where_ciclo]
+            ])
             ->get();
         foreach ($data as $key => $value) {
             if ($value->completadas == $value->total) {

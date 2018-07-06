@@ -23,15 +23,13 @@ class ModuloRequest extends FormRequest
    public function rules()
     {
         return [
-            'nombre' => 'required',
-            'duracion' => 'required'
+            'nombre' => 'required'
         ];
     }
     public function messages()
     {
         return [
-            'nombre.required' => 'El :attribute es obligatorio.',
-            'duracion.required' => 'La :attribute es obligatoria.',
+            'nombre.required' => 'El :attribute es obligatorio.'
         ];
     }
     public function attributes()

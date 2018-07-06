@@ -20,14 +20,12 @@ $(document).ready(function () {
                     return  "<h2>" + full.nombre + "</h2>";
                 }
             },
-            { data: "fecha_inicio", name: 'fecha_inicio'},
             { 
                 "render": function (data, type, full, meta) {
                     return "<span class='label label-"+full.clase_estado+"'>"+ full.estado+"</span>";                    
                 }
             },
             { data: "sede", name: 'sede'},
-            { data: "cantidad", name: 'cantidad'},
             { data: "jornada", name: 'jornada'}
         ],
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {

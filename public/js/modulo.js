@@ -1,65 +1,54 @@
 $(document).ready(function(){
-   getTable('a'); 
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editable.defaults.params = function (params) {
+        params._token = $('meta[name="csrf-token"]').attr('content');
+        return params;
+    };
+    getTable(); 
 });
-function getTable(on_delete) {
-    $("#tbl-modulos").dataTable().fnDestroy();
-    if (on_delete === 'a') {
-        $('#tbl-modulos tfoot th ').each( function (key, value) {
-            $(this).show();
-            $(this).html( '<input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Buscar o  Registrar" />' );
-            $('.save').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
-            // $('.none').html('<input class="form-control input-sm color" id="input'+key+'" type="text" placeholder="Color" value="#5367ce" />');
-        });
-    }else{
-        $('#tbl-modulos tfoot th').each( function (key, value) {
-            $(this).hide();
-        });
-    }
+function getTable() {
+    $('#tbl-modulos tfoot th').each( function (key, value) {
+        $(this).show();
+        $(this).html( '<input class="form-control input-sm input-search" id="input'+key+'" type="text" placeholder="Registrar" />' );
+        $('.save').html('<button class="btn btn-success btn-xs" data-toggle="tooltip" title="Guardar" onclick="saveData()"><i class="fa fa-save" ></i></button>');
+    });
     var table = $('#tbl-modulos').DataTable({
-        keys: true,
         processing: true,
         serverSide: true,
-        ajax: 'modulo/all/' + on_delete,
+        ajax: 'modulo/all',
         columns: [
-            { data: "nombre", name: 'nombre'},
-            { data: "duracion", name: 'duracion'},
+            { 
+                "render": function (data, type, full, meta) {
+                    return '<a data-name="nombre" data-pk="'+full.id+'" class="td_edit" data-type="text" data-placement="right" data-title="Nombre">'+full.nombre+'</a>';
+                }
+            },
             {
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    return imp_btn(on_delete, full.id);
+                    return imp_btn(full.id);
                 }
             }
         ],
-        'columnDefs': [
-            {
-                'targets': [0,1],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                   $(td).attr('contenteditable', true); 
+        "drawCallback": function () {
+            $(".td_edit").editable({
+                ajaxOptions: {
+                    type: 'post',
+                    dataType: 'json'
+                },
+                url: "modulo/updateCell",
+                validate:function(value){
+                    if($.trim(value) == ''){
+                        return 'Este campo es obligatorio!';
+                    }
                 }
-            }
-          ]
-    });
-    table.on('key', function ( e, datatable, key, cell, originalEvent ) {
-        if (key == 13) {
-            cell.data( $(cell.node()).html() ).draw();
-            var rowData = datatable.row( cell.index().row ).data();
-            objVue.updateCell(rowData);
+            });
         }
-    });
-    table.columns().every( function () {
-        var that = this;
-        $( 'input', this.footer() ).on( 'keyup change', function () {
-            if ( that.search() !== this.value ) {
-                that.search( this.value ).draw();
-            }
-        } );
     });
 }
 
 function saveData(){
     var nombre = $("#input0").val();
-    var duracion = $("#input1").val();
-    objVue.store(nombre, duracion);
+    objVue.store(nombre);
 }
 
 
@@ -67,7 +56,6 @@ var objVue = new Vue({
     el: '#crud_modulo',
     data:{
         nombre:'',
-        duracion:'',
         color:'',
         editar: 0,
         formErrors: {}
@@ -78,7 +66,6 @@ var objVue = new Vue({
         },
         resetForm: function(){
             this.nombre = '';
-            this.duracion = '';
             this.color = '';
             this.editar = 0;
             $(".input-search").val('');
@@ -99,12 +86,9 @@ var objVue = new Vue({
             let me = this;
             if (nombre == null && duracion == null) {
                 nombre = me.nombre;
-                duracion = me.duracion;
             }
             axios.post('modulo/store',{
-                'nombre': nombre,
-                'duracion': duracion,
-                'color': color
+                'nombre': nombre
             })
             .then(function (response){
                 toastr.success('Registrado con éxito');
@@ -142,30 +126,6 @@ var objVue = new Vue({
             axios.get(urlRestaurar).then(response => {
                 toastr.success('Registro restaurado.');
                 this.updateTable();
-            });
-        },
-        updateCell: function updateCell(rowData) {
-            var urlUpdate = 'modulo/updateCell';
-            var me = this;
-            axios.put(urlUpdate, {
-                'obj' : rowData
-            }).then(function (response) {
-                if (response.data['code'] == 200) {
-                    toastr.success('Registro actualizado correctamente');
-                    toastr.options.closeButton = true;
-                    me.editar = 0;
-                } else {
-                    toastr.warning(response.data['error']);
-                    toastr.options.closeButton = true;
-                    console.log(response.data);
-                }
-                me.updateTable();
-            }).catch(function (error) {
-                me.listErrors = '';
-                if (error.response.status === 422) {
-                    me.formErrors = error.response.data;
-                }
-                toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
             });
         }
     }

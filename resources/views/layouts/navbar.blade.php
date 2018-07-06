@@ -42,6 +42,9 @@
                 @endrole
             </ul>
             <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <span class="label label-success">{{ Auth::user()->roles[0]->name }}</span>
+                </li>
                 @role('Administrador')
                 <li><a href="{{ route('clients') }}"><i class="fa fa-code"></i> Soy desarrollador</a></li>
                 @endrole
@@ -73,12 +76,6 @@
                                     {{ csrf_field() }}
                                 </form>
                             </li>
-                            {{-- <li class="divider"></li>
-                            <li>
-                                <a role="button" onclick="event.preventDefault();">
-                                    Administrador
-                                </a>
-                            </li> --}}
                         </ul>
                     </li>
                 @endif

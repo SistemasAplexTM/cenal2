@@ -6,11 +6,19 @@ $(document).ready(function () {
         calendarWeeks: true,
         autoclose: true,
     });
+    datos();
+});
 
+function datos(ciclo){
+    var url_all = './all';
+    if (ciclo) {
+        url_all = './all/' + ciclo;
+    }
+    $("#tbl-clases").dataTable().fnDestroy();
     var table = $('#tbl-clases').DataTable({
         processing: true,
         serverSide: true,
-        ajax: './all',
+        ajax:  url_all,
         columns: [
             {
                 sortable: false,
@@ -64,14 +72,16 @@ $(document).ready(function () {
             }
         ]
     });
-
-});
+}
 
 var objVue = new Vue({
     el: '#clases',
     data:{
         omitirErrores: false,
         salones: [],
+        ciclos: [],
+        ciclo: '',
+        ciclo_actual: '',
         salon:'',
         desde:'',
         hasta:'',
@@ -101,6 +111,7 @@ var objVue = new Vue({
     created(){
         this.get_modulos();
         this.getSalonesBySede();
+        this.get_ciclos();
     },
     methods:{
         get_profesor_asignado: function(){
@@ -110,8 +121,9 @@ var objVue = new Vue({
                 }
             });
         },
-        programar_sgte_modulo: function(){
+        programar_sgte_modulo: function(ciclo){ 
             axios.post('../../programar_modulo/' + grupo_id, {
+                'ciclo': ciclo,
                 'desde': this.desde,
                 'hasta': this.hasta,
                 'salon': this.salon,
@@ -123,11 +135,32 @@ var objVue = new Vue({
                     recargarTabla('tbl-clases');
                     this.salon = '';
                     this.get_modulos();
+                    this.get_ciclos();
                 }else if(response.data['code'] == 300){
-                    toastr.warning('Ya se han programado todos los módulos para este programa');
+                    swal({
+                      title: 'Ops!',
+                      text: "Ya se han completado todos los módulos para este programa, ¿Desea crear el siguiente ciclo?",
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Sí'
+                    }).then((result) => {
+                      if (result.value) {
+                        this.programar_sgte_modulo(true);
+                      }
+                    })
                 }else if(response.data['code'] == 600){
                     this.fechasError = response.data.fechas;
                     $('#mdl-error-salon').modal('show');
+                }else if(response.data['code'] == 700){
+                    swal({
+                      title: 'Ops!',
+                      text: response.data['exception'],
+                      type: 'warning',
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Aceptar'
+                    });
                 }
                 else{
                     toastr.error('Error al registrar');
@@ -143,6 +176,15 @@ var objVue = new Vue({
                 }
             });
         },
+        get_ciclos: function(){
+            axios.get('./ciclos').then(response => {
+                if (response.data['code'] == 200) {
+                    this.ciclos = response.data['data'];
+                    this.ciclo = {ciclo: response.data['actual']};
+                    this.ciclo_actual = response.data['actual'];
+                }
+            });
+        },
         getSalonesBySede: function(){
             axios.get('../../salon/getBySede/' + user.sede_id).then(response => {
                 if (response.data.length > 0) {
@@ -150,6 +192,9 @@ var objVue = new Vue({
                 }
             });
         },
+        getByCiclo: function(){
+            datos(this.ciclo.ciclo);
+        }
     }
     
 });

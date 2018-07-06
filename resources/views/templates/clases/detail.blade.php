@@ -9,17 +9,17 @@
                     <a href="{{ url()->previous() }}" class="btn btn-block btn-default"><i class="fa fa-arrow-left"></i> Volver</a>
                 </div>
                 <div class="col-lg-5">
-                    <a class="btn btn-block btn-warning right-sidebar-toggle" @click="verSidebar=0">
+                    <a class="btn btn-block btn-warning" @click="verSidebar=0;open_sidebar=true">
                         <i class="fa fa-group"></i> Ver estudiantes inscritos - @{{ estudiantes_inscritos.length }}
                     </a>
                 </div>
                 <div class="col-lg-4">
                     @if($data->estado != 'Terminado')
-                        <a class="btn btn-block btn-danger right-sidebar-toggle" @click="verSidebar=4">
+                        <a class="btn btn-block btn-danger" @click="verSidebar=4;open_sidebar=true">
                             <i class="fa fa-step-forward"></i> Terminar módulo
                         </a>
                     @else
-                        <a class="btn btn-block btn-danger right-sidebar-toggle" @click="verSidebar=5">
+                        <a class="btn btn-block btn-danger" @click="verSidebar=5;open_sidebar=true">
                             <i class="fa fa-eye"></i> Ver reprobados - @{{ estudiantes_reprobados.length }}
                         </a>
                     @endif
@@ -40,8 +40,9 @@
                             <div class="col-lg-12">
                                 <small class="stats-label">
                                     <i class="fa fa-user-circle-o"></i> Profesor
+                                    <button class="btn btn-sm pull-right" @click.prevent="edit_prof = !edit_prof"><i class="fa fa-edit"></i></button>
                                 </small>
-                                <div class="input-group"  v-if="profesor_asignado.length <= 0">
+                                <div class="input-group"  v-if="show_input_teacher">
                                     <span class="input-group-addon">
                                         <i class="fa fa-user-plus">
                                         </i>
@@ -52,12 +53,10 @@
                                         </a>
                                     </input>
                                 </div>
-                                <dd class="project-people" v-if="profesor_asignado.length > 0">
-                                    <a href="#">
-                                        <h3>
-                                            @{{ profesor_asignado }}
-                                        </h3>
-                                    </a>
+                                <dd class="project-people" v-if="!show_input_teacher">    
+                                    <h3>
+                                        @{{ profesor_asignado }}
+                                    </h3>
                                 </dd>
                             </div>
                         </div>
@@ -185,7 +184,7 @@
                                         <i v-else class="fa fa-list" data-toggle="tooltip" title="Asistencia"></i>
                                         {{-- @{{ (clase.estado == 'Terminado') ? '<i class='fa fa-eye'></i>' : '<i class='fa fa-list'></i>' }} --}}
                                     </a>
-                                    <h3>@{{ clase.start }}</h3>
+                                    <h3>@{{ formato_fecha(clase.start) }}</h3>
                                     <p>Salón: @{{ clase.salon }}</p>
                                 </li>
                             </ul>

@@ -49,31 +49,37 @@ class MoraController extends Controller
         return $mora;
     }
 
-    public function costos_certificado() 
+    public function costos_certificado($id) 
     {
-        $data = array(
-            'nombre_full' => 'nombre completo',
-            'cedula' => '1112230018',
-            'cedula' => '1112230018',
-            'codigo' => '565621',
-            'programa' => 'Programa'
-        );
-        $view =  \View::make('templates.estudiante.pdf-costos', compact('data'))->render();
+        setlocale(LC_TIME, "es");
+        $mes = strftime("%B");
+        $fecha_letras = \NumeroALetras::convertir(date('j'));
+        $data = $this->getDataForImpress($id);
+        $view =  \View::make('templates.estudiante.pdf-costos', compact('data', 'fecha_letras', 'mes'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
         return $pdf->stream('costos.pdf');
     }
 
-    public function eps_certificado() 
+    public function eps_certificado($id) 
     {
-        $data = array(
-            'nombre_full' => 'nombre completo',
-            'cedula' => '1112230018',
-            'cedula' => '1112230018',
-            'codigo' => '565621',
-            'programa' => 'Programa'
-        );
-        $view =  \View::make('templates.estudiante.pdf-eps', compact('data'))->render();
+        setlocale(LC_TIME, "es");
+        $mes = strftime("%B");
+        $fecha_letras = \NumeroALetras::convertir(date('j'));
+        $data = $this->getDataForImpress($id);
+        $view =  \View::make('templates.estudiante.pdf-eps', compact('data', 'fecha_letras', 'mes'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('eps.pdf');
+    }
+
+    public function notas_certificado($id) 
+    {
+        setlocale(LC_TIME, "es");
+        $mes = strftime("%B");
+        $fecha_letras = \NumeroALetras::convertir(date('j'));
+        $data = $this->getDataForImpress($id);
+        $view =  \View::make('templates.estudiante.pdf-notas', compact('data', 'fecha_letras', 'mes'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
         return $pdf->stream('eps.pdf');
@@ -86,6 +92,25 @@ class MoraController extends Controller
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
         return $pdf->download('baloto.pdf');
+    }
+
+    public function getDataForImpress($id){
+        $data = DB::table('estudiante AS a')
+        ->join('programas AS b', 'a.programas_id', 'b.id')
+        ->join('jornadas AS c', 'a.jornadas_id', 'c.id')
+        ->join('sede AS d', 'a.sede_id', 'd.id')
+        ->select(
+            'a.nombres AS nombre_full',
+            'a.num_documento AS cedula',
+            'a.consecutivo AS codigo',
+            'b.programa',
+            'c.jornada',
+            'd.ciudad',
+            'd.decreto'
+        )
+        ->where('a.id', $id)
+        ->first();
+        return $data;
     }
 
 }

@@ -176,7 +176,10 @@ class GrupoController extends Controller
                 ->first();
             $programados = DB::table('clases AS a')
                 ->select('a.modulo_id')
-                ->where('a.grupo_id', $grupo_id)
+                ->where([
+                    ['a.grupo_id', $grupo_id],
+                    ['a.ciclo', DB::raw('(SELECT z.ciclo FROM grupo AS z WHERE z.id = '.$grupo_id.')')]
+                ])
                 ->get();
             $dias_clase = explode(',', $data->dias_clase);
             $orden = explode(',', $data->orden_modulos);
@@ -206,5 +209,19 @@ class GrupoController extends Controller
         } catch (Exception $e) {
             return $e;
         }    
+    }
+
+    public function getAllCiclos($grupo)
+    {
+        $data = DB::table('clases AS a')
+            ->select('a.ciclo')
+            ->where('a.grupo_id', $grupo)
+            ->groupBy('a.ciclo')
+            ->get();
+        $actual = DB::table('grupo AS a')
+            ->select('a.ciclo')
+            ->where('a.id', $grupo)
+            ->first();
+        return array('code' => 200, 'data' => $data, 'actual' => $actual->ciclo);
     }
 }

@@ -1,7 +1,10 @@
-<div id="right-sidebar" class="animated">
+<div id="right-sidebar" class="animated" :class="{'sidebar-open': open_sidebar}">
     <div class="sidebar-container">
         <div class="sidebar-title">
-            <h3><i class="fa fa-group"></i> Estudiantes inscritos - @{{ estudiantes_inscritos.length }} en total</h3>
+            <h3>
+                <button class="btn" @click="verSidebar=0;open_sidebar=false" title="Ocultar"><i class="fa fa-arrow-right"></i></button>
+                 <i class="fa fa-group"></i> Estudiantes inscritos - @{{ estudiantes_inscritos.length }} en total
+             </h3>
             {{-- <small><i class="fa fa-tim"></i> Programa: nombre de programa - @{{ estudiantes_inscritos.length }}</small><br>
             <small><i class="fa fa-tim"></i> Programa: nombre de programa - @{{ estudiantes_inscritos.length }}</small><br> --}}
         </div>

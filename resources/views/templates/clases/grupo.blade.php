@@ -18,12 +18,10 @@
                         <table class="table table-hover" id="tbl-grupos" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Acciones</th>
-                                    <th>Grupo</th>
-                                    <th>Inicio</th>
-                                    <th>Estado</th>
+                                    <th width="7%">Acciones</th>
+                                    <th width="50%">Grupo</th>
+                                    <th width="7%">Estado</th>
                                     <th>Sede</th>
-                                    <th><i title="Estudiantes inscritos" class="fa fa-group"></i></th>
                                     <th>Jornada</th>
                                 </tr>
                             </thead>
@@ -33,10 +31,8 @@
                                 <tr>
                                     <th>Acciones</th>
                                     <th>Grupo</th>
-                                    <th>Inicio</th>
                                     <th>Estado</th>
                                     <th>Sede</th>
-                                    <th><i title="Estudiantes inscritos" class="fa fa-group"></i></th>
                                     <th>Jornada</th>
                                 </tr>
                             </tfoot>

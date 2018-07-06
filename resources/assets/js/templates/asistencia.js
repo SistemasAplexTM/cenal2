@@ -39,9 +39,7 @@ const objVue = new Vue({
             return result;
         },
         formato_fecha: function(fecha){
-            var result = new Date(fecha);
-            var fecha = result.getFullYear() + '-' + result.getUTCMonth() + '-' + result.getUTCDate();
-            return fecha;
+            return formato_fecha(fecha);
         }
     }
     

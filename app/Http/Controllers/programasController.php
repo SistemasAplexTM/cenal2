@@ -110,19 +110,6 @@ class ProgramasController extends Controller
         }
     }
 
-    public function getJornadasAsignadas($programa, $modulo){
-        $data = DB::table('pivot_promarma_modulos_jornada As a')
-        ->join('jornadas AS b', 'a.jornada_id', 'b.id')
-        ->select(
-            'a.jornada_id',
-            'a.duracion',
-            'b.jornada'
-        )
-        ->where([['a.programa_id', '=', $programa],['a.modulo_id', '=', $modulo]])
-        ->get();
-        return $data;
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -216,13 +203,40 @@ class ProgramasController extends Controller
         return $data;
     }
 
-    public function getAllJornadas(){
+    public function getJornadasAsignadas($programa, $modulo){
+        $data = DB::table('pivot_promarma_modulos_jornada As a')
+        ->join('jornadas AS b', 'a.jornada_id', 'b.id')
+        ->select(
+            'a.jornada_id',
+            'a.duracion',
+            'b.jornada'
+        )
+        ->where([['a.programa_id', '=', $programa],['a.modulo_id', '=', $modulo]])
+        ->get();
+        return $data;
+    }
+
+    public function getAllJornadas($programa = null, $modulo = null){
+
         $data = DB::table('jornadas AS a')
+        ->leftJoin(
+            DB::raw('(SELECT
+            x.duracion,
+            x.jornada_id
+        FROM
+            pivot_promarma_modulos_jornada AS x
+            INNER JOIN modulos AS y ON x.modulo_id = y.id
+            INNER JOIN jornadas AS z ON x.jornada_id = z.id
+        WHERE
+            x.modulo_id = "'.$modulo.'" AND
+            x.programa_id = "'.$programa.'") AS b'), 'a.id', 'b.jornada_id'
+        )
         ->select(
             'a.id',
             'a.jornada',
             'a.hora_inicio',
-            'a.hora_fin'
+            'a.hora_fin',
+            'b.duracion'
         )
         ->where('a.deleted_at', '=', NULL)
         ->get();
