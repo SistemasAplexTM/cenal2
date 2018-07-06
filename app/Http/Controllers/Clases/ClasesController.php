@@ -55,7 +55,8 @@ class ClasesController extends Controller
                 'd.jornada',
                 'f.nombre',
                 'e.descripcion',
-                'e.clase'
+                'e.clase',
+                'a.ciclo'
             )
         ->get();
         $data = $data[0];
@@ -264,7 +265,7 @@ class ClasesController extends Controller
         ->orderby('a.created_at','DESC')
         ->take(1)->first();
 
-        if ($modulo->estado_id != 3) {
+        if ($modulo->estado_id != 3 && $request->omitirErroresT == false) {
             return array(
                 'code' => 700,
                 'error' => true,

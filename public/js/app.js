@@ -377,6 +377,33 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -480,33 +507,6 @@ module.exports = function normalizeComponent (
     options: options
   }
 }
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ }),
@@ -739,13 +739,17 @@ var singletonElement = null
 var singletonCounter = 0
 var isProduction = false
 var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
 
 // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
 // tags it will allow on a page
 var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
 
-module.exports = function (parentId, list, _isProduction) {
+module.exports = function (parentId, list, _isProduction, _options) {
   isProduction = _isProduction
+
+  options = _options || {}
 
   var styles = listToStyles(parentId, list)
   addStylesToDom(styles)
@@ -810,7 +814,7 @@ function createStyleElement () {
 
 function addStyle (obj /* StyleObjectPart */) {
   var update, remove
-  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
 
   if (styleElement) {
     if (isProduction) {
@@ -891,6 +895,9 @@ function applyToTag (styleElement, obj) {
 
   if (media) {
     styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
   }
 
   if (sourceMap) {
@@ -18614,7 +18621,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(16)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)(module)))
 
 /***/ }),
 /* 16 */
@@ -30482,21 +30489,24 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(37).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(37).setImmediate))
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
 var apply = Function.prototype.apply;
 
 // DOM APIs, for completeness
 
 exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
 };
 exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
 };
 exports.clearTimeout =
 exports.clearInterval = function(timeout) {
@@ -30511,7 +30521,7 @@ function Timeout(id, clearFn) {
 }
 Timeout.prototype.unref = Timeout.prototype.ref = function() {};
 Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
+  this._clearFn.call(scope, this._id);
 };
 
 // Does not start the time, just sets up the members needed.
@@ -30539,9 +30549,17 @@ exports._unrefActive = exports.active = function(item) {
 
 // setimmediate attaches itself to the global object
 __webpack_require__(38);
-exports.setImmediate = setImmediate;
-exports.clearImmediate = clearImmediate;
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
 
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 38 */
@@ -30734,14 +30752,14 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7)))
 
 /***/ }),
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
-* sweetalert2 v7.22.0
+* sweetalert2 v7.25.0
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -31000,7 +31018,7 @@ var DismissReason = Object.freeze({
   timer: 'timer'
 });
 
-var version = "7.22.0";
+var version = "7.25.0";
 
 var argsToParams = function argsToParams(args) {
   var params = {};
@@ -31159,7 +31177,7 @@ var getPopup = function getPopup() {
 
 var getIcons = function getIcons() {
   var popup = getPopup();
-  return popup.querySelectorAll('.' + swalClasses.icon);
+  return Array.prototype.slice.call(popup.querySelectorAll('.' + swalClasses.icon));
 };
 
 var getTitle = function getTitle() {
@@ -31410,22 +31428,23 @@ var undoIOSfix = function undoIOSfix() {
   }
 };
 
+var RESTORE_FOCUS_TIMEOUT = 100;
+
 var globalState = {};
 
 // Restore previous active (focused) element
 var restoreActiveElement = function restoreActiveElement() {
-  if (globalState.previousActiveElement && globalState.previousActiveElement.focus) {
-    var previousActiveElement = globalState.previousActiveElement;
-    globalState.previousActiveElement = null;
-    var x = window.scrollX;
-    var y = window.scrollY;
-    setTimeout(function () {
-      previousActiveElement.focus && previousActiveElement.focus();
-    }, 100); // issues/900
-    if (typeof x !== 'undefined' && typeof y !== 'undefined') {
-      // IE doesn't have scrollX/scrollY support
-      window.scrollTo(x, y);
+  var x = window.scrollX;
+  var y = window.scrollY;
+  globalState.restoreFocusTimeout = setTimeout(function () {
+    if (globalState.previousActiveElement && globalState.previousActiveElement.focus) {
+      globalState.previousActiveElement.focus();
+      globalState.previousActiveElement = null;
     }
+  }, RESTORE_FOCUS_TIMEOUT); // issues/900
+  if (typeof x !== 'undefined' && typeof y !== 'undefined') {
+    // IE doesn't have scrollX/scrollY support
+    window.scrollTo(x, y);
   }
 };
 
@@ -31449,7 +31468,7 @@ var close = function close(onClose, onAfterClose) {
   var removePopupAndResetState = function removePopupAndResetState() {
     if (!isToast()) {
       restoreActiveElement();
-      window.removeEventListener('keydown', globalState.keydownHandler, { capture: true });
+      globalState.keydownTarget.removeEventListener('keydown', globalState.keydownHandler, { capture: globalState.keydownListenerCapture });
       globalState.keydownHandlerAdded = false;
     }
 
@@ -31559,6 +31578,8 @@ var defaultParams = {
   allowOutsideClick: true,
   allowEscapeKey: true,
   allowEnterKey: true,
+  stopKeydownPropagation: true,
+  keydownListenerCapture: false,
   showConfirmButton: true,
   showCancelButton: false,
   preConfirm: null,
@@ -31712,9 +31733,8 @@ function withGlobalDefaults(ParentSwal) {
  * @param mixinParams
  */
 function mixin(mixinParams) {
-  var Swal = this;
-  return withNoNewKeyword(function (_Swal) {
-    inherits(MixinSwal, _Swal);
+  return withNoNewKeyword(function (_ref) {
+    inherits(MixinSwal, _ref);
 
     function MixinSwal() {
       classCallCheck(this, MixinSwal);
@@ -31728,7 +31748,7 @@ function mixin(mixinParams) {
       }
     }]);
     return MixinSwal;
-  }(Swal));
+  }(this));
 }
 
 // private global state for the queue feature
@@ -31842,6 +31862,7 @@ var staticMethods = Object.freeze({
 	getTitle: getTitle,
 	getContent: getContent,
 	getImage: getImage,
+	getIcons: getIcons,
 	getButtonsWrapper: getButtonsWrapper,
 	getActions: getActions,
 	getConfirmButton: getConfirmButton,
@@ -31859,6 +31880,42 @@ var staticMethods = Object.freeze({
 	getTimerLeft: getTimerLeft
 });
 
+// https://github.com/Riim/symbol-polyfill/blob/master/index.js
+
+var _Symbol = typeof Symbol === 'function' ? Symbol : function () {
+  var idCounter = 0;
+  function _Symbol(key) {
+    return '__' + key + '_' + Math.floor(Math.random() * 1e9) + '_' + ++idCounter + '__';
+  }
+  _Symbol.iterator = _Symbol('Symbol.iterator');
+  return _Symbol;
+}();
+
+// WeakMap polyfill, needed for Android 4.4
+// Related issue: https://github.com/sweetalert2/sweetalert2/issues/1071
+// http://webreflection.blogspot.fi/2015/04/a-weakmap-polyfill-in-20-lines-of-code.html
+
+var WeakMap$1 = typeof WeakMap === 'function' ? WeakMap : function (s, dP, hOP) {
+  function WeakMap() {
+    dP(this, s, { value: _Symbol('WeakMap') });
+  }
+  WeakMap.prototype = {
+    'delete': function del(o) {
+      delete o[this[s]];
+    },
+    get: function get(o) {
+      return o[this[s]];
+    },
+    has: function has(o) {
+      return hOP.call(o, this[s]);
+    },
+    set: function set(o, v) {
+      dP(o, this[s], { configurable: true, value: v });
+    }
+  };
+  return WeakMap;
+}(_Symbol('WeakMap'), Object.defineProperty, {}.hasOwnProperty);
+
 /**
  * This module containts `WeakMap`s for each effectively-"private  property" that a `swal` has.
  * For example, to set the private property "foo" of `this` to "bar", you can `privateProps.foo.set(this, 'bar')`
@@ -31869,43 +31926,10 @@ var staticMethods = Object.freeze({
  *   then we can use that language feature.
  */
 
-// WeakMap polyfill, needed for Android 4.4
-// Related issue: https://github.com/sweetalert2/sweetalert2/issues/1071
-if (typeof window !== 'undefined' && typeof window.WeakMap !== 'function') {
-  // https://github.com/Riim/symbol-polyfill/blob/master/index.js
-  var idCounter = 0;
-  window.Symbol = function _Symbol(key) {
-    return '__' + key + '_' + Math.floor(Math.random() * 1e9) + '_' + ++idCounter + '__';
-  };
-  Symbol.iterator = Symbol('Symbol.iterator');
-
-  // http://webreflection.blogspot.fi/2015/04/a-weakmap-polyfill-in-20-lines-of-code.html
-  window.WeakMap = function (s, dP, hOP) {
-    function WeakMap() {
-      dP(this, s, { value: Symbol('WeakMap') });
-    }
-    WeakMap.prototype = {
-      'delete': function del(o) {
-        delete o[this[s]];
-      },
-      get: function get(o) {
-        return o[this[s]];
-      },
-      has: function has(o) {
-        return hOP.call(o, this[s]);
-      },
-      set: function set(o, v) {
-        dP(o, this[s], { configurable: true, value: v });
-      }
-    };
-    return WeakMap;
-  }(Symbol('WeakMap'), Object.defineProperty, {}.hasOwnProperty);
-}
-
 var privateProps = {
-  promise: new WeakMap(),
-  innerParams: new WeakMap(),
-  domCache: new WeakMap()
+  promise: new WeakMap$1(),
+  innerParams: new WeakMap$1(),
+  domCache: new WeakMap$1()
 };
 
 /**
@@ -32406,7 +32430,7 @@ var openPopup = function openPopup(params) {
     fixScrollbar();
     iOSfix();
   }
-  if (!globalState.previousActiveElement) {
+  if (!isToast() && !globalState.previousActiveElement) {
     globalState.previousActiveElement = document.activeElement;
   }
   if (params.onOpen !== null && typeof params.onOpen === 'function') {
@@ -32431,6 +32455,9 @@ function _main(userParams) {
     globalState.timeout.stop();
     delete globalState.timeout;
   }
+
+  // clear the restore focus timeout
+  clearTimeout(globalState.restoreFocusTimeout);
 
   var domCache = {
     popup: getPopup(),
@@ -32703,7 +32730,9 @@ function _main(userParams) {
     };
 
     var keydownHandler = function keydownHandler(e, innerParams) {
-      e.stopPropagation();
+      if (innerParams.stopKeydownPropagation) {
+        e.stopPropagation();
+      }
 
       var arrowKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Left', 'Right', 'Up', 'Down' // IE11
       ];
@@ -32758,7 +32787,7 @@ function _main(userParams) {
     };
 
     if (globalState.keydownHandlerAdded) {
-      window.removeEventListener('keydown', globalState.keydownHandler, { capture: true });
+      globalState.keydownTarget.removeEventListener('keydown', globalState.keydownHandler, { capture: globalState.keydownListenerCapture });
       globalState.keydownHandlerAdded = false;
     }
 
@@ -32766,7 +32795,9 @@ function _main(userParams) {
       globalState.keydownHandler = function (e) {
         return keydownHandler(e, innerParams);
       };
-      window.addEventListener('keydown', globalState.keydownHandler, { capture: true });
+      globalState.keydownTarget = innerParams.keydownListenerCapture ? window : domCache.popup;
+      globalState.keydownListenerCapture = innerParams.keydownListenerCapture;
+      globalState.keydownTarget.addEventListener('keydown', globalState.keydownHandler, { capture: globalState.keydownListenerCapture });
       globalState.keydownHandlerAdded = true;
     }
 
@@ -49940,6 +49971,7 @@ var Tooltip = function () {
 			return new Promise(function (resolve, reject) {
 				var allowHtml = options.html;
 				var rootNode = _this2._tooltipNode;
+				if (!rootNode) return;
 				var titleNode = rootNode.querySelector(_this2.options.innerSelector);
 				if (title.nodeType === 1) {
 					// if title is a node, append it only if allowHtml is true
@@ -50485,6 +50517,10 @@ function getOptions(options) {
 		};
 	}
 
+	if (result.trigger && result.trigger.indexOf('click') !== -1) {
+		result.hideOnTargetClick = false;
+	}
+
 	return result;
 }
 
@@ -50840,13 +50876,13 @@ var Popover = { render: function render() {
 			}
 		},
 		container: {
-			type: [String, Object, Element],
+			type: [String, Object, Element, Boolean],
 			default: function _default() {
 				return getDefault('defaultContainer');
 			}
 		},
 		boundariesElement: {
-			type: Element,
+			type: [String, Element],
 			default: function _default() {
 				return getDefault('defaultBoundariesElement');
 			}
@@ -51091,23 +51127,23 @@ var Popover = { render: function render() {
 				});
 
 				popperOptions.modifiers = _extends$1({}, popperOptions.modifiers, {
-					arrow: {
+					arrow: _extends$1({}, popperOptions.modifiers && popperOptions.modifiers.arrow, {
 						element: this.$refs.arrow
-					}
+					})
 				});
 
 				if (this.offset) {
 					var offset = this.$_getOffset();
 
-					popperOptions.modifiers.offset = {
+					popperOptions.modifiers.offset = _extends$1({}, popperOptions.modifiers && popperOptions.modifiers.offset, {
 						offset: offset
-					};
+					});
 				}
 
 				if (this.boundariesElement) {
-					popperOptions.modifiers.preventOverflow = {
+					popperOptions.modifiers.preventOverflow = _extends$1({}, popperOptions.modifiers && popperOptions.modifiers.preventOverflow, {
 						boundariesElement: this.boundariesElement
-					};
+					});
 				}
 
 				this.popperInstance = new Popper(reference, popoverNode, popperOptions);
@@ -53446,7 +53482,7 @@ if (GlobalVue) {
 
 /* harmony default export */ __webpack_exports__["a"] = (plugin);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
 
 /***/ }),
 /* 47 */
@@ -58566,7 +58602,7 @@ var index_esm = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(50)
 /* template */
@@ -58727,7 +58763,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(53)
 /* template */
@@ -58826,7 +58862,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(56)
 }
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(59)
 /* template */
@@ -58879,7 +58915,7 @@ var content = __webpack_require__(57);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("3348d9d8", content, false);
+var update = __webpack_require__(5)("a44a1dd2", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -58898,7 +58934,7 @@ if(false) {
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(undefined);
+exports = module.exports = __webpack_require__(4)(false);
 // imports
 
 
@@ -59889,7 +59925,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(62)
 }
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(64)
 /* template */
@@ -59942,7 +59978,7 @@ var content = __webpack_require__(63);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("7410cd5c", content, false);
+var update = __webpack_require__(5)("437dd684", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -59961,7 +59997,7 @@ if(false) {
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(undefined);
+exports = module.exports = __webpack_require__(4)(false);
 // imports
 
 
@@ -60213,7 +60249,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(67)
 }
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(69)
 /* template */
@@ -60266,7 +60302,7 @@ var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("6e87175f", content, false);
+var update = __webpack_require__(5)("174f2f0a", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -60285,7 +60321,7 @@ if(false) {
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(undefined);
+exports = module.exports = __webpack_require__(4)(false);
 // imports
 
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Programas_unicos;
+use App\Programas;
 
 class ProgramasController extends Controller
 {
@@ -91,6 +92,14 @@ class ProgramasController extends Controller
         try{
             foreach ($request->datos as $key => $value) {
                 if (count($value) > 0 ) {
+                    $registros = DB::table('pivot_promarma_modulos_jornada')
+                    ->where([
+                        ['programa_id', $request->programa],
+                        ['modulo_id', $request->modulo],
+                        ['jornada_id', $key]
+                    ])
+                    ->delete();
+
                     DB::table('pivot_promarma_modulos_jornada')
                     ->insert([
                         'programa_id' => $request->programa,
@@ -100,7 +109,7 @@ class ProgramasController extends Controller
                     ]);
                 }
             }
-            $answer=array(
+            $answer = array(
                 "datos" => $request->all(),
                 "code" => 200
             );

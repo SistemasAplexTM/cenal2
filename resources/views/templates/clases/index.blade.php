@@ -45,20 +45,20 @@
                                 <div class="feed-element">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="table-responsive">
+                                            <div class="">
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center" colspan="7">Días de clase</th>
                                                         </tr>
                                                         <tr>
-                                                            <th>Lunes</th>
-                                                            <th>Martes</th>
-                                                            <th>Miércoles</th>
-                                                            <th>Jueves</th>
-                                                            <th>Viernes</th>
-                                                            <th>Sábado</th>
-                                                            <th>Domingo</th>
+                                                            <th>L</th>
+                                                            <th>M</th>
+                                                            <th>M</th>
+                                                            <th>J</th>
+                                                            <th>V</th>
+                                                            <th>S</th>
+                                                            <th>D</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

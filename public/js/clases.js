@@ -78,6 +78,7 @@ var objVue = new Vue({
     el: '#clases',
     data:{
         omitirErrores: false,
+        omitirErroresT: false,
         salones: [],
         ciclos: [],
         ciclo: '',
@@ -127,13 +128,16 @@ var objVue = new Vue({
                 'desde': this.desde,
                 'hasta': this.hasta,
                 'salon': this.salon,
-                'omitirErrores': this.omitirErrores
+                'omitirErrores': this.omitirErrores,
+                'omitirErroresT': this.omitirErroresT
             }).then(response => {
                 if (response.data['code'] == 200) {
                     toastr.success('Registrado con éxito');
                     toastr.options.closeButton = true;
                     recargarTabla('tbl-clases');
                     this.salon = '';
+                    this.omitirErrores = false;
+                    this.omitirErroresT = false;
                     this.get_modulos();
                     this.get_ciclos();
                 }else if(response.data['code'] == 300){
@@ -158,8 +162,16 @@ var objVue = new Vue({
                       title: 'Ops!',
                       text: response.data['exception'],
                       type: 'warning',
+                      showCancelButton: true,
                       confirmButtonColor: '#3085d6',
-                      confirmButtonText: 'Aceptar'
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Aceptar',
+                      cancelButtonText: 'Omitir advertencia'
+                    }).then((result) => {
+                      if (!result.value) {
+                        this.omitirErroresT = true;
+                        this.programar_sgte_modulo();
+                      }
                     });
                 }
                 else{
