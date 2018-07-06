@@ -87,15 +87,15 @@
             </span>
             <br>
             <span class="text-center">
-                pass: 123456
+                pass: admin
             </span>
             <br>
             <span class="text-center">
-                Estudiante: duvierm24@gmail.com
+                Estudiante: mafegg@hotmail.es
             </span>
             <br>
             <span class="text-center">
-                pass: 1112230018
+                pass: admin
             </span>
         </div>
     </div>

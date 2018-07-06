@@ -24,6 +24,7 @@ class UserController extends Controller
             'a.name'
         )
         ->where('a.deleted_at', NULL)
+        ->where('a.id', '<>', 4)
         ->get();
         $sedes = DB::table('sede AS a')
         ->select(
@@ -94,8 +95,7 @@ class UserController extends Controller
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'cellphone' => $request->cellphone,
-                'sede_id' => $request->sede_id['id'],
-                'password' => bcrypt($request->identification_card)
+                'sede_id' => $request->sede_id['id']
             ]);
             DB::table('model_has_roles')->where('model_id', '=', $data->id)->delete();
             $data->assignRole($request->roles['id']);

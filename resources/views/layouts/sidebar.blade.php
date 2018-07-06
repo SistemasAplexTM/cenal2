@@ -7,20 +7,23 @@
         </div>
         <div>
             <div class="sidebar-message" v-if="verSidebar===0">
-                <div class="feed-element" v-for="estudiante in estudiantes_inscritos">
-                    <div class="media-body ">
+                <h3>
+                    <span class="label pull-right label-warning">@{{ estudiantes_inscritos.length }}</span>
+                    Estudiantes inscritos
+                </h3>
+                <hr>
+                <div v-for="estudiante in estudiantes_inscritos">
+                    <h2>
                         <strong>
-                            @{{ estudiante.codigo }} - @{{ estudiante.nombre }}
+                            <i class="fa fa-barcode"></i>
+                            @{{ estudiante.codigo }}
                         </strong>
                         <br>
-                        <small class="text-muted">
-                            <strong>
-                                Programa:
-                            </strong>
-                                @{{ estudiante.programa }}
+                        <small>
+                            <span v-if="estudiante.aprobado != null" class="label pull-right label-success" :class="{'label-danger' : estudiante.aprobado}">@{{ (estudiante.aprobado) ? 'Reprobado' : 'Aprobado' }}</span>
+                            @{{ estudiante.nombre }}
                         </small>
-                        </br>
-                    </div>
+                    </h2>
                 </div>
             </div>
             {{-- <div class="sidebar-message" v-if="verSidebar===1">
@@ -75,10 +78,12 @@
                 </div>
             </div> --}}
             <div class="sidebar-message" v-if="verSidebar===2">
-                @role('Profesor')    
-                    <button id="guardar_asistencia" class="ladda-button btn btn-block btn-primary" data-style="slide-down" type="button" @click.prevent="set_estudiante_asistencia()" :disabled="btnTerminarClase == true ? true : false">
-                        <i class="fa fa-check"></i> Terminar clase
-                    </button>
+                @role('Profesor')
+                    @if($data->estado != 'Terminado')
+                        <button id="guardar_asistencia" class="ladda-button btn btn-block btn-primary" data-style="slide-down" type="button" @click.prevent="set_estudiante_asistencia()" :disabled="btnTerminarClase == true ? true : false">
+                            <i class="fa fa-check"></i> Terminar clase
+                        </button>
+                    @endif
                 @endrole
                 <br>
                 <div class="ibox float-e-margins">
@@ -160,23 +165,87 @@
             </div>
             <div class="sidebar-message" v-if="verSidebar===3">
                 <div class="alert alert-primary text-center" v-show="profesores.length<=0">No hay datos disponibles</div>
-                <div class="feed-element" v-for="profesor in profesores" v-if="profesores.length > 0">
-                    <div class="media-body ">
-                        <button @click.prevent="asignar_profesor(profesor.id)"  class="btn btn-primary btn-xs pull-right" data-loading-text="Agregando..." id="agregar" type="button" >
-                            <i class="fa fa-plus">
-                            </i>
-                            Asignar
-                        </button>
-                        <strong>
+                <div class="" v-for="profesor in profesores" v-if="profesores.length > 0">
+                    <div class="media-body">
+                        <h2>
+                            <button @click.prevent="asignar_profesor(profesor.id)"  class="btn btn-primary btn-xs pull-right" data-loading-text="Agregando..." id="agregar" type="button" >
+                                <i class="fa fa-plus">
+                                </i>
+                                Asignar
+                            </button>
                             @{{ profesor.name }} @{{ profesor.last_name }}
+                            <br>
+                            <small>@{{ profesor.email }}</small>
+                        </h2>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            <div class="sidebar-message" v-if="verSidebar===4">
+                <div class="alert alert-warning" v-if="clases_terminadas > 0">
+                    <h3 class="text-center">
+                        No ha terminado todas las clases de esté módulo
+                        <br>
+                        <strong>
+                            ¿Está seguro de terminar el módulo?
+                        </strong>
+                    </h3>
+                </div>
+                @role('Profesor')    
+                    <button id="btn-terminar" class="ladda-button btn btn-block btn-danger" data-style="slide-down" type="button" @click.prevent="terminar_modulo()">
+                        <i class="fa fa-step-forward"></i> Terminar módulo
+                    </button>
+                @endrole
+                <br>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>
+                                    Debe indicar que estudiantes <strong>no</strong> aprueban el módulo
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    @role('Profesor')
+                    <div class="ibox-content">
+                        <h3>Listado de estudiantes</h3>
+                        <form action="">
+                            <ul class="todo-list m-t">
+                                <li class="estudiante_list" v-for="(estudiante, index) in estudiantes_inscritos">
+                                    <label class="checkbox-inline estudiante_asistencia">
+                                        <div class="checkbox checkbox-danger">
+                                            <input v-model="estudiantes_reprobados" :value="estudiante.id" type="checkbox">
+                                            <label for="checkbox3">
+                                                <span class="m-l-xs asistencia">
+                                                    <strong>@{{ estudiante.codigo }}</strong> - @{{ estudiante.nombre }}
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </label>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    @endrole
+                </div>
+            </div>
+            <div class="sidebar-message" v-if="verSidebar===5">
+                <h3>
+                    <span class="label pull-right label-warning">@{{ estudiantes_reprobados.length }}</span>
+                    Estudiantes reprobados
+                </h3>
+                <hr>
+                <div class="alert alert-primary text-center" v-show="estudiantes_reprobados.length<=0">No hay datos disponibles</div>
+                <div v-for="estudiante in estudiantes_reprobados">
+                    <h2>
+                        <strong>
+                            <i class="fa fa-barcode"></i>
+                            @{{ estudiante.codigo }}
                         </strong>
                         <br>
-                        <p class="text-muted">
-                            <strong>
-                                @{{ profesor.email }}
-                            </strong>
-                        </p>
-                    </div>
+                        <small>@{{ estudiante.nombre }}</small>
+                    </h2>
                 </div>
             </div>
         </div>

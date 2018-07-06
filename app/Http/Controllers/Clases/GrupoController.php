@@ -32,7 +32,8 @@ class GrupoController extends Controller
             ->select(
                 'a.id',
                 'a.nombre',
-                DB::raw('DATE_FORMAT(b.fecha_inicio, "%Y-%m-%d") fecha_inicio'),
+                DB::raw("'fecha_inicio'"),
+                // DB::raw('DATE_FORMAT(b.fecha_inicio, "%Y-%m-%d") fecha_inicio'),
                 'd.jornada',
                 'e.descripcion AS estado',
                 'e.clase AS clase_estado',
@@ -42,10 +43,12 @@ class GrupoController extends Controller
             ->groupBy(
                 'a.id',
                 'a.nombre',
-                'b.fecha_inicio',
+                // 'b.fecha_inicio',
                 'd.jornada',
                 'd.jornada',
-                'f.nombre'
+                'f.nombre',
+                'e.descripcion',
+                'e.clase'
             )
             ->where($where)
             ->get();
@@ -109,24 +112,44 @@ class GrupoController extends Controller
         return $answer;
     }
 
-    public function estudiantes_inscritos($grupo_id)
+    public function estudiantes_inscritos($clases_id)
     {
-        $data = DB::table('grupo AS a')
-            ->join('clases AS b', 'b.grupo_id', 'a.id')
-            ->join('clases_estudiante AS c', 'c.clases_id', 'b.id')
-            ->join('estudiante AS d', 'c.estudiante_id', 'd.id')
+        $data = DB::table('clases_estudiante AS a')
+            ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
+            ->join('programas AS c', 'b.programas_id', 'c.id')
             ->select(
-                'd.id',
-                'd.consecutivo AS codigo',
-                'd.correo',
-                DB::raw("concat_ws(' ', d.primer_apellido, d.segundo_apellido, d.nombres) AS nombre")
+                'a.aprobado',
+                'b.id',
+                'b.consecutivo AS codigo',
+                'b.correo',
+                DB::raw("concat_ws(' ', b.primer_apellido, b.segundo_apellido, b.nombres) AS nombre"),
+                'c.programa'
             )
             ->where([
-                ['a.id', $grupo_id]
+                ['a.clases_id', $clases_id]
             ])
             ->orderBy('nombre')
             ->get();
 
+        return $data;
+    }
+    
+    public function estudiantes_reprobados($clases_id)
+    {
+        $data = DB::table('clases_estudiante AS a')
+            ->join('estudiante AS b', 'a.estudiante_id', 'b.id')
+            ->select(
+                'b.id',
+                'b.consecutivo AS codigo',
+                'b.correo',
+                DB::raw("concat_ws(' ', b.primer_apellido, b.segundo_apellido, b.nombres) AS nombre")
+            )
+            ->where([
+                ['a.aprobado', 1],
+                ['a.clases_id', $clases_id]
+            ])
+            ->orderBy('nombre')
+            ->get();
         return $data;
     }
 
@@ -143,5 +166,45 @@ class GrupoController extends Controller
         } catch (Exception $e) {
             return $e;
         }
+    }
+
+    public function getModulosByGrupo($grupo_id){
+        try {
+            $data = DB::table('grupo AS a')
+                ->select('a.orden_modulos', 'a.dias_clase')
+                ->where('a.id', $grupo_id)
+                ->first();
+            $programados = DB::table('clases AS a')
+                ->select('a.modulo_id')
+                ->where('a.grupo_id', $grupo_id)
+                ->get();
+            $dias_clase = explode(',', $data->dias_clase);
+            $orden = explode(',', $data->orden_modulos);
+            $result = array();
+            foreach ($orden as $key => $value) {
+                $result[] = DB::table('modulos AS a')
+                ->select('a.id', 'a.nombre', 'a.duracion')
+                ->where('a.id', $value)
+                ->first();
+            }
+            foreach ($programados as $key => $value) {
+                $program[] = $value->modulo_id;
+            }
+            foreach ($result as $key => $value) {
+                $result_ids[] = $value->id;
+            }
+            
+            // $diff = array_diff($result_ids, $program );
+
+            $answer = array(
+                'code' => 200,
+                'data' => $result,
+                'terminados' => $program,
+                'dias_clase' => $dias_clase
+            );
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }    
     }
 }

@@ -113,17 +113,35 @@ class ModuloController extends Controller
         $data->save();
     }
 
-    public function getByPrograma($programa){
-        $data = DB::table('pivot_programas_unicos_programas AS a')
-        ->join('programas_unicos AS b', 'a.id_prog_unicos', 'b.id')
-        ->select(
-            'b.modulos_json'
-        )
-        ->where('a.id_programa', '=', $programa)
-        ->first();
+    public function getByPrograma($programa, $jornada){
         
-        return (isset($data->modulos_json) ? $data->modulos_json : null);
+        $data = DB::table('pivot_promarma_modulos_jornada AS a')
+        ->join('modulos AS b','b.id', 'a.modulo_id')
+        ->select(
+            'b.id',
+            'b.nombre',
+            'a.duracion'
+        )
+        ->where([
+            ['a.programa_id', $programa],
+            ['a.jornada_id', $jornada]
+        ])
+        ->get();
+        
+        return $data;
     }
+
+    // public function getByPrograma($programa){
+    //     $data = DB::table('pivot_programas_unicos_programas AS a')
+    //     ->join('programas_unicos AS b', 'a.id_prog_unicos', 'b.id')
+    //     ->select(
+    //         'b.modulos_json'
+    //     )
+    //     ->where('a.id_programa', '=', $programa)
+    //     ->first();
+        
+    //     return (isset($data->modulos_json) ? $data->modulos_json : null);
+    // }
 
     public function getAllForSelect(Request $request){
         $term = $request->term ?: '';

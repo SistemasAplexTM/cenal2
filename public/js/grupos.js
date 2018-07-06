@@ -16,7 +16,8 @@ $(document).ready(function () {
                 searchable: true,
                 className: 'project-title',
                 "render": function (data, type, full, meta) {
-                    return  "<h2><a data-toggle='tooltip' title='Click para ver y agregar estudiantes' onclick='setGrupo("+full.id+", \""+full.nombre+"\")'> "+full.nombre+"</a></h2>";
+                    // return  "<h2><a data-toggle='tooltip' title='Click para ver y agregar estudiantes' onclick='setGrupo("+full.id+", \""+full.nombre+"\")'> "+full.nombre+"</a></h2>";
+                    return  "<h2>" + full.nombre + "</h2>";
                 }
             },
             { data: "fecha_inicio", name: 'fecha_inicio'},

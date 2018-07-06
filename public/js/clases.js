@@ -7,7 +7,7 @@ $(document).ready(function () {
         autoclose: true,
     });
 
-    $('#tbl-clases').DataTable({
+    var table = $('#tbl-clases').DataTable({
         processing: true,
         serverSide: true,
         ajax: './all',
@@ -25,15 +25,14 @@ $(document).ready(function () {
                 "render": function (data, type, full, meta) {
                     var inicio = moment(full.fecha_inicio).format('DD-MM-YYYY')
                     var fin = moment(full.fecha_fin).format('DD-MM-YYYY')
-                    return  "<a href='../" + full.id + "/edit'>Múdolo "+full.modulo+"</a><br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small>";
+                    return  "<a href='../" + full.id + "/edit'><h2>Múdolo "+full.modulo+"<br/><small>Inicio: "+inicio+" - Fin: "+fin+"</small></h2></a>";
                 }
             },
             {
                 className: 'project-title',
                 sortable: false,
                 "render": function (data, type, full, meta) {
-                    var salones = full.salon.replace(',', '<br>');
-                    return salones;
+                    return full.salon;
                 }
             },
             { 
@@ -45,7 +44,7 @@ $(document).ready(function () {
                 sortable: false,
                 "render": function (data, type, full, meta) {
                     var porcentaje = full.completadas/full.total*100;
-                    var btn_progreso =  "<small>Conpletadas: "+full.completadas+" de "+full.total+"</small><div class='progress progress-mini'><div style='width: "+porcentaje+"%;background-color: #1c84c6' class='progress-bar'></div></div>";
+                    var btn_progreso =  "<small>Completadas: "+full.completadas+" de "+full.total+"</small><div class='progress progress-mini'><div style='width: "+porcentaje+"%;background-color: #1c84c6' class='progress-bar'></div></div>";
                     return btn_progreso;
                 }
             },
@@ -71,7 +70,11 @@ $(document).ready(function () {
 var objVue = new Vue({
     el: '#clases',
     data:{
+        omitirErrores: false,
+        salones: [],
         salon:'',
+        desde:'',
+        hasta:'',
         programa:'',
         capacidad:'',
         ubicacion:'',
@@ -82,16 +85,22 @@ var objVue = new Vue({
         profesor_asignado: '',
         dato_estudiante: '',
         estudiantes_inscritos: {},
+        modulos: {},
+        terminados: {},
         programas: {},
         hora_inicio_jornada: '',
         hora_fin_jornada: '',
         cargando_programa: 0,
+        limit: 5,
         estudiantes: {},
         profesores: {},
+        semana: [],
+        fechasError: {},
         formErrors: {}
     },
     created(){
-        this.get_estudiantes_inscritos();
+        this.get_modulos();
+        this.getSalonesBySede();
     },
     methods:{
         get_profesor_asignado: function(){
@@ -101,9 +110,44 @@ var objVue = new Vue({
                 }
             });
         },
-        get_estudiantes_inscritos: function(){
-            axios.get('../../estudiantes_inscritos/' + grupo_id).then(response => {
-                this.estudiantes_inscritos = response.data;   
+        programar_sgte_modulo: function(){
+            axios.post('../../programar_modulo/' + grupo_id, {
+                'desde': this.desde,
+                'hasta': this.hasta,
+                'salon': this.salon,
+                'omitirErrores': this.omitirErrores
+            }).then(response => {
+                if (response.data['code'] == 200) {
+                    toastr.success('Registrado con éxito');
+                    toastr.options.closeButton = true;
+                    recargarTabla('tbl-clases');
+                    this.salon = '';
+                    this.get_modulos();
+                }else if(response.data['code'] == 300){
+                    toastr.warning('Ya se han programado todos los módulos para este programa');
+                }else if(response.data['code'] == 600){
+                    this.fechasError = response.data.fechas;
+                    $('#mdl-error-salon').modal('show');
+                }
+                else{
+                    toastr.error('Error al registrar');
+                }
+            });
+        },
+        get_modulos: function(){
+            axios.get('./getModulos').then(response => {
+                if (response.data['code'] == 200) {
+                    this.modulos = response.data['data'];
+                    this.terminados = response.data['terminados'];
+                    this.semana = response.data['dias_clase'];
+                }
+            });
+        },
+        getSalonesBySede: function(){
+            axios.get('../../salon/getBySede/' + user.sede_id).then(response => {
+                if (response.data.length > 0) {
+                    this.salones = response.data;   
+                }
             });
         },
     }

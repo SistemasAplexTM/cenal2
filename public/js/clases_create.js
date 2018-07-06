@@ -33,6 +33,7 @@ var objVue = new Vue({
         sede: user.sede_id,
         modulo:null,
         errorSalon:false,
+        omitirSalon:false,
         programas: [],
         modulos: [],
         salones: [],
@@ -54,6 +55,7 @@ var objVue = new Vue({
     methods:{
         resetForm: function(){
             this.errorSalon = false;
+            this.omitirSalon = false;
             this.fechasError = [];
             this.grupo = '',
             this.salon = null,
@@ -69,7 +71,8 @@ var objVue = new Vue({
             this.modulo = null,
             this.modulos = [],
             this.semana = [],
-            this.fechasError = []
+            this.fechasError = [],
+            this.$validator.reset();
         },
         /* metodo para eliminar el error de los campos del formulario cuando dan clic sobre el */
         deleteError: function(element){
@@ -82,9 +85,14 @@ var objVue = new Vue({
                }
             });
         },
-        setCapacidad: function(){
-            this.capacidad = $("#salon_id").find(':selected').data('capacidad');
-            this.ubicacion = $("#salon_id").find(':selected').data('ubicacion');
+        setCapacidad: function(val){
+            this.capacidad = '';
+            this.ubicacion = '';
+            if (val) {
+                this.salon = val.id;
+                this.capacidad = val.capacidad;
+                this.ubicacion = val.ubicacion;
+            }
         },
         // setDuracion: function(val){
         //     $("#modulo_id").val('');
@@ -110,7 +118,7 @@ var objVue = new Vue({
             this.duracion = '';
             if (val != null) {
                 this.cargandoModulos = 1;
-                axios.get('../modulo/getByPrograma/' + val.id).then(response => {
+                axios.get('../modulo/getByPrograma/' + val.id + '/' + this.jornada).then(response => {
                     if(response.data.length > 0){
                         this.modulos = response.data 
                     }else{
@@ -134,39 +142,48 @@ var objVue = new Vue({
             // }
         },
         setInicioJornada: function(){
+            this.setModulos();
             var inicio = $("#jornada").find(':selected').data("hora_inicio");
             var fin = $("#jornada").find(':selected').data("hora_fin");
             this.hora_inicio_jornada = moment(inicio, "HH:mm:ss").format('HH:mm');
             this.hora_fin_jornada = moment(fin, "HH:mm:ss").format('HH:mm');
         },
         save: function(){
-            axios.post('../clases', {
-                'grupo': this.grupo,
-                'salon': this.salon,
-                'color': this.color,
-                'jornada_id': this.jornada_id,
-                'duracion': this.duracion,
-                'jornada': this.jornada,
-                'sede': this.sede,
-                'modulos': this.modulos,
-                'salones': this.salones,
-                'semana': this.semana,
-                'hora_inicio_jornada': this.hora_inicio_jornada,
-                'hora_fin_jornada': this.hora_fin_jornada,
-                'fecha_inicio': $("#fecha_inicio").val(),
-            }).then(response => {
-                if (response.data.code == 200) {
-                    toastr.success('Registrado con éxito');
-                    this.resetForm();
-                }else{
-                    this.errorSalon = response.data.errorSalon;
-                    this.fechasError = response.data.fechas;
+            this.$validator.validateAll().then((result) => {
+                if (result) {
+                    let me = this;
+                    axios.post('../clases', {
+                        'grupo': this.grupo,
+                        'salon': this.salon,
+                        'color': this.color,
+                        'jornada_id': this.jornada_id,
+                        'duracion': this.duracion,
+                        'jornada': this.jornada,
+                        'sede': this.sede,
+                        'modulos': this.modulos,
+                        'salones': this.salones,
+                        'semana': this.semana,
+                        'hora_inicio_jornada': this.hora_inicio_jornada,
+                        'hora_fin_jornada': this.hora_fin_jornada,
+                        'fecha_inicio': $("#fecha_inicio").val(),
+                        'omitirSalon': this.omitirSalon
+                    }).then(response => {
+                        if (response.data.code == 200) {
+                            toastr.success('Registrado con éxito');
+                            this.resetForm();
+                            location.reload();
+                        }else{
+                            this.errorSalon = response.data.errorSalon;
+                            this.fechasError = response.data.fechas;
+                        }
+                    })
+                    .catch(function(error){
+                        alert('Error al consultar: ' + error);
+                    });
                 }
-            })
-            .catch(function(error){
-                alert('Error al consultar: ' + error);
+            }).catch(function(error) {
+                notifyMesagge('bg-red', 'Error: ' + error);
             });
-            ;
         }
     }
     

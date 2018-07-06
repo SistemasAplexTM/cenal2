@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
             'identification_card' => 'required|unique:users,identification_card',
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'sede' => 'required',
+            'sede_id' => 'required',
         ];
     }
     public function messages()
@@ -36,7 +36,7 @@ class UserRequest extends FormRequest
             'identification_card.required' => 'El :attribute es obligatorio',
             'name.required' => 'El :attribute es obligatorio',
             'email.required' => 'El :attribute es obligatorio',
-            'sede.required' => 'La :attribute es obligatoria',
+            'sede_id.required' => 'La :attribute es obligatoria',
         ];
     }
     public function attributes()

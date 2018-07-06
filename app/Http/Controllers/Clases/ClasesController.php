@@ -52,7 +52,9 @@ class ClasesController extends Controller
                 'a.id',
                 'a.nombre',
                 'd.jornada',
-                'f.nombre'
+                'f.nombre',
+                'e.descripcion',
+                'e.clase'
             )
         ->get();
         $data = $data[0];
@@ -95,7 +97,7 @@ class ClasesController extends Controller
 
     public function validarSalon($fechas_clase, $hora_inicio, $salon_id){
         $new_f = array();
-        foreach ($fechas_clase as $key => $value) {
+        foreach ($fechas_clase as $value) {
             array_push($new_f, $value.' '.$hora_inicio);
         }
 
@@ -137,46 +139,212 @@ class ClasesController extends Controller
         DB::beginTransaction();
 
         try {
-            $grupo = DB::table('grupo')->insertGetId(['nombre' => $request->grupo]);
+            $moduloOrden = array();
+            foreach ($request->modulos as $key => $value) {
+                array_push($moduloOrden, $value['id']);
+            }
+            $grupo = DB::table('grupo')->insertGetId([
+                'nombre' => $request->grupo,
+                'orden_modulos' => implode(",", $moduloOrden),
+                'dias_clase' => implode(",", $request->semana)
+            ]);
 
             $hora_inicio = $request->hora_inicio_jornada;
             $hora_fin = $request->hora_fin_jornada;
-            $clases_id = array();
-            foreach ($request->modulos as $key => $value) {
-                $id_class = Clases::create([
-                    'modulo_id' => $value['id'],
-                    'fecha_inicio' => $request->fecha_inicio,
-                    'sede_id' => $request->sede,
-                    'jornada_id' => $request->jornada,
-                    'observacion' => $request->observacion,
-                    'estado_id' => 1,
-                    'grupo_id' => $grupo
-                ])->id;
-                array_push($clases_id, $id_class);
-                if ($key == 0) {
-                    $fecha_inicio = $request->fecha_inicio;
-                }else{
-                    $fecha = new DateTime(end($fechas_clase[$key - 1]));
-                    $fecha = $fecha->add(new DateInterval('P1D'));
-                    $fecha_inicio = $fecha->format('Y-m-d');
-                }
-                $nombres_modulo[] = $value['name'];
-                $fechas_clase[] = $this->programarClases($fecha_inicio, $value['duracion'], $request->semana);
-            }
-            foreach ($fechas_clase as $value) {
-                $result = $this->validarSalon($value, $hora_inicio, $request->salon['id']);
+
+            $id_class = Clases::create([
+                'modulo_id' => $moduloOrden[0],
+                'fecha_inicio' => $request->fecha_inicio,
+                'sede_id' => $request->sede,
+                'jornada_id' => $request->jornada,
+                'observacion' => $request->observacion,
+                'estado_id' => 1,
+                'grupo_id' => $grupo
+            ])->id;
+
+            $fechas_clase = $this->programarClases($request->fecha_inicio, $request->modulos[0]['duracion'], $request->semana);
+            if (!$request->omitirSalon) {
+                $result = $this->validarSalon($fechas_clase, $hora_inicio, $request->salon);
                 if ($result['errorSalon']) {
                     $fechas_error = $result['fechas'];
-                    throw new \Exception("something happened");
+                    throw new \Exception("Error de salón");
                 }
             }
-            foreach ($fechas_clase as $clave => $arr) {
-                foreach ($arr as $key => $value) {
-                    DB::table('clases_detalle')->insert([
-                        ['title' => 'clase de '. $nombres_modulo[$clave], 'clases_id' => $clases_id[$clave], 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon['id']],
-                    ]);
+
+            foreach ($fechas_clase as $clave => $value) {
+                DB::table('clases_detalle')->insert([
+                    ['title' => 'clase de '. $request->modulos[0]['nombre'], 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon],
+                ]);
+            }
+
+
+
+            // foreach ($request->modulos as $key => $value) {
+            //     $id_class = Clases::create([
+            //         'modulo_id' => $value['id'],
+            //         'fecha_inicio' => $request->fecha_inicio,
+            //         'sede_id' => $request->sede,
+            //         'jornada_id' => $request->jornada,
+            //         'observacion' => $request->observacion,
+            //         'estado_id' => 1,
+            //         'grupo_id' => $grupo
+            //     ])->id;
+            //     array_push($clases_id, $id_class);
+            //     if ($key == 0) {
+            //         $fecha_inicio = $request->fecha_inicio;
+            //     }else{
+            //         $fecha = new DateTime(end($fechas_clase[$key - 1]));
+            //         $fecha = $fecha->add(new DateInterval('P1D'));
+            //         $fecha_inicio = $fecha->format('Y-m-d');
+            //     }
+            //     $nombres_modulo[] = $value['name'];
+            //     $fechas_clase[] = $this->programarClases($fecha_inicio, $value['duracion'], $request->semana);
+            // }
+            // foreach ($fechas_clase as $value) {
+            //     $result = $this->validarSalon($value, $hora_inicio, $request->salon['id']);
+            //     if ($result['errorSalon']) {
+            //         $fechas_error = $result['fechas'];
+            //         throw new \Exception("something happened");
+            //     }
+            // }
+            // foreach ($fechas_clase as $clave => $arr) {
+            //     foreach ($arr as $key => $value) {
+            //         DB::table('clases_detalle')->insert([
+            //             ['title' => 'clase de '. $nombres_modulo[$clave], 'clases_id' => $clases_id[$clave], 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'color' => $request->color, 'salon_id' => $request->salon['id']],
+            //         ]);
+            //     }
+            // }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $success = false;
+            $exception = $e;
+        }
+        if($success){
+            return array(
+                'code' => 200,
+                'errorSalon' => false
+            );
+        }else{
+            return array(
+                'code' => 600,
+                'errorSalon' => true,
+                'fechas' => $fechas_error,
+                'exception' => $exception
+            );
+        }
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function programar_modulo(Request $request, $grupo_id)
+    {
+        $grupo = DB::table('grupo AS a')
+        ->select('a.orden_modulos', 'a.dias_clase')
+        ->where('a.id', $grupo_id)
+        ->first();
+        $modulo = DB::table('clases AS a')
+        ->join('modulos AS b', 'a.modulo_id', 'b.id')
+        ->join('jornadas AS c', 'a.jornada_id', 'c.id')
+        ->select('a.id AS clase_id', 'a.sede_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
+            DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
+            DB::raw('(select max(salon_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS salon_id')
+        )
+        ->where('a.grupo_id', $grupo_id)
+        ->orderby('a.created_at','DESC')
+        ->take(1)->first();
+        
+        $fecha = new DateTime($modulo->fecha_fin);
+        $fecha = $fecha->add(new DateInterval('P1D'));
+        $fecha_inicio = $fecha->format('Y-m-d');
+        
+        
+        $orden_modulos = explode(',', $grupo->orden_modulos);
+        $dias_clase = explode(',', $grupo->dias_clase);
+        $clave = array_search($modulo->id, $orden_modulos);
+
+        $estudiantes = DB::table('clases_estudiante AS a')
+        ->select('a.estudiante_id')
+        ->where('a.clases_id', $modulo->clase_id)
+        ->get();
+
+        if (array_key_exists($clave + 1, $orden_modulos)) {
+            $sgte_modulo = $orden_modulos[$clave + 1];
+            $nombre_modulo = DB::table('modulos')
+            ->select('nombre', 'duracion')
+            ->where('id', $sgte_modulo)
+            ->first();
+        }else{
+            return array(
+                'code' => 300
+            );
+        }
+        $success = true;
+        $fechas_error = null;
+        DB::beginTransaction();
+
+        try {
+
+            $hora_inicio = $modulo->hora_inicio;
+            $hora_fin = $modulo->hora_fin;
+
+            // Obtener el salón del select para cambiar o del módulo anterior si no seleccinó salón
+            $salon = $modulo->salon_id;
+            $rango = array();
+            if (isset($request->salon) && $request->salon != null && $request->salon != 'null') {
+                $salon = $request->salon;
+            }
+            if (isset($request->desde) && $request->desde != null && $request->desde != 'null') {
+                if ($fecha_inicio == $request->desde) {
+                    // echo 'Las fechas son iguales';
+                    $fecha_inicio = $request->hasta;
+                }
+                // if ($fecha_inicio > $request->desde) {
+                //     echo 'La fecha de inicio es mayor a "desde"';
+                // }
+                if ($fecha_inicio < $request->desde) {
+                    $fechaInicio = strtotime($request->desde);
+                    $fechaFin = strtotime($request->hasta);
+                    for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+                        $rango[] = date("Y-m-d", $i);
+                    }
+                    // echo 'La fecha de inicio es menor a "desde"';
                 }
             }
+            
+            $id_class = Clases::create([
+                'modulo_id' => $sgte_modulo,
+                'fecha_inicio' => $fecha_inicio,
+                'sede_id' => $modulo->sede_id,
+                'jornada_id' => $modulo->jornada_id,
+                'estado_id' => 1,
+                'grupo_id' => $grupo_id
+            ])->id;
+
+            $fechas_clase = $this->programarClases($fecha_inicio, $nombre_modulo->duracion, $dias_clase, $rango);
+            if (!$request->omitirErrores) {
+                $result = $this->validarSalon($fechas_clase, $hora_inicio, $salon);
+                if (isset($result['errorSalon']) && $result['errorSalon']) {
+                    $fechas_error = $result['fechas'];
+                    throw new \Exception("El salón no está disponible");
+                }
+            }
+
+            foreach ($fechas_clase as $clave => $value) {
+                DB::table('clases_detalle')->insert([
+                    ['title' => 'clase de '. $nombre_modulo->nombre, 'clases_id' => $id_class, 'start' => $value . ' ' . $hora_inicio, 'end' => $value . ' ' . $hora_fin, 'salon_id' => $salon]
+                ]);
+            }
+
+            foreach ($estudiantes as $clave => $value) {
+                DB::table('clases_estudiante')->insert([
+                    ['estudiante_id' => $value->estudiante_id, 'clases_id' => $id_class]
+                ]);
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
@@ -381,7 +549,7 @@ class ClasesController extends Controller
         return $data;
     }
 
-    public function programarClases($fecha_inicio, $duracion, $dias_clase)
+    public function programarClases($fecha_inicio, $duracion, $dias_clase, $rango = null)
     {
 
         $fechas_clase = array();
@@ -404,12 +572,18 @@ class ClasesController extends Controller
             if (in_array($numero_dia, $dias_clase)) {
                 // si hay clase ese día, se agrega al arreglo de de sgte fecha
                 if (!$this->esFestivo($sgte_dia)) {
-                    array_push($fechas_clase, $sgte_dia);
+                    // Si hay fechas para exceptuar se ignoran
+                    if (!$rango) {
+                        array_push($fechas_clase, $sgte_dia);
+                    }else{
+                        if (!in_array($sgte_dia, $rango)){
+                            array_push($fechas_clase, $sgte_dia);
+                        }
+                    }
                 }
                 // echo "El día ".$numero_dia." SÍ hay clase. fecha: ".$sgte_dia."<br>";
             }
         }
-
         return $fechas_clase;
     }
 
@@ -471,6 +645,61 @@ class ClasesController extends Controller
         } catch (Exception $e) {
 
         }
+    }
+
+    public function terminar_modulo(Request $request)
+    {
+        try {
+            foreach ($request->estudiantes_id as $value) {
+                // Acá se registran lo que no aprobaron
+                DB::table('clases_estudiante AS a')
+                ->where([
+                    ['a.clases_id', '=', $request->clases_id],
+                    ['a.estudiante_id', '=', $value],
+                ])
+                ->update(
+                    ['a.aprobado' => 0]
+                );
+            }
+
+            $grupo = DB::table('grupo AS a')
+                ->join('clases AS b', 'a.id', 'b.grupo_id')
+                ->select('a.id')
+                ->where('b.id', $request->clases_id)
+                ->first();
+
+            DB::table('clases AS a')
+                ->where('a.id', '=', $request->clases_id)
+                ->update(
+                    ['a.estado_id' => 3]
+                );
+
+            DB::table('grupo AS a')
+                ->where('a.id', '=', $grupo->id)
+                ->update(
+                    ['a.estado_id' => 2]
+                );
+
+            $answer = array('code' => 200);
+
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function get_clases_Terminadas($clases_id){
+        $cant = DB::table('clases_detalle AS a')
+        ->join('clases AS b', 'a.clases_id', 'b.id')
+        ->select(
+            DB::raw('count(a.id) AS cant')
+        )
+        ->where([
+            ['b.id', $clases_id],
+            ['a.estado_id', '<>', 3]
+        ])
+        ->first();
+        return array('cant' => $cant);
     }
 
     public function get_estudiante_asistencia($estudiante_id, $clases_detalle_id)

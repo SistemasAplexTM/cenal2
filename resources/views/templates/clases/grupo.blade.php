@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <transition name="fade">
+        {{-- <transition name="fade">
             <div class="col-lg-4" v-if="Object.keys(grupo).length !== 0" >
                 <div class="ibox">
                     <div class="ibox-title" v-if="estudiantes_inscritos.length > 0">
@@ -122,7 +122,7 @@
                     </div>
                 </div>
             </div>
-        </transition>
+        </transition> --}}
     </div>
 </div>
 @endsection

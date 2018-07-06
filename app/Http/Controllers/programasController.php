@@ -86,6 +86,43 @@ class ProgramasController extends Controller
         }
     }
 
+    public function setJornadas(Request $request)
+    {
+        try{
+            foreach ($request->datos as $key => $value) {
+                if (count($value) > 0 ) {
+                    DB::table('pivot_promarma_modulos_jornada')
+                    ->insert([
+                        'programa_id' => $request->programa,
+                        'modulo_id' => $request->modulo,
+                        'jornada_id' => $key,
+                        'duracion' => $value
+                    ]);
+                }
+            }
+            $answer=array(
+                "datos" => $request->all(),
+                "code" => 200
+            );
+            return $answer;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function getJornadasAsignadas($programa, $modulo){
+        $data = DB::table('pivot_promarma_modulos_jornada As a')
+        ->join('jornadas AS b', 'a.jornada_id', 'b.id')
+        ->select(
+            'a.jornada_id',
+            'a.duracion',
+            'b.jornada'
+        )
+        ->where([['a.programa_id', '=', $programa],['a.modulo_id', '=', $modulo]])
+        ->get();
+        return $data;
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -163,16 +200,31 @@ class ProgramasController extends Controller
         return Datatables::of($data)->make(true);
     }
     public function geAllBySede($sede){
-        $data = DB::table('programas As a')
+        $data = DB::table('programas_unicos AS a')
+        ->join('pivot_programas_unicos_programas AS b', 'b.id_prog_unicos', 'a.id')
+        ->join('programas AS c', 'b.id_programa', 'c.id')
         ->select(
             'a.id',
-            'a.programa'
+            'a.nombre'
         )
         ->where([
-            ['a.sede_id', '=', $sede],
+            ['c.sede_id', '=', $sede],
             ['a.deleted_at', '=', NULL]
         ])
-        ->orderBy('a.programa')
+        ->orderBy('a.nombre')
+        ->get();
+        return $data;
+    }
+
+    public function getAllJornadas(){
+        $data = DB::table('jornadas AS a')
+        ->select(
+            'a.id',
+            'a.jornada',
+            'a.hora_inicio',
+            'a.hora_fin'
+        )
+        ->where('a.deleted_at', '=', NULL)
         ->get();
         return $data;
     }

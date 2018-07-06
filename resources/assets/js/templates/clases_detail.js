@@ -51,17 +51,22 @@ var objVue = new Vue({
         hora_fin_jornada: '',
         estado: '',
         dato_buscar: '',
+        clases_terminadas: '',
         cargando_programa: 0,
         editar_salon: 0,
         salones: {},
         clases: {},
         estudiantes: {},
+        estudiantes_reprobados: [],
         estudiantes_asistencia: [],
         estudiantes_inscritos: {},
+        estudiantes_reprobados: {},
         profesores: {}
     },
     created(){
         this.get_clases();
+        this.get_clases_terminadas();
+        this.get_estudiantes_reprobados();
     },
     methods:{
         resetForm: function(){
@@ -75,8 +80,19 @@ var objVue = new Vue({
         get_estudiantes_inscritos: function(){
             this.dato_estudiante = '';
             this.view = 'inscritos';
-            axios.get('../../estudiantes_inscritos/' + grupo_id).then(response => {
+            axios.get('estudiantes_inscritos').then(response => {
                 this.estudiantes_inscritos = response.data;   
+            });
+        },
+        get_estudiantes_reprobados: function(){
+            this.view = 'reptobados';
+            axios.get('estudiantes_reprobados').then(response => {
+                this.estudiantes_reprobados = response.data;
+            });
+        },
+        get_clases_terminadas: function(){
+            axios.get('get_clases_terminadas').then(response => {
+                this.clases_terminadas = response.data.cant.cant;   
             });
         },
         get_clases: function(){
@@ -150,6 +166,19 @@ var objVue = new Vue({
                 }
             });
         },
+        terminar_modulo: function(){
+            var l = $('#btn-terminar').ladda();
+                l.ladda( 'start' );
+            axios.post('terminar_modulo', {
+                'estudiantes_id': this.estudiantes_reprobados,
+                'clases_id': clase_id
+            }).then(response => {
+                if (response.data.code == 200) {
+                    l.ladda('stop');
+                    this.verSidebar = 0;
+                }
+            });
+        },
         changeSalon: function(){
             axios.post('../../changeSalon', {
                 'clases_detalle_id': this.clases_detalle_id,
@@ -195,6 +224,9 @@ var objVue = new Vue({
                 this.ver_listado = true;
                 this.cambiar_salon = false;
             }
+        },
+        asistenciaUrl: function(){
+            location.href = "asistencia";
         }
     }
     

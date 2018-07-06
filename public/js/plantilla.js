@@ -2452,7 +2452,8 @@ $.extend( true, $.fn.dataTable.defaults, {
     "emptyTable": "No hay datos disponibles en la tabla",
     "infoFiltered": "(Filtrando para _MAX_ Registros totales)",
     "zeroRecords": "No se encontraron registros coincidentes",
-}
+},
+responsive: true
 });
  $.fn.datepicker.dates['es'] = {
     days: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
