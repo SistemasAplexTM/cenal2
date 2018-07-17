@@ -51,40 +51,6 @@ var objVue = new Vue({
         estudiantes: {}
     },
     methods:{
-        buscar_estudiante: function(){
-            this.btn_confirm = true;
-            this.btn_retirar = false;
-            if (this.dato_estudiante.length <= 0) {
-                return false;
-            }
-            if (this.grupo.length <= 0) {
-                alert('Debe seleccionar un grupo para asignar un estudiante');
-                return false;
-            }
-            var dato = this.dato_estudiante;
-            this.view = 'buscar';
-            axios.get('buscar_estudiante/' + dato).then(response => {
-                this.estudiantes = response.data;
-            });
-        },
-        agregar_estudiante: function(grupo_id, id){
-            axios.get('grupo/'+grupo_id+'/agregar_estudiante/' + id).then(response => {
-                this.dato_estudiante = '';
-                this.grupo_exist = {};
-                if (response.data.code == 600) {
-                    alert('Repetido');
-                    return;
-                }
-                if (response.data.code == 601) {
-                    this.grupo_exist = response.data.data[0];
-                }
-                if (response.data.code == 200) {
-                    this.get_estudiantes_inscritos(grupo_id);
-                    this.updateTable();
-                    this.estudiantes = {};
-                }
-            });
-        },
         retirar_estudiante: function(id){
             axios.get('retirar_estudiante/' + id).then(response => {
                 if (response.data.code == 200) {

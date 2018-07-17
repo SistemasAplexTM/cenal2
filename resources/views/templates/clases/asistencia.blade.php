@@ -6,7 +6,7 @@
         <div class="ibox-content">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <a href="{{ url()->previous() }}" class="btn btn-default pull-left"><i class="fa fa-arrow-left"></i> Volver</a>
+                    {{-- <a href="{{ url()->previous() }}" class="btn btn-default pull-left"><i class="fa fa-arrow-left"></i> Volver</a> --}}
                     <i class="fa fa-calendar-check-o fa-5x pull-right" style="opacity: 0.1; z-index: -1"></i>
                     <h1>Módulo {{ $data->modulo }}</h1>
                     {!! "<span class='label label-".$data->clase_estado."'>".$data->estado."</span>" !!}
@@ -20,7 +20,7 @@
             <h5> Asistencia</h5>
             <div class="ibox-tools">
                 <a class="collapse-link">
-                    <button class="btn btn-success btn-xs pull-right"><i class="fa fa-file-pdf-o"></i> Exportar</button>
+                    {{-- <button class="btn btn-success btn-xs pull-right"><i class="fa fa-file-pdf-o"></i> Exportar</button> --}}
                 </a>
             </div>
         </div>
@@ -39,11 +39,14 @@
                                 <td>
                                    <h3>
                                         <i class="fa fa-barcode"></i>
+                                        <strong>
                                        @{{ estudiante.codigo }}
+                                            
+                                        </strong>
                                        <br>
-                                       <small>
+                                       <p>
                                             @{{ estudiante.nombre }}
-                                       </small>
+                                       </p>
                                    </h3>
                                 </td>
                                 <th v-for="(clase, index) in clases">

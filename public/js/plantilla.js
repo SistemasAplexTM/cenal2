@@ -2538,6 +2538,6 @@ function cancel(btn, id){
 
 function formato_fecha(fecha){
     var result = new Date(fecha);
-    var fecha = result.getFullYear() + '-' + result.getUTCMonth() + '-' + result.getUTCDate();
+    var fecha = result.getFullYear() + '-' + (result.getUTCMonth()  + 1) + '-' + result.getUTCDate();
     return fecha;
 }

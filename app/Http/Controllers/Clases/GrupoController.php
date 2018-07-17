@@ -10,7 +10,7 @@ class GrupoController extends Controller
 {
     public function index()
     {
-        return view('templates..clases.grupo');
+        return view('templates.clases.grupo');
     }
 
     public function getAll()
@@ -19,6 +19,12 @@ class GrupoController extends Controller
         $where = array(
                 ['b.deleted_at', NULL]
             );
+
+        if (!$user->hasRole('Administrador')) {
+            $where = array(
+                ['f.id', $user->sede_id]
+            );
+        }
         if ($user->hasRole('Profesor')) {
             $where = array(
                 ['b.profesor_id', $user->id]
@@ -33,7 +39,6 @@ class GrupoController extends Controller
                 'a.id',
                 'a.nombre',
                 DB::raw("'fecha_inicio'"),
-                // DB::raw('DATE_FORMAT(b.fecha_inicio, "%Y-%m-%d") fecha_inicio'),
                 'd.jornada',
                 'e.descripcion AS estado',
                 'e.clase AS clase_estado',
@@ -43,7 +48,6 @@ class GrupoController extends Controller
             ->groupBy(
                 'a.id',
                 'a.nombre',
-                // 'b.fecha_inicio',
                 'd.jornada',
                 'd.jornada',
                 'f.nombre',
@@ -55,15 +59,15 @@ class GrupoController extends Controller
         return Datatables::of($data)->make(true);
     }
 
-    public function buscar_estudiante($dato)
+    public function buscar_estudiante($clase_id, $dato)
     {
         $data = DB::table('estudiante As a')
             ->select(
                 'a.id',
                 'a.consecutivo AS codigo',
-                'a.grupo_id',
                 'a.num_documento',
-                DB::raw("concat_ws(' ', a.primer_apellido, a.segundo_apellido, a.nombres) AS nombre")
+                DB::raw("concat_ws(' ', a.primer_apellido, a.segundo_apellido, a.nombres) AS nombre"),
+                DB::raw("(SELECT Count(z.id) FROM clases_estudiante AS z WHERE z.clases_id = ".$clase_id." AND z.estudiante_id = a.id) AS cantidad")
             )
             ->where([
                 ['a.consecutivo', '=', $dato],
@@ -75,41 +79,69 @@ class GrupoController extends Controller
         return $data;
     }
 
-    public function agregar_estudiante($grupo_id, $estudiante_id)
+    public function agregar_estudiante($clase_id, $estudiante_id)
     {
-        $exist = DB::table('estudiante AS a')
-            ->join('grupo AS b', 'a.grupo_id', 'b.id')
-            ->select(
-                'b.id',
-                'b.nombre'
-            )
-            ->where('a.id', '=', $estudiante_id)
-            ->get();
-        $repeat = DB::table('estudiante AS a')
-            ->select(
-                DB::raw("count(a.id) AS cant")
-            )
-            ->where([
-                ['a.id', '=', $estudiante_id],
-                ['a.grupo_id', '=', $grupo_id],
-            ])
-            ->get();
-        if ($repeat[0]->cant != 0) {
-            $answer = array(
-                'code' => 600
-            );
-        }elseif (count($exist) > 0) {
-            $answer = array(
-                'code' => 601,
-                'data' => $exist
-            );
-        } else {
-            DB::table('estudiante AS a')
-                ->where('a.id', $estudiante_id)
-                ->update(['a.grupo_id' => $grupo_id]);
-            $answer = array('code' => 200);
+        
+        DB::table('clases_estudiante')->insert([
+            ['estudiante_id' => $estudiante_id, 'clases_id' => $clase_id]
+        ]);
+        return array('code' => 200);
+    }
+
+    public function validar_limite_agregar_estudiante($clase_id)
+    {
+        $data = DB::table('clases As a')
+        ->select(
+            'a.fecha_inicio'
+        )
+        ->where('a.id', $clase_id)
+        ->first();
+
+        $fecha = new \DateTime($data->fecha_inicio);
+        $fecha = $fecha->add(new \DateInterval('P14D'));
+        $fecha_limite = $fecha->format('Y-m-d'); 
+        $fecha_actual = date('Y-m-d'); 
+        if ($fecha_actual <= $fecha_limite) {
+            $result = true;
+        }else{
+            $result = false;
         }
-        return $answer;
+        return array('result' => $result);
+    }
+
+    public function get_estado_clase($clase_id)
+    {
+        $data = DB::table('clases As a')
+        ->join('estado As b', 'a.estado_id', 'b.id')
+        ->select(
+            'a.estado_id',
+            'b.descripcion',
+            'b.clase',
+            DB::raw('(select count(estado_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id and`g`.`estado_id` = 3)) AS completadas'),
+            DB::raw('(select count(id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id )) AS total')
+        )
+        ->where('a.id', $clase_id)
+        ->first();
+        $porcentaje = $data->completadas / $data->total * 100;
+
+        if ($data->estado_id != 3) {
+            if ($data->completadas == $data->total) {
+                DB::table('clases')
+                    ->where('id', '=', $clase_id)
+                    ->update(
+                        ['estado_id' => 3]
+                    );
+            }
+            if ($data->completadas > 0 && $data->completadas < $data->total) {
+                DB::table('clases')
+                    ->where('id', '=', $clase_id)
+                    ->update(
+                        ['estado_id' => 2]
+                    );
+            }
+        }
+
+        return array('code' => 200, 'data' => $data, 'porcentaje' => $porcentaje);
     }
 
     public function estudiantes_inscritos($clases_id)
@@ -186,7 +218,8 @@ class GrupoController extends Controller
             $result = array();
             foreach ($orden as $key => $value) {
                 $result[] = DB::table('modulos AS a')
-                ->select('a.id', 'a.nombre', 'a.duracion')
+                ->leftJoin('pivot_promarma_modulos_jornada AS b', 'a.id', 'b.modulo_id')
+                ->select('a.id', 'a.nombre', 'b.duracion')
                 ->where('a.id', $value)
                 ->first();
             }

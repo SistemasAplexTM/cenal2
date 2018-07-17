@@ -29,57 +29,53 @@
                     </h2>
                 </div>
             </div>
-            {{-- <div class="sidebar-message" v-if="verSidebar===1">
-                <div class="alert alert-primary text-center" v-show="estudiantes.length<=0">No hay datos disponibles</div>
-                <div class="feed-element" v-for="value in estudiantes">
-                    <a class="pull-left" href="#">
-                        <img alt="image" class="img-circle" src="{{ asset('img/profile_small.jpg') }}">
-                        </img>
-                    </a>
-                    <div class="media-body ">
-                        <button @click.prevent="agregar_estudiante(value.id)"  class="btn btn-primary btn-xs pull-right" v-bind:class="{ 'btn-danger' : repeatInscrito }" v-bind:disabled="repeatInscrito" data-loading-text="Agregando..." id="agregar" type="button" >
-                            <i class="fa fa-plus" v-bind:class="{ 'fa-exclamation' : repeatInscrito }" >
-                            </i>
-                            @{{ repeatInscritoMessage }}
-                        </button>
-                        <strong>
-                            @{{ value.codigo }} - @{{ value.nombre }}
-                        </strong>
-                        <br>
-                        <p class="text-muted">
-                                Documento:
-                            <strong>
-                                @{{ value.num_documento }}
-                            </strong>
-                        </p>
-                    </div>
-                </div>
-                <div class="feed-element" v-if="repeatInscrito">
-                    <div class="media-body">
-                        <div class="alert alert-danger">
-                            <a class="btn btn-primary pull-right" :href="'../'+repeatObj.id+'/edit'" >
-                                <i class="fa fa-eye">
-                                </i>
-                                ver
-                            </a>
-                            <strong>
-                                El estudiante ya se encuentra inscrito
-                            </strong>
-                            <p class="text-muted">
-                                    Sede:
-                                <strong>
-                                    @{{ repeatObj.sede }}
-                                </strong>
-                                <br>
-                                    Jornada:
-                                <strong>
-                                    @{{ repeatObj.jornada }}
-                                </strong>
-                            </p>
+
+            <div class="sidebar-message" v-if="verSidebar===1">
+                <div class="row">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div class="form-group">
+                                        <div class="col-lg-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-user-plus">
+                                                    </i>
+                                                </span>
+                                                <input class="form-control" id="burcar_estudiante" name="burcar_estudiante" placeholder="Código del estudiante" type="text" v-model="dato_estudiante" @keyup.enter="buscar_estudiante()">
+                                                    <a @click.prevent="buscar_estudiante()" class="input-group-addon btn btn-primary" type="button">
+                                                        Buscar
+                                                    </a>
+                                                </input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div v-for="estudiante in estudiantes">
+                                        <h2>
+                                            <template class="pull-right">
+                                                {{-- <confirm-button v-on:confirmation-success="retirar_estudiante(estudiante.id)"></confirm-button> --}}
+                                                <a v-if="estudiante.cantidad <= 0" data-toggle="tooltip" title="Agregar estudiante" class="btn btn-primary btn-xs pull-right" @click.prevent="agregar_estudiante(estudiante.id)"><i class="fa fa-check"></i></a>
+                                            </template>
+                                            <strong>
+                                                <i class="fa fa-barcode"></i>
+                                                @{{ estudiante.codigo }}
+                                            </strong>
+                                            <br>
+                                            <small>@{{ estudiante.nombre }}</small>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </div>
+
             <div class="sidebar-message" v-if="verSidebar===2">
                 @role('Profesor')
                     @if($data->estado != 'Terminado')
@@ -201,14 +197,10 @@
                 @endrole
                 <br>
                 <div class="ibox float-e-margins">
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3>
-                                    Debe indicar que estudiantes <strong>no</strong> aprueban el módulo
-                                </h3>
-                            </div>
-                        </div>
+                    <div class="alert alert-danger" v-if="clases_terminadas > 0">
+                        <h3 class="text-center">
+                            Debe indicar que estudiantes <strong>NO</strong> aprueban el módulo
+                        </h3>
                     </div>
                     @role('Profesor')
                     <div class="ibox-content">

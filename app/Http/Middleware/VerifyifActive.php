@@ -19,7 +19,7 @@ class VerifyifActive
         if (!Auth::guest()) {
             if (Auth::user()->confirmed == 0) {
                 Auth::logout();
-                return redirect('login')->with('notification', 'Debe activar su cuenta para poder acceder.');
+                return redirect('login')->with('notification', 'Acceda al portal desde el enlace enviado a su correo electrónico para activar su cuenta.');
             }
             if (Auth::user()->activo != 0) {
                 Auth::logout();

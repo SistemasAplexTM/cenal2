@@ -31,7 +31,9 @@ var objVue = new Vue({
         hora_fin_jornada: '',
         fecha_inicio: '',
         sede: user.sede_id,
+        texto_error:null,
         modulo:null,
+        exception:false,
         errorSalon:false,
         omitirSalon:false,
         programas: [],
@@ -40,6 +42,7 @@ var objVue = new Vue({
         semana: [],
         fechasError: [],
         cargando: 0,
+        limit: 5,
         cargandoModulos: 0,
         formErrors: {},
         list:[
@@ -86,6 +89,7 @@ var objVue = new Vue({
             });
         },
         setCapacidad: function(val){
+            this.texto_error = null;
             this.capacidad = '';
             this.ubicacion = '';
             if (val) {
@@ -114,7 +118,7 @@ var objVue = new Vue({
             // }
         },
         setModulos: function(val){
-            // alert(val);
+            this.texto_error = null;
             this.duracion = '';
             if (val != null) {
                 this.cargandoModulos = 1;
@@ -142,6 +146,7 @@ var objVue = new Vue({
             // }
         },
         setInicioJornada: function(){
+            this.programa = null;
             this.setModulos();
             var inicio = $("#jornada").find(':selected').data("hora_inicio");
             var fin = $("#jornada").find(':selected').data("hora_fin");
@@ -151,6 +156,18 @@ var objVue = new Vue({
         save: function(){
             this.$validator.validateAll().then((result) => {
                 if (result) {
+                    if (!this.salon) {
+                        this.texto_error = 'Debe seleccionar un salón';
+                        return false;
+                    }
+                    if (this.modulos == [] || this.modulos.length == 0) {
+                        this.texto_error = 'Debe seleccionar un programa el cual tenga módulos asignados';
+                        return false;
+                    }
+                    if (this.semana == [] || this.semana.length == 0) {
+                        this.texto_error = 'Debe indicar que días de la semana se dictarán clases';
+                        return false;
+                    }
                     let me = this;
                     axios.post('../clases', {
                         'grupo': this.grupo,
@@ -161,7 +178,6 @@ var objVue = new Vue({
                         'jornada': this.jornada,
                         'sede': this.sede,
                         'modulos': this.modulos,
-                        'salones': this.salones,
                         'semana': this.semana,
                         'hora_inicio_jornada': this.hora_inicio_jornada,
                         'hora_fin_jornada': this.hora_fin_jornada,
@@ -175,6 +191,7 @@ var objVue = new Vue({
                         }else{
                             this.errorSalon = response.data.errorSalon;
                             this.fechasError = response.data.fechas;
+                            this.exception = response.data.exception;
                         }
                     })
                     .catch(function(error){
@@ -182,7 +199,7 @@ var objVue = new Vue({
                     });
                 }
             }).catch(function(error) {
-                notifyMesagge('bg-red', 'Error: ' + error);
+                alert('Error: ' + error);
             });
         }
     }

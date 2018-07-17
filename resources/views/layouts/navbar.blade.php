@@ -4,13 +4,13 @@
             <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
                 <i class="fa fa-reorder"></i>
             </button>
-            <a href="{{ url('/clases') }}" class="navbar-brand">CENAL</a>
+            <a href="{{ url('/grupos') }}" class="navbar-brand">CENAL</a>
         </div>
         <div class="navbar-collapse collapse" id="navbar">
             <ul class="nav navbar-nav">
                 @role('Estudiante')
                 <li class="">
-                    <a href="{{ route('home') }}"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
+                    <a href="{{ url('estudiante/perfil') }}"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
                 </li>
                 @endrole
                 @role('Administrador|Coordinador|Profesor')

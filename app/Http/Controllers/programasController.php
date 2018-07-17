@@ -50,8 +50,8 @@ class ProgramasController extends Controller
                 foreach ($request->modulos as $key => $value) {
                     $mod[] = array(
                         'id' => $value['id'],
-                        'name' => $value['name'],
-                        'duracion' => $value['duracion']
+                        'name' => $value['name']
+                        // 'duracion' => $value['duracion']
                     );
                 }
             }
@@ -140,14 +140,14 @@ class ProgramasController extends Controller
                         $parentesis= $parte2[0];
                         $mod[] = array(
                             'id' => $value['id'],
-                            'name' => $parte1[0],
-                            'duracion' => $parentesis
+                            'name' => $parte1[0]
+                            // 'duracion' => $parentesis
                         );
                     }else{
                         $mod[] = array(
                             'id' => $value['id'],
-                            'name' => $value['name'],
-                            'duracion' => $value['duracion']
+                            'name' => $value['name']
+                            // 'duracion' => $value['duracion']
                         );
                     }
 

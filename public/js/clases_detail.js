@@ -31,10 +31,12 @@ var objVue = new Vue({
     el: '#clases',
     data:{
         open_sidebar: false,
+        show_input_student: true,
         ver_listado: false,
         cambiar_salon: false,
         btnTerminarClase: true,
         edit_prof: false,
+        repeatInscrito: false,
         verSidebar: 0,
         clases_detalle_id:'',
         salon:'',
@@ -56,6 +58,8 @@ var objVue = new Vue({
         clases_terminadas: '',
         cargando_programa: 0,
         editar_salon: 0,
+        porcentaje: 0,
+        estado_clase: {},
         salones: {},
         clases: {},
         estudiantes: {},
@@ -82,6 +86,8 @@ var objVue = new Vue({
         this.get_clases();
         this.get_clases_terminadas();
         this.get_estudiantes_reprobados();
+        this.validar_limite_agregar_estudiante();
+        this.get_estado_clase();
     },
     methods:{
         resetForm: function(){
@@ -126,6 +132,28 @@ var objVue = new Vue({
                 });
             }
         },
+        buscar_estudiante: function(){
+            this.btn_confirm = true;
+            this.btn_retirar = false;
+            if (this.dato_estudiante.length <= 0) {
+                return false;
+            }
+            var dato = this.dato_estudiante;
+            this.view = 'buscar';
+            axios.get('buscar_estudiante/' + dato).then(response => {
+                this.estudiantes = response.data;
+            });
+        },
+        agregar_estudiante: function( id){
+            axios.get('agregar_estudiante/' + id).then(response => {
+                this.dato_estudiante = '';
+                if (response.data.code == 200) {
+                    this.verSidebar = 0;
+                    this.get_estudiantes_inscritos();
+                    this.estudiantes = {};
+                }
+            });
+        },
         asignar_profesor: function(id){
             axios.get('asignar_profesor/' + id).then(response => {
                 $("#right-sidebar").removeClass('sidebar-open');
@@ -137,6 +165,7 @@ var objVue = new Vue({
                     });
                 }
                 if (response.data.code == 200) {
+                    this.edit_prof = false;
                     this.get_profesor_asignado();
                 }
             });
@@ -173,10 +202,15 @@ var objVue = new Vue({
             }).then(response => {
                 if (response.data.code == 200) {
                     l.ladda('stop');
-                    $('#calendar').fullCalendar( 'refetchEvents' );
                     this.verSidebar = 0;
-                    this.get_clases();
+                    this.get_estado_clase();
+                }else if(response.data.code == 300){
+                    l.ladda('stop');
+                    this.verSidebar = 4;
+
                 }
+                $('#calendar').fullCalendar( 'refetchEvents' );
+                this.get_clases();
             });
         },
         terminar_modulo: function(){
@@ -189,6 +223,7 @@ var objVue = new Vue({
                 if (response.data.code == 200) {
                     l.ladda('stop');
                     this.verSidebar = 0;
+                    this.get_estado_clase();
                 }
             });
         },
@@ -237,10 +272,27 @@ var objVue = new Vue({
             }
         },
         asistenciaUrl: function(){
-            location.href = "asistencia";
+            window.open('asistencia','_blank');
+            // location.href = "asistencia";
         },
         formato_fecha: function(fecha){
             return formato_fecha(fecha);
+        },
+        validar_limite_agregar_estudiante: function(){
+            axios.get('validar_limite_agregar_estudiante').then(response => {
+                this.show_input_student = true;
+                if (!response.data.result) {
+                    this.show_input_student = false;
+                }
+            });
+        },
+        get_estado_clase: function(){
+            axios.get('get_estado_clase').then(response => {
+                if (response.data.code == 200) {
+                    this.estado_clase = response.data.data;
+                    this.porcentaje = response.data.porcentaje;
+                }
+            });
         }
     }
     

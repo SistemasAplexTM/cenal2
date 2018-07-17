@@ -21,7 +21,7 @@
                                             <label for="nombre" class="control-label gcore-label-top">Nombre:</label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input value="" placeholder="" id="nombre" class="form-control" type="text" v-model="nombre" @click="deleteError('nombre')"/>
+                                            <input value="" placeholder="" id="nombre" class="form-control" type="text" v-model="nombre" @click="deleteError('nombre')" :disabled="asignar_jornada"/>
                                             <small id="msn1" class="help-block result-nombre" v-show="formErrors.nombre"></small>
                                         </div>
 

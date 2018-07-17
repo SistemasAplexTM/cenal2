@@ -61,7 +61,7 @@
                         <ul class="dropdown-menu">
                             <li><a target="_blanck" href="{{ url('costos/'. $data->id) }}">Costos</a></li>
                             <li><a target="_blanck" href="{{ url('eps/'. $data->id) }}">EPS</a></li>
-                            <li><a target="_blanck" href="{{ url('notas/'. $data->id) }}">Notas</a></li>
+                            {{-- <li><a target="_blanck" href="{{ url('notas/'. $data->id) }}">Notas</a></li> --}}
                         </ul>
                     </div>
                     <a data-toggle="modal" title="Actualizar datos" data-target="#modal-edit" class="btn btn-success pull-right"> <i class="fa fa-edit"></i></a>
@@ -179,7 +179,7 @@
                 </div>
                 <div id="tab-2" class="tab-pane">
                     <div class="panel-body">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <a href="#" class="list-group-item active" style="text-align: center;">
                                 Módulos
                             </a>
@@ -190,7 +190,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <table class="table table-striped table-bordered" id="tbl-finanzas" width="200px">
                                 <thead>
                                     <tr>
@@ -199,7 +199,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="value in asistencia">
-                                        <th>@{{ value.fecha }}</th>
+                                        <th width="50%">@{{ value.fecha }}</th>
                                         <td>
                                             <span v-show="value.asistencia!=null&value.estado_id==3" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></span>
                                             <span v-show="value.asistencia==null&value.estado_id==3" class="btn btn-primary btn-xs"><i class="fa fa-check"></i></span>

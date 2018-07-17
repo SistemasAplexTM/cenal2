@@ -6,10 +6,12 @@
         <div class="col-lg-12" :class="{'col-lg-8' : Object.keys(grupo).length !== 0}">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5><i class="fa fa-calendar"></i> Grupos</h5>
+                    <h5 style="font-size: 25px">
+                        <i class="fa fa-calendar"></i> Grupos
+                    </h5>
                     <div class="ibox-tools">
                         @role('Coordinador||Administrador')
-                        <a href="{{ route('clases.create') }}" class="btn btn-success btn-sm"><i class="fa fa-calendar-plus-o"></i> Programar grupo</a>
+                        <a href="{{ route('clases.create') }}" class="btn btn-success btn-sm" style="color: white;"><i class="fa fa-calendar-plus-o"></i> Programar grupo</a>
                         @endrole
                     </div>
                 </div>
@@ -25,7 +27,7 @@
                                     <th>Jornada</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="font-size: 19px !important">
                             </tbody>
                             <tfoot>
                                 <tr>

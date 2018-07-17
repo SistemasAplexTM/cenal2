@@ -22,11 +22,6 @@ class ClasesController extends Controller
     private $pascua_mes;
     private $pascua_dia;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index($grupo)
     {   
         $this->info_user();
@@ -63,11 +58,6 @@ class ClasesController extends Controller
         return view('templates.clases.index', compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $this->info_user();
@@ -128,12 +118,7 @@ class ClasesController extends Controller
         }
         return $answer;
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request, $ciclo = null)
     {
         $success = true;
@@ -142,6 +127,9 @@ class ClasesController extends Controller
 
         try {
             if (!$ciclo) {
+                if (!$request->modulos) {
+                    throw new \Exception("Seleccione modulos", 303);
+                }
                 $moduloOrden = array();
                 foreach ($request->modulos as $key => $value) {
                     array_push($moduloOrden, $value['id']);
@@ -170,6 +158,9 @@ class ClasesController extends Controller
 
             $fechas_clase = $this->programarClases($request->fecha_inicio, $request->modulos[0]['duracion'], $request->semana);
             if (!$request->omitirSalon) {
+                if (!$request->salon) {
+                    throw new \Exception("Seleccione salón");
+                }
                 $result = $this->validarSalon($fechas_clase, $hora_inicio, $request->salon);
                 if ($result['errorSalon']) {
                     $fechas_error = $result['fechas'];
@@ -225,6 +216,7 @@ class ClasesController extends Controller
             DB::rollback();
             $success = false;
             $exception = $e;
+            // return $exception;
         }
         if($success){
             return array(
@@ -240,12 +232,7 @@ class ClasesController extends Controller
             );
         }
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function programar_modulo(Request $request, $grupo_id)
     {
         
@@ -389,7 +376,6 @@ class ClasesController extends Controller
             DB::rollback();
             $success = false;
             $exception = $e;
-            return $e;
         }
         if($success){
             return array(
@@ -406,12 +392,6 @@ class ClasesController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $data = DB::table('clases_detalle As a')
@@ -435,12 +415,6 @@ class ClasesController extends Controller
         return Response()->json($data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $this->info_user();
@@ -553,22 +527,6 @@ class ClasesController extends Controller
                 ['a.ciclo', $where_ciclo]
             ])
             ->get();
-        foreach ($data as $key => $value) {
-            if ($value->completadas == $value->total) {
-                DB::table('clases')
-                    ->where('id', '=', $value->id)
-                    ->update(
-                        ['estado_id' => 3]
-                    );
-            }
-            if ($value->completadas > 0 && $value->completadas < $value->total) {
-                DB::table('clases')
-                    ->where('id', '=', $value->id)
-                    ->update(
-                        ['estado_id' => 2]
-                    );
-            }
-        }
         return Datatables::of($data)->make(true);
     }
 
@@ -654,7 +612,7 @@ class ClasesController extends Controller
         echo $fecha;
     }
 
-    public function set_estudiante_asistencia(Request $request)
+    public function set_estudiante_asistencia(Request $request, $clase_id)
     {
         try {
             foreach ($request->estudiantes_id as $key => $value) {
@@ -686,6 +644,21 @@ class ClasesController extends Controller
                     ['clases_detalle_id' => $request->clases_detalle_id, 'user_id' => $this->get_user('id')],
                 ]);
             $answer = array('code' => 200);
+
+            // Validar si es la última clase
+            $clase = DB::table('clases_detalle AS a')
+                ->select(
+                    'a.id'
+                )
+                ->where([
+                   ['a.clases_id', $clase_id], 
+                ])
+                ->orderby('a.id','DESC')
+                ->first();
+            
+            if ($clase->id == $request->clases_detalle_id) {
+                $answer = array('code' => 300);
+            }
 
             return $answer;
         } catch (Exception $e) {

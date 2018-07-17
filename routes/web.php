@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('programas/delete/{id}/{logical?}', 'ProgramasController@delete');
 	Route::resource('programas', 'ProgramasController');
 	/*-- Grupos --*/
-	Route::get('buscar_estudiante/{dato}', 'Clases\GrupoController@buscar_estudiante');
+	// Route::get('buscar_estudiante/{dato}', 'Clases\GrupoController@buscar_estudiante');
 	Route::get('grupos/all', 'Clases\GrupoController@getAll');
 	Route::get('grupos', 'Clases\GrupoController@index');
 
@@ -85,6 +85,7 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::post('changeSalon', 'Clases\ClasesController@changeSalon');
 	Route::post('clases/{clase_id}/terminar_modulo', 'Clases\ClasesController@terminar_modulo');
 	Route::get('clases/{grupo_id}/getModulos', 'Clases\GrupoController@getModulosByGrupo');
+	Route::get('clases/{clase_id}/get_estado_clase', 'Clases\GrupoController@get_estado_clase');
 	Route::get('clases/{clase_id}/get_clases_terminadas', 'Clases\ClasesController@get_clases_terminadas');
 	Route::get('clases/{clase_id}/estudiantes_reprobados', 'Clases\GrupoController@estudiantes_reprobados');
 	Route::get('clases/{clase_id}/estudiantes_inscritos', 'Clases\GrupoController@estudiantes_inscritos');
@@ -103,7 +104,9 @@ Route::group(['middleware' => ['auth', 'VerifyifActive', 'ChangePassword']],func
 	Route::get('clases/delete/{id}/{logical?}', 'Clases\ClasesController@delete');
 	Route::resource('clases', 'Clases\ClasesController');
 });
-	Route::get('grupo/{grupo_id}/agregar_estudiante/{estudiante_id}', 'Clases\GrupoController@agregar_estudiante');
+	Route::get('clases/{clase_id}/validar_limite_agregar_estudiante', 'Clases\GrupoController@validar_limite_agregar_estudiante');
+	Route::get('clases/{clase_id}/buscar_estudiante/{dato}', 'Clases\GrupoController@buscar_estudiante');
+	Route::get('clases/{clase_id}/agregar_estudiante/{estudiante_id}', 'Clases\GrupoController@agregar_estudiante');
 	Route::get('retirar_estudiante/{estudiante_id}', 'Clases\GrupoController@removeStudent');
 /*-- Rutas para el estudiante --*/
 Route::group(['middleware' => ['auth', 'mora', 'VerifyifActive']], function(){

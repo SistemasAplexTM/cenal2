@@ -14,22 +14,20 @@
                     </a>
                 </div>
                 <div class="col-lg-4">
-                    @if($data->estado != 'Terminado')
-                        <a class="btn btn-block btn-danger" @click="verSidebar=4;open_sidebar=true">
-                            <i class="fa fa-step-forward"></i> Terminar módulo
-                        </a>
-                    @else
-                        <a class="btn btn-block btn-danger" @click="verSidebar=5;open_sidebar=true">
-                            <i class="fa fa-eye"></i> Ver reprobados - @{{ estudiantes_reprobados.length }}
-                        </a>
-                    @endif
+                    <a v-if="estado_clase.descripcion!='Terminado'" class="btn btn-block btn-danger" @click="verSidebar=4;open_sidebar=true">
+                        <i class="fa fa-step-forward"></i> Terminar módulo
+                    </a>
+                    <a v-else class="btn btn-block btn-danger" @click="verSidebar=5;open_sidebar=true">
+                        <i class="fa fa-eye"></i> Ver reprobados - @{{ estudiantes_reprobados.length }}
+                    </a>
                 </div>
             </div>
             <br>
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h2>
-                        {!! "<span class='label label-".$data->clase_estado." pull-right'>".$data->estado."</span>" !!}
+                        <span class="pull-right label" :class="'label-' + estado_clase.clase" v-text="estado_clase.descripcion"></span>
+                        {{-- {!! "<span class='label label-".$data->clase_estado." pull-right'>".$data->estado."</span>" !!} --}}
                         Módulo {{ $data->modulo }}
                     </h2>
                 </div>
@@ -37,10 +35,9 @@
                 <div class="ibox-content">
                     <div class="row">
                         <div class="form-group">
-                            <div class="col-lg-12">
+                            <div class="col-lg-11">
                                 <small class="stats-label">
                                     <i class="fa fa-user-circle-o"></i> Profesor
-                                    <button class="btn btn-sm pull-right" @click.prevent="edit_prof = !edit_prof"><i class="fa fa-edit"></i></button>
                                 </small>
                                 <div class="input-group"  v-if="show_input_teacher">
                                     <span class="input-group-addon">
@@ -58,6 +55,10 @@
                                         @{{ profesor_asignado }}
                                     </h3>
                                 </dd>
+                            </div>
+                            <div class="col-lg-1">
+                                <br>
+                                <button class="btn btn-sm " @click.prevent="edit_prof = !edit_prof"><i class="fa " :class="[ edit_prof ? 'fa-times' : 'fa-edit' ]"></i></button>
                             </div>
                         </div>
                     </div>
@@ -143,14 +144,14 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="progress progress-striped active m-b-sm">
-                                {!! "<div class='progress-bar' style='width: ".$porcentaje."%;background-color: #1c84c6'></div>" !!}
+                                <div class='progress-bar' :style="'width:'+ porcentaje + '%'" style="background-color: #1c84c6"></div>
                             </div>
                             <small>
                                 Se han dictado
                                 <strong>
-                                    {{ $data->completadas }}
+                                    @{{ estado_clase.completadas }}
                                 </strong>
-                                clases de {{ $data->total }} en total.
+                                clases de @{{ estado_clase.total }} en total.
                             </small>
                         </div>
                     </div>
@@ -159,8 +160,11 @@
         </div>
         <div class="col-lg-4">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                     <a href="#" @click="asistenciaUrl" class="btn btn-block btn-success"><i class="fa fa-list"></i> Listado de asistencia</a>
+                </div>
+                <div class="col-lg-6" v-if="show_input_student">
+                    <a href="#" @click="verSidebar=1;open_sidebar=true" class="btn btn-block btn-primary"><i class="fa fa-user-plus"></i> Agregar estudiantes</a>
                 </div>
             </div>
             <br>
@@ -178,11 +182,9 @@
                         <div class="ibox-content no-padding">
                             <ul class="list-group">
                                 <li class="list-group-item" v-for="clase in clases">
-                                    {{-- <span class="badge badge-primary">16</span> --}}
                                     <a class="btn btn-sm right-sidebar-toggle pull-right" :class="clase.estado=='Terminado' ? 'btn-primary' : 'btn-success'" @click="verSidebar=2;verClase(clase)"> 
                                         <i v-if="clase.estado == 'Terminado'" class="fa fa-eye" data-toggle="tooltip" title="Ver clase"></i>
                                         <i v-else class="fa fa-list" data-toggle="tooltip" title="Asistencia"></i>
-                                        {{-- @{{ (clase.estado == 'Terminado') ? '<i class='fa fa-eye'></i>' : '<i class='fa fa-list'></i>' }} --}}
                                     </a>
                                     <h3>@{{ formato_fecha(clase.start) }}</h3>
                                     <p>Salón: @{{ clase.salon }}</p>

@@ -127,6 +127,6 @@ class ValidarController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
         
-        return redirect('/grupos');
+        return redirect('/estudiante/perfil');
     }
 }

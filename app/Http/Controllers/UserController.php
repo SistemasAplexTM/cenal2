@@ -8,6 +8,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserRequest;
 use App\User;
+use Mail;
+use App\Mail\VerifyEmail;
 
 class UserController extends Controller
 {
@@ -57,6 +59,7 @@ class UserController extends Controller
         // return $request->all();
         // exit();
         try{
+            $confirmation = str_random(25);
             $user = User::create([
                 'identification_card' => $request->identification_card,
                 'name' => $request->name,
@@ -66,9 +69,18 @@ class UserController extends Controller
                 'phone' => $request->phone,
                 'cellphone' => $request->cellphone,
                 'sede_id' => $request->sede_id['id'],
-                'password' => bcrypt($request->identification_card)
+                'password' => bcrypt($request->identification_card),
+                'confirmation_code' => $confirmation
             ]);
+
             $user->assignRole($request->roles['id']);
+            $data = array(
+                'code' => $confirmation,
+                'correo' => $request->email,
+                'name' => $request->name,
+                'password' => $request->identification_card
+            );
+            Mail::to($request->email)->send(new VerifyEmail($data));
             
             return array('code' => 200);
         } catch (Exception $e) {

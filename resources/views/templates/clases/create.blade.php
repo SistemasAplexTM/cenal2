@@ -2,6 +2,17 @@
 @section('title', 'Programar módulo')
 @section('content')
 <div class="container-fluid" id="clases">
+    <div class="row" v-show="texto_error">
+        <div class="col-lg-12">
+            <div class="alert alert-danger">
+                Ocurrió un error al registrar, verifique que todos los campos estén llenos.
+                <br>
+                <strong>
+                    <span v-text="texto_error"></span>
+                </strong>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="ibox">
             <div class="ibox-title">
@@ -13,17 +24,28 @@
                     <div class="row">
                         <div class="col-lg-2" v-if="errorSalon">
                             <div class="well">
-                                El salón no está disponible en las siguientes fechas:
-                                <div class="checkbox checkbox-primary">
-                                    <input v-model="omitirSalon" id="checkbox2" type="checkbox" checked="">
-                                    <label for="checkbox2">
-                                        Omitir errores
-                                    </label>
-                                </div>
+                                    El salón no está disponible en las siguientes fechas:
+                                    <div class="checkbox checkbox-primary">
+                                        <input v-model="omitirSalon" id="checkbox2" type="checkbox" checked="">
+                                        <label for="checkbox2">
+                                            Omitir errores
+                                        </label>
+                                    </div>
                                 <br>
                                 {{-- <button class="btn btn-default btn-block" @click.prevent="errorSalon=false;fechasError=[];omitirSalon=true">Omitir</button> --}}
                                 <ul class="list-group">
-                                  <li class="list-group-item" v-for="fecha in fechasError">@{{ fecha.start }}</li>
+                                  {{-- <li class="list-group-item" v-for="fecha in fechasError">@{{ fecha.start }}</li> --}}
+                                  <li class="list-group-item" v-for="(value, index) in fechasError" v-if="index <= limit" :style="(index == limit) ? 'cursor: pointer;' : ''">
+                                    <strong v-if="index == limit" @click.prevent="limit=fechasError.length">
+                                        @{{ fechasError.length - limit + ' fechas más' }}
+                                    </strong>
+                                    <p v-else>
+                                        @{{ value.start }}
+                                    </p>
+                                    <strong v-if="limit == fechasError.length && index == fechasError.length - 1" @click.prevent="limit=5" :style="(limit == fechasError.length && index == fechasError.length - 1) ? 'cursor: pointer;' : ''">
+                                        @{{ 'Mostrar menos' }}
+                                    </strong>
+                                </li>
                                 </ul>
                             </div>
                         </div>
@@ -166,7 +188,7 @@
                                                     <label for="fecha_inicio">Fecha de inicio:</label> 
                                                     <div class="input-group">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                        <input v-validate.disable="'required'" name="fecha_inicio" id="fecha_inicio" type="text" placeholder="dd/mm/aaaa" class="form-control">
+                                                        <input v-validate="'required'" name="fecha_inicio" id="fecha_inicio" type="text" placeholder="dd/mm/aaaa" class="form-control">
                                                     </div>
                                                     <small v-show="errors.has('fecha_inicio')" class="text-danger">@{{ errors.first('fecha_inicio') }}</small>
                                                 </div>
@@ -178,8 +200,8 @@
                                     <div class="form-group" :class="{'has-error': errors.has('programa') }">
                                         <div class="col-sm-12">
                                             <div>
-                                                <label for="programa">Programa: @{{ (jornada.length == 0) ? 'Debe seleccionar una jornada'  : ''}}</label>
-                                                <v-select v-model="programa" name="programa" label="nombre" :options="programas" :on-change="setModulos" :disabled="jornada.length == 0">
+                                                <label for="programa">Programa: <span class="text-danger">@{{ (jornada.length == 0) ? 'Debe seleccionar una jornada'  : ''}}</span></label>
+                                                <v-select name="programa" label="nombre" :options="programas" :on-change="setModulos" :disabled="jornada.length == 0">
                                                     <span slot="no-options">
                                                       No hay datos
                                                     </span>

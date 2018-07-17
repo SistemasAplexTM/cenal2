@@ -30,7 +30,7 @@ $(document).ready(function () {
             api.column(0, {page: 'current'}).data().each(function (group, i) {
                 if (last !== group) {
                     $(rows).eq(i).before(
-                            '<tr class="group" style="background-color: rgba(121, 171, 252, 0.2)"><td colspan="3">' + group + '</td></tr>'
+                            '<tr class="group" style="background-color: gray; color: white"><td colspan="3">' + group + '</td></tr>'
                             );
 
                     last = group;
@@ -96,7 +96,6 @@ function formatRepo (repo) {
 }
 
 function formatRepoSelection (repo) {
-    console.log(repo);
     if (typeof repo.duracion != "undefined") {
         return repo.text + ' (' + repo.duracion + ')';
     }else{
@@ -171,7 +170,6 @@ var objVue = new Vue({
         create: function(){
             let me = this;
             // me.modulos = $('#modulos').select2('data');
-            // console.log(me.modulos);
             axios.post('programas',{
                 'nombre' : this.nombre,
                 'sedes' : $('#sedes').val(),
@@ -275,13 +273,16 @@ var objVue = new Vue({
                 'programa': me.id
             }).then(function (response) {
                 if (response.data['code'] == 200) {
+                    this.jornadas_asignadas = [];
+                    this.jornadas = [];
+                    this.horas = [];
+                    this.modulo_j = null;
                     toastr.success('Registro actualizado correctamente');
                     toastr.options.closeButton = true;
                 } else {
                     toastr.warning(response.data['error']);
                     toastr.options.closeButton = true;
                 }
-                me.resetForm();
                 recargarTabla('tbl-programas');
             }).catch(function (error) {
                 if (error.response.status === 422) {
@@ -302,11 +303,9 @@ var objVue = new Vue({
                     this.jornadas = response.data; 
                     var arreglo = [];
                     $.each( response.data, function( key, value ) {
-                        // console.log(value.id);
                         arreglo[value.id] = value.duracion;
 
                     });
-                        console.log(arreglo);
                     this.horas = arreglo;
                 });
             }

@@ -143,8 +143,7 @@ class ModuloController extends Controller
         $data = DB::table('modulos As a')
         ->select(
             'a.id',
-            'a.nombre AS name',
-            'a.duracion'
+            'a.nombre AS name'
         )
         ->where([
             ['a.nombre', 'LIKE', $term.'%'],
