@@ -116,7 +116,7 @@ function edit(id,nombre, sedes, modulos){
 }
 
 function add_jornada(id,nombre, sedes, modulos){
-    objVue.resetForm();
+    // objVue.resetForm();
     objVue.asignar_jornada = true;
     var data ={
         id: id,
@@ -273,10 +273,11 @@ var objVue = new Vue({
                 'programa': me.id
             }).then(function (response) {
                 if (response.data['code'] == 200) {
-                    this.jornadas_asignadas = [];
-                    this.jornadas = [];
-                    this.horas = [];
-                    this.modulo_j = null;
+                    // this.jornadas_asignadas = [];
+                    // this.jornadas = [];
+                    // this.horas = [];
+                    // this.modulo_j = null;
+                    this.resetForm();
                     toastr.success('Registro actualizado correctamente');
                     toastr.options.closeButton = true;
                 } else {

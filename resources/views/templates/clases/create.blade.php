@@ -188,7 +188,7 @@
                                                     <label for="fecha_inicio">Fecha de inicio:</label> 
                                                     <div class="input-group">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                        <input v-validate="'required'" name="fecha_inicio" id="fecha_inicio" type="text" placeholder="dd/mm/aaaa" class="form-control">
+                                                        <input v-validate.disable="'required'" name="fecha_inicio" id="fecha_inicio" type="text" placeholder="dd/mm/aaaa" class="form-control">
                                                     </div>
                                                     <small v-show="errors.has('fecha_inicio')" class="text-danger">@{{ errors.first('fecha_inicio') }}</small>
                                                 </div>

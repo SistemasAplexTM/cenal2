@@ -244,7 +244,7 @@ class ClasesController extends Controller
         $modulo = DB::table('clases AS a')
         ->join('modulos AS b', 'a.modulo_id', 'b.id')
         ->join('jornadas AS c', 'a.jornada_id', 'c.id')
-        ->select('a.id AS clase_id', 'a.sede_id', 'a.estado_id', 'b.id', 'b.duracion', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
+        ->select('a.id AS clase_id', 'a.sede_id', 'a.estado_id', 'b.id', 'c.id AS jornada_id', 'c.hora_inicio', 'c.hora_fin',
             DB::raw('(select max(start) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS fecha_fin'),
             DB::raw('(select max(salon_id) from `clases_detalle` as `g` where (`g`.`deleted_at` is null and `g`.`clases_id` = a.id)) AS salon_id')
         )
@@ -295,9 +295,10 @@ class ClasesController extends Controller
         ->where('a.id', $grupo_id)
         ->first();
 
-        $nombre_modulo = DB::table('modulos')
-        ->select('nombre', 'duracion')
-        ->where('id', $sgte_modulo)
+        $nombre_modulo = DB::table('modulos AS a')
+        ->join('pivot_promarma_modulos_jornada AS b', 'a.id', 'b.modulo_id')
+        ->select('a.nombre', 'b.duracion')
+        ->where('a.id', $sgte_modulo)
         ->first();
 
         $success = true;

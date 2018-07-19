@@ -55,6 +55,8 @@
                             </div>
                             <div class="feed-activity-list">
                                 <div class="feed-element">
+                                    <br>
+                                    <p class="text-center" v-text="busqueda_Estudiante"></p>
                                     <div v-for="estudiante in estudiantes">
                                         <h2>
                                             <template class="pull-right">

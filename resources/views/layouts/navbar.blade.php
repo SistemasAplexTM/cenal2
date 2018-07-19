@@ -43,6 +43,9 @@
             </ul>
             <ul class="nav navbar-top-links navbar-right">
                 <li>
+                    <span class="label label-success">{{ Session::get('sede') }}</span>
+                </li>
+                <li>
                     <span class="label label-success">{{ Auth::user()->roles[0]->name }}</span>
                 </li>
                 @role('Administrador')

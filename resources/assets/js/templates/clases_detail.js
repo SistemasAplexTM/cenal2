@@ -60,6 +60,7 @@ var objVue = new Vue({
         editar_salon: 0,
         porcentaje: 0,
         estado_clase: {},
+        busqueda_Estudiante: '',
         salones: {},
         clases: {},
         estudiantes: {},
@@ -133,6 +134,7 @@ var objVue = new Vue({
             }
         },
         buscar_estudiante: function(){
+            this.busqueda_Estudiante = 'Buscando...';
             this.btn_confirm = true;
             this.btn_retirar = false;
             if (this.dato_estudiante.length <= 0) {
@@ -141,7 +143,12 @@ var objVue = new Vue({
             var dato = this.dato_estudiante;
             this.view = 'buscar';
             axios.get('buscar_estudiante/' + dato).then(response => {
-                this.estudiantes = response.data;
+                if (response.data.length > 0) {
+                    this.busqueda_Estudiante = '';
+                    this.estudiantes = response.data;
+                }else{
+                    this.busqueda_Estudiante = 'No hay resultados para la busqueda';
+                }
             });
         },
         agregar_estudiante: function( id){
