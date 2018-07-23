@@ -26,10 +26,10 @@
                             <a href="{{ url('programas') }}"><i class="fa fa-briefcase"></i> <span class="nav-label">Programas</span> </a>
                         </li>
                         <li>
-                            <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
+                            <a href="{{ url('modulo') }}"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">Módulos</span> </a>
                         </li>
                         <li>
-                            <a href="{{ url('modulo') }}"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">Módulos</span> </a>
+                            <a href="{{ url('salon') }}"><i class="fa fa-home"></i> <span class="nav-label">Salones</span> </a>
                         </li>
                         <li>
                             <a href="{{ url('ubicacion') }}"><i class="fa fa-map-marker"></i> <span class="nav-label">Ubicación</span> </a>

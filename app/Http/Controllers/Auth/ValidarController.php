@@ -45,7 +45,7 @@ class ValidarController extends Controller
             return \Redirect::route('login');
         }else{
             if (count($data) > 0) {
-               return view('Auth/register2', compact('data'));
+               return view('auth.register2', compact('data'));
             }else{
                 \Session::flash('no_cuenta', "No tienes una cuenta");
                 return \Redirect::route('login');

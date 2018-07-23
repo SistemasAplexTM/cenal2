@@ -220,7 +220,7 @@ class GrupoController extends Controller
                 $result[] = DB::table('modulos AS a')
                 ->leftJoin('pivot_promarma_modulos_jornada AS b', 'a.id', 'b.modulo_id')
                 ->select('a.id', 'a.nombre', 'b.duracion')
-                ->where('a.id', $value)
+                ->where('a.idate(format)', $value)
                 ->first();
             }
             foreach ($programados as $key => $value) {

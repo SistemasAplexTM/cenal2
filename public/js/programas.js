@@ -273,26 +273,20 @@ var objVue = new Vue({
                 'programa': me.id
             }).then(function (response) {
                 if (response.data['code'] == 200) {
-                    // this.jornadas_asignadas = [];
-                    // this.jornadas = [];
-                    // this.horas = [];
-                    // this.modulo_j = null;
-                    this.resetForm();
+                    me.jornadas_asignadas = [];
+                    me.jornadas = [];
+                    me.horas = [];
+                    me.modulo_j = null;
                     toastr.success('Registro actualizado correctamente');
                     toastr.options.closeButton = true;
+                    // me.resetForm();
                 } else {
                     toastr.warning(response.data['error']);
                     toastr.options.closeButton = true;
                 }
                 recargarTabla('tbl-programas');
             }).catch(function (error) {
-                if (error.response.status === 422) {
-                    me.formErrors = error.response.data.errors;
-                }
-                $.each(me.formErrors, function (key, value) {
-                    $('.result-' + key).html(value);
-                });
-                toastr.error("Porfavor completa los campos obligatorios.", {timeOut: 50000});
+                toastr.error("Error al registrar.", {timeOut: 50000});
             });
         },
         getJornadas: function(val){
@@ -305,7 +299,6 @@ var objVue = new Vue({
                     var arreglo = [];
                     $.each( response.data, function( key, value ) {
                         arreglo[value.id] = value.duracion;
-
                     });
                     this.horas = arreglo;
                 });
